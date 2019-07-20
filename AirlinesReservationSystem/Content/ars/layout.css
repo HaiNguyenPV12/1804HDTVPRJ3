@@ -1,0 +1,28 @@
+﻿.bg-ars {
+    background-color: #ff9933 !important;
+}
+
+.bg-ars-light {
+    background-color: #ffca64 !important;
+}
+
+footer {
+    --box-shadow-color: #ffca64;
+    box-shadow: 0 50vh 0 50vh var(--box-shadow-color);
+}
+
+.img-fluid {
+    max-height: 35px;
+}
+
+.nav-link {
+    color: black;
+}
+
+    .nav-link:hover {
+        background-color: #c66a00;
+    }
+
+.dropdown-item:hover {
+    background-color: #ff9933;
+}
