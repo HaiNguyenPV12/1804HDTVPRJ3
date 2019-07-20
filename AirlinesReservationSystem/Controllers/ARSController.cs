@@ -6,7 +6,7 @@ using System.Web.Mvc;
 
 namespace AirlinesReservationSystem.Controllers
 {
-    public class HomeController : Controller
+    public class ARSController : Controller
     {
         // GET: Home
         public ActionResult Index()
