@@ -20,10 +20,7 @@ namespace AirlinesReservationSystem.Controllers
 
         public int CheckLogin()
         {
-            if (true)
-            {
-
-            }
+            return 0;
         }
     }
 }
