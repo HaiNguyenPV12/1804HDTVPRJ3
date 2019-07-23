@@ -6,7 +6,15 @@
     box-shadow: 0.1em 0.3em 2em 0.1em #888888;
 }
 
-
 .flightSearch-content {
     padding: 1em;
+}
+
+.btn-secondary {
+    /*background-color: #616161 !important;*/
+}
+
+.active {
+    background-color: #ff9933 !important;
+    color: black !important;
 }
