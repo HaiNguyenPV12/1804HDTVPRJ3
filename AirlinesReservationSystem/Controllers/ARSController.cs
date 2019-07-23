@@ -39,5 +39,7 @@ namespace AirlinesReservationSystem.Controllers
             //var flights = from flightAndRoutes in db
             return View();
         }
+
+        public ActionResult TypeAheadDemo() => View();
     }
 }
