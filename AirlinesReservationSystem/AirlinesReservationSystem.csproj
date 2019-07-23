@@ -90,6 +90,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\ars\layoutadmin.css" />
     <Content Include="Content\ars\layout.css" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
@@ -174,6 +175,7 @@
     <Content Include="Views\ARSAdmin\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_AdminLayout.cshtml" />
     <Content Include="Views\ARSAdmin\Index.cshtml" />
+    <Content Include="Views\ARSAdmin\Route.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
