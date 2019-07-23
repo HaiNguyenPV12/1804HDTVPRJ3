@@ -45,7 +45,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-  <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -61,7 +61,7 @@
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-	<Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
@@ -121,6 +121,10 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ArsDBModel.Context.cs</LastGenOutput>
     </Content>
+    <Content Include="Models\ArsDBModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ArsDBModel.cs</LastGenOutput>
+    </Content>
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -178,10 +182,24 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Aircraft.cs">
+      <DependentUpon>ArsDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Airline.cs">
+      <DependentUpon>ArsDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Airport.cs">
+      <DependentUpon>ArsDBModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ArsDBModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ArsDBModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ArsDBModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ArsDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ArsDBModel.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -190,6 +208,39 @@
     </Compile>
     <Compile Include="Models\ars\FlightSearch.cs" />
     <Compile Include="Models\ars\Login.cs" />
+    <Compile Include="Models\Country.cs">
+      <DependentUpon>ArsDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CreditCard.cs">
+      <DependentUpon>ArsDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Employee.cs">
+      <DependentUpon>ArsDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Flight.cs">
+      <DependentUpon>ArsDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\FlightDistance.cs">
+      <DependentUpon>ArsDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Order.cs">
+      <DependentUpon>ArsDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Route.cs">
+      <DependentUpon>ArsDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Service.cs">
+      <DependentUpon>ArsDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Ticket.cs">
+      <DependentUpon>ArsDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\TicketService.cs">
+      <DependentUpon>ArsDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\User.cs">
+      <DependentUpon>ArsDBModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
