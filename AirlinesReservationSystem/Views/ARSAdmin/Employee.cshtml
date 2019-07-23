@@ -1,0 +1,94 @@
+﻿@model IEnumerable<AirlinesReservationSystem.Models.Employee>
+
+@{
+    ViewBag.Title = "Employee";
+}
+
+<h2>Employee @Html.ActionLink("Add new Employee", "AddEmployee", null, new { @class = "btn btn-success" })</h2>
+
+<div class="col-12">
+    <table class="table table-bordered table-hover">
+        <tr class="table-primary">
+            <th>
+                @Html.DisplayNameFor(model => model.EmpID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Firstname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Lastname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Phone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Sex)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DoB)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsActive)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ROLE)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EmpID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Firstname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Lastname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Phone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @if (!item.Sex)
+                    {
+                        @:Male
+                    }
+                    else
+                    {
+                        @:Female
+                    }
+                </td>
+                <td>
+                    @item.DoB.ToShortDateString().ToString()
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsActive)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ROLE)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.EmpID }, new { @class="btn btn-warning" })
+                    @Html.ActionLink("Delete", "Delete", new {id=item.EmpID }, new { @class="btn btn-danger" })
+                </td>
+            </tr>
+        }
+
+    </table>
+
+</div>
