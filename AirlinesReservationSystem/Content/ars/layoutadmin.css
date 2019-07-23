@@ -1,0 +1,11 @@
+﻿.list-group-item-ars {
+    background-color: #fff;
+    color: #000;
+}
+
+    .list-group-item-ars.active {
+        color: #fff;
+        background-color: #ff9933;
+        border-color: #ffca64;
+        font-weight:bold;
+    }

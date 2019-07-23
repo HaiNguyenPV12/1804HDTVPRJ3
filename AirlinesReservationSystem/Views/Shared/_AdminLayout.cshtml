@@ -3,17 +3,20 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>ARS Admin - @ViewBag.Title</title>
     <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/ars/layout.css" type="text/css" rel="stylesheet" />
+    <link href="~/Content/ars/layoutadmin.css" type="text/css" rel="stylesheet" />
     <script src="~/Scripts/modernizr-2.8.3.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
 </head>
 <body>
     <!--start of navbar-->
     <nav class="navbar navbar-expand-lg fixed-top navbar-light bg-ars">
         <div class="container">
-            <a href="#" class="navbar-brand">
+            <a href="~/arsadmin" class="navbar-brand">
                 <img src="~/img/ars/Logo.png" alt="ARS" class="d-inline-block align-top img-fluid" />
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,18 +51,63 @@
             </div>
         </div>
     </nav>
+    <p></p>
 
-    <div class="container body-content">
-        <p></p>
-        @RenderBody()
+    @helper LeftMenu(string action)
+    {
+        if (ViewContext.RouteData.GetRequiredString("action").ToLower() == action.ToLower())
+        {
+            @:<a href="arsadmin/@action" class="list-group-item list-group-item-ars active">@action</a>
+        }
+        else
+        {
+            @:<a href="arsadmin/@action" class="list-group-item list-group-item-ars">@action</a>
+        }
+    }
+    <div class="container row">
+        <div class="col-3">
+            <div class="list-group">
+                @LeftMenu("Route")
+                @LeftMenu("Flight")
+                @LeftMenu("Order")
+                @LeftMenu("Service")
+                @LeftMenu("Employee")
+                @LeftMenu("Customer")
+                @LeftMenu("Country")
+                @LeftMenu("Airline")
+                @LeftMenu("Airport")
+                @LeftMenu("FlightDistance")
+                @LeftMenu("Aircraft")
+                <!--
+    <a href="~/arsadmin/Route" class="list-group-item list-group-item-ars">Route</a>
+    <a href="~/arsadmin/Flight" class="list-group-item list-group-item-ars">Flight Schedule</a>
+
+    <a href="~/arsadmin/Order" class="list-group-item list-group-item-ars">Order</a>
+    <a href="~/arsadmin/Service" class="list-group-item list-group-item-ars">Service</a>
+
+    <a href="~/arsadmin/Employee" class="list-group-item list-group-item-ars">Employee</a>
+    <a href="~/arsadmin/Customer" class="list-group-item list-group-item-ars ">Customer</a>
+
+    <a href="~/arsadmin/Country" class="list-group-item list-group-item-ars">Country</a>
+    <a href="~/arsadmin/Airline" class="list-group-item list-group-item-ars">Airline</a>
+    <a href="~/arsadmin/Airport" class="list-group-item list-group-item-ars">Airport</a>
+    <a href="~/arsadmin/FlightDistance" class="list-group-item list-group-item-ars">Flight Distance</a>
+    <a href="~/arsadmin/Aircraft" class="list-group-item list-group-item-ars">Aircraft</a>
+        -->
+            </div>
+        </div>
+        <div class="col-9">
+
+            @RenderBody()
+        </div>
     </div>
+    <p></p>
     <footer class="bg-ars-light">
         <div class="container">
             <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
         </div>
     </footer>
 
-    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
-    <script src="~/Scripts/bootstrap.min.js"></script>
+
 </body>
 </html>

@@ -13,5 +13,14 @@ namespace AirlinesReservationSystem.Controllers
         {
             return View();
         }
+        public ActionResult Route()
+        {
+            return View();
+        }
+
+        public int CheckLogin()
+        {
+            return 0;
+        }
     }
 }

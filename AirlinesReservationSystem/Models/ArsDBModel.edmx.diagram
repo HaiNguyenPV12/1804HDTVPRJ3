@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="45aca80d82c54c83a2f1632ade6c0e64" Name="Diagram1">
+        <EntityTypeShape EntityType="AirlineDBModel.Aircraft" Width="1.5" PointX="3" PointY="9.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="AirlineDBModel.Airline" Width="1.5" PointX="3" PointY="2.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="AirlineDBModel.Airport" Width="1.5" PointX="3" PointY="5.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="AirlineDBModel.Country" Width="1.5" PointX="0.75" PointY="4.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="AirlineDBModel.CreditCard" Width="1.5" PointX="9.75" PointY="10.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="AirlineDBModel.Employee" Width="1.5" PointX="11.75" PointY="1.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="AirlineDBModel.Flight" Width="1.5" PointX="7.5" PointY="5.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="AirlineDBModel.FlightDistance" Width="1.5" PointX="5.25" PointY="5.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="AirlineDBModel.Order" Width="1.5" PointX="7.5" PointY="9.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="AirlineDBModel.Route" Width="1.5" PointX="5.25" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="AirlineDBModel.Service" Width="1.5" PointX="9.75" PointY="2" IsExpanded="true" />
+        <EntityTypeShape EntityType="AirlineDBModel.Ticket" Width="1.5" PointX="9.75" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="AirlineDBModel.TicketService" Width="1.5" PointX="12" PointY="6.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="AirlineDBModel.User" Width="1.5" PointX="5.25" PointY="9.375" IsExpanded="true" />
+        <AssociationConnector Association="AirlineDBModel.FK_Route_RAircraft_Aircraft_AircraftID" ManuallyRouted="false" />
+        <AssociationConnector Association="AirlineDBModel.FK_Airline_AirlineCountry_Country_CountryID" ManuallyRouted="false" />
+        <AssociationConnector Association="AirlineDBModel.FK_Route_RAirline_Airline_AirlineID" ManuallyRouted="false" />
+        <AssociationConnector Association="AirlineDBModel.FK_Airport_CountryID_Country_CountryID" ManuallyRouted="false" />
+        <AssociationConnector Association="AirlineDBModel.FK_FlightDistance_AirportID1_Airport_AirportID" ManuallyRouted="false" />
+        <AssociationConnector Association="AirlineDBModel.FK_FlightDistance_AirportID2_Airport_AirportID" ManuallyRouted="false" />
+        <AssociationConnector Association="AirlineDBModel.FK_Route_Departure_Airport_AirportID" ManuallyRouted="false" />
+        <AssociationConnector Association="AirlineDBModel.FK_Route_Destination_Airport_AirportID" ManuallyRouted="false" />
+        <AssociationConnector Association="AirlineDBModel.FK_Flight_Route_RNo" ManuallyRouted="false" />
+        <AssociationConnector Association="AirlineDBModel.FK_Ticket_FNo_Flight_FNo" ManuallyRouted="false" />
+        <AssociationConnector Association="AirlineDBModel.FK_Order_UserID_User_UserID" ManuallyRouted="false" />
+        <AssociationConnector Association="AirlineDBModel.FK_Ticket_OrderID_Order_OrderID" ManuallyRouted="false" />
+        <AssociationConnector Association="AirlineDBModel.FK_TicketService_ServiceID_Service_ServiceID" ManuallyRouted="false" />
+        <AssociationConnector Association="AirlineDBModel.FK_TicketService_TicketID_Ticket_TicketID" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
