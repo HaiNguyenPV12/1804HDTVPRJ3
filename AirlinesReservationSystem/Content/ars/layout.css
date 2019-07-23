@@ -7,6 +7,7 @@
 }
 
 footer {
+    margin-top: 1em;
     --box-shadow-color: #ffca64;
     box-shadow: 0 50vh 0 50vh var(--box-shadow-color);
 }
