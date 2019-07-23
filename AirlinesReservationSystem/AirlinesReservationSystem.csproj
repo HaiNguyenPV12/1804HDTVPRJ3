@@ -111,6 +111,12 @@
     <Content Include="Models\ArsDBModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ArsDBModel.Context.cs</LastGenOutput>
+      <DependentUpon>ArsDBModel.edmx</DependentUpon>
+    </Content>
+    <Content Include="Models\ArsDBModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ArsDBModel.edmx</DependentUpon>
+      <LastGenOutput>ArsDBModel.cs</LastGenOutput>
     </Content>
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
@@ -138,9 +144,9 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>ArsDBModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="Models\ArsDBModel.edmx.diagram">
+    <Content Include="Models\ArsDBModel.edmx.diagram">
       <DependentUpon>ArsDBModel.edmx</DependentUpon>
-    </None>
+    </Content>
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -169,10 +175,24 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Aircraft.cs">
+      <DependentUpon>ArsDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Airline.cs">
+      <DependentUpon>ArsDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Airport.cs">
+      <DependentUpon>ArsDBModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ArsDBModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ArsDBModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ArsDBModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ArsDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ArsDBModel.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -181,6 +201,39 @@
     </Compile>
     <Compile Include="Models\ars\FlightSearch.cs" />
     <Compile Include="Models\ars\Login.cs" />
+    <Compile Include="Models\Country.cs">
+      <DependentUpon>ArsDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CreditCard.cs">
+      <DependentUpon>ArsDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Employee.cs">
+      <DependentUpon>ArsDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Flight.cs">
+      <DependentUpon>ArsDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\FlightDistance.cs">
+      <DependentUpon>ArsDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Order.cs">
+      <DependentUpon>ArsDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Route.cs">
+      <DependentUpon>ArsDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Service.cs">
+      <DependentUpon>ArsDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Ticket.cs">
+      <DependentUpon>ArsDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\TicketService.cs">
+      <DependentUpon>ArsDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\User.cs">
+      <DependentUpon>ArsDBModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
