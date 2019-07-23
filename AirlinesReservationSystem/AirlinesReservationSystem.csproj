@@ -217,6 +217,7 @@
     <Compile Include="Models\Employee.cs">
       <DependentUpon>ArsDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\EmployeeDAO.cs" />
     <Compile Include="Models\Flight.cs">
       <DependentUpon>ArsDBModel.tt</DependentUpon>
     </Compile>
@@ -265,6 +266,8 @@
     <Content Include="Views\Shared\_AdminLayout.cshtml" />
     <Content Include="Views\ARSAdmin\Index.cshtml" />
     <Content Include="Views\ARSAdmin\Route.cshtml" />
+    <Content Include="Views\ARSAdmin\Login.cshtml" />
+    <Content Include="Views\ARSAdmin\Employee.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
