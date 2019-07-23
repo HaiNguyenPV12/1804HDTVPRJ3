@@ -1,0 +1,12 @@
+﻿.flightSearch {
+    color: white;
+    background-color: #616161;
+    margin: auto;
+    border-radius: 0.25em;
+    box-shadow: 0.1em 0.3em 2em 0.1em #888888;
+}
+
+
+.flightSearch-content {
+    padding: 1em;
+}

@@ -3,14 +3,14 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+    <link href="~/Content/ars/index.css" rel="stylesheet" />
 
-<h1>Text for scrolling</h1> <br />
-<h1>Text for scrolling</h1> <br />
-<h1>Text for scrolling</h1> <br />
-<h1>Text for scrolling</h1> <br />
-<h1>Text for scrolling</h1> <br />
-<h1>Text for scrolling</h1> <br />
-<h1>Text for scrolling</h1> <br />
-<h1>Text for scrolling</h1> <br />
-<h1>Text for scrolling</h1> <br />
+    <div class="row flightSearch">
+        <div class="flightSearch-content">
+            @using (Html.BeginForm("FlightList", "ARS", FormMethod.Post, new { @id = "flightSearchForm" }))
+            {
+
+            }
+            TEST
+        </div>
+    </div>
