@@ -120,6 +120,12 @@
     <Content Include="Models\ArsDBModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ArsDBModel.Context.cs</LastGenOutput>
+      <DependentUpon>ArsDBModel.edmx</DependentUpon>
+    </Content>
+    <Content Include="Models\ArsDBModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ArsDBModel.edmx</DependentUpon>
+      <LastGenOutput>ArsDBModel.cs</LastGenOutput>
     </Content>
     <Content Include="Models\ArsDBModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -151,9 +157,9 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>ArsDBModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="Models\ArsDBModel.edmx.diagram">
+    <Content Include="Models\ArsDBModel.edmx.diagram">
       <DependentUpon>ArsDBModel.edmx</DependentUpon>
-    </None>
+    </Content>
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
