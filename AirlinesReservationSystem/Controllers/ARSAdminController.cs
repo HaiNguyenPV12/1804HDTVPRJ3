@@ -60,6 +60,7 @@ namespace AirlinesReservationSystem.Controllers
         public ActionResult EmployeeAdd() => IsAdminLoggedIn() ? PartialView() : (ActionResult)RedirectToAction("Index");
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult EmployeeAdd(Employee newE)
         {
             ModelState.Remove("IsActive");
@@ -77,6 +78,24 @@ namespace AirlinesReservationSystem.Controllers
             return PartialView();
         }
 
+        public ActionResult EmployeeEdit(string id) => IsAdminLoggedIn() && EmployeeDAO.GetEmployee(id) != null ? PartialView(EmployeeDAO.GetEmployee(id)) : (ActionResult)RedirectToAction("Index");
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EmployeeEdit(Employee updateE)
+        {
+            if (ModelState.IsValid)
+            {
+                if (EmployeeDAO.UpdateEmployee(updateE))
+                {
+                    return Content("Success");
+                }
+                ModelState.AddModelError("", "Error updating this employee!");
+            }
+            return PartialView();
+        }
+
+        // ================ CHECK LOGIN ==================
         public bool IsLoggedIn() => Session["employee"] != null;
 
         public bool IsAdminLoggedIn()

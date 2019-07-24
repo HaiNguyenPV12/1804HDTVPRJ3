@@ -1,8 +1,9 @@
 ﻿@model IEnumerable<AirlinesReservationSystem.Models.Employee>
+<h2>Employee <button @*href="/arsadmin/employeeadd"*@ class="btn btn-success" onclick="setModal('add')">Add new Employee</button></h2>
 <table class="table table-bordered table-hover table-sm">
     <tr class="table-ars">
         <th>
-            @Html.DisplayNameFor(model => model.EmpID)
+            ID
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Firstname)
@@ -29,7 +30,7 @@
             @Html.DisplayNameFor(model => model.IsActive)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.ROLE)
+            Role
         </th>
         <th></th>
     </tr>
@@ -66,18 +67,25 @@
                 }
             </td>
             <td>
-                @item.DoB.ToShortDateString().ToString()
+                @item.DoB.ToString("dd/MM/yyyy")
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.IsActive)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ROLE)
+                @if (item.ROLE==0)
+                {
+                    @:Admin
+                }
+                else
+                {
+                    @:Clerk
+                }
             </td>
             <td>
                 @if (((AirlinesReservationSystem.Models.Employee)Session["employee"]).EmpID != item.EmpID || item.ROLE != 0)
                 {
-                    <button class="btn btn-warning" data-toggle="modal" data-target="#modal" onclick="setModal('edit','@item.EmpID')">Edit</button>
+                    <button class="btn btn-warning" onclick="setModal('edit','@item.EmpID')">Edit</button>
                     <button class="btn btn-danger" data-toggle="modal" data-target="#modal" onclick="setModal('delete','@item.EmpID')">Delete</button>
                 }
                 else
