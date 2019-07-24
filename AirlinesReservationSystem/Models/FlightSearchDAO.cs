@@ -24,5 +24,16 @@ namespace AirlinesReservationSystem.Models
                         select new FlightResult { FlightVM = f, RouteVM = r };
             return model;
         }
+
+        public static FlightResult GetFlightResult(string fid, int rid)
+        {
+            var routes = GetRoutes();
+            var flights = GetFlights();
+            var model = (from r in routes
+                        join f in flights on r.RNo equals f.RNo
+                        where r.RNo == rid && f.FNo == fid
+                        select new FlightResult { FlightVM = f, RouteVM = r }).FirstOrDefault();
+            return model;
+        }
     }
 }

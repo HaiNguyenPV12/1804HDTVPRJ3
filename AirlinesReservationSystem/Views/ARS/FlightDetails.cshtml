@@ -1,0 +1,32 @@
+﻿@model AirlinesReservationSystem.Models.ars.FlightResult
+
+@{
+    ViewBag.Title = "FlightDetails";
+}
+
+<h2>FlightDetails</h2>
+
+<div>
+    <table class="table">
+        <tr>
+            <th>Departure Time</th>
+            <th>Arrival Time</th>
+            <th>Flight Time</th>
+            <th>Departure</th>
+            <th>Destination</th>
+            <th>Price</th>
+            <th></th>
+        </tr>
+        <tr>
+            <td>@Model.FlightVM.DepartureTime</td>
+            <td>@Model.FlightVM.ArrivalTime</td>
+            <td>@Model.FlightVM.FlightTime</td>
+            <td>@Model.RouteVM.Departure</td>
+            <td>@Model.RouteVM.Destination</td>
+            <td>@Model.FlightVM.BasePrice</td>
+        </tr>
+    </table>
+</div>
+<p>
+    @Html.ActionLink("Back to List", "Index")
+</p>

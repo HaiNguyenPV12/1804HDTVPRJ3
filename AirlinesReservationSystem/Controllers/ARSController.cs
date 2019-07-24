@@ -41,6 +41,12 @@ namespace AirlinesReservationSystem.Controllers
             return View(model);
         }
 
+        public ActionResult FlightDetails(string fid, int rid)
+        {
+            var model = FlightSearchDAO.GetFlightResult(fid, rid);
+            return View(model);
+        }
+
         public ActionResult TypeAheadDemo() => View();
     }
 }
