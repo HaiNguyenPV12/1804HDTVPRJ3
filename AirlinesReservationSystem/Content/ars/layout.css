@@ -27,3 +27,16 @@ footer {
 .dropdown-item:hover {
     background-color: #ff9933;
 }
+
+
+.btn-ars-dark {
+    background-color: #ff9933 !important;
+}
+
+    .btn-ars-dark:hover {
+        background-color: #ffca64 !important;
+    }
+
+.btn-ars-light {
+    background-color: #ffca64 !important;
+}

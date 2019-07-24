@@ -11,33 +11,12 @@ namespace AirlinesReservationSystem.Controllers
     {
 
         // GET: ARSAdmin
-        public ActionResult Index()
-        {
-            if (IsLoggedIn())
-            {
-                return View();
-            }
-            return RedirectToAction("Login");
-        }
+        public ActionResult Index() => IsLoggedIn() ? View() : (ActionResult)RedirectToAction("Login");
 
-        public ActionResult Route()
-        {
-            if (IsLoggedIn())
-            {
-                return View();
-            }
-            return RedirectToAction("Login");
-        }
+        public ActionResult Route() => IsLoggedIn() ? View() : (ActionResult)RedirectToAction("Login");
 
         // ================ LOGIN ==================
-        public ActionResult Login()
-        {
-            if (!IsLoggedIn())
-            {
-                return View();
-            }
-            return RedirectToAction("Index");
-        }
+        public ActionResult Login() => !IsLoggedIn() ? View() : (ActionResult)RedirectToAction("Index");
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -73,43 +52,12 @@ namespace AirlinesReservationSystem.Controllers
 
 
         // ================ EMPLOYEE ==================
-        public ActionResult Employee()
-        {
-            if (IsAdminLoggedIn())
-            {
-                return View();
-            }
-            return RedirectToAction("Index");
-        }
-        public ActionResult EmployeeList()
-        {
-            if (IsAdminLoggedIn())
-            {
-                return PartialView(EmployeeDAO.GetEmployeeList());
-            }
-            return Content("");
-        }
+        public ActionResult Employee() => IsAdminLoggedIn() ? View() : (ActionResult)RedirectToAction("Index");
+        public ActionResult EmployeeList() => IsAdminLoggedIn() ? PartialView(EmployeeDAO.GetEmployeeList()) : (ActionResult)Content("");
 
-        public ActionResult EmployeeDelete(string id)
-        {
-            if (IsAdminLoggedIn())
-            {
-                if (EmployeeDAO.DeleteEmployee(id))
-                {
-                    return Content("OK");
-                }
-            }
-            return Content("Error");
-        }
+        public ActionResult EmployeeDelete(string id) => IsAdminLoggedIn() && EmployeeDAO.DeleteEmployee(id) ? Content("OK") : Content("Error");
 
-        public ActionResult EmployeeAdd()
-        {
-            if (IsAdminLoggedIn())
-            {
-                return PartialView();
-            }
-            return RedirectToAction("Index");
-        }
+        public ActionResult EmployeeAdd() => IsAdminLoggedIn() ? PartialView() : (ActionResult)RedirectToAction("Index");
 
         [HttpPost]
         public ActionResult EmployeeAdd(Employee newE)
@@ -129,14 +77,7 @@ namespace AirlinesReservationSystem.Controllers
             return PartialView();
         }
 
-        public bool IsLoggedIn()
-        {
-            if (Session["employee"] != null)
-            {
-                return true;
-            }
-            return false;
-        }
+        public bool IsLoggedIn() => Session["employee"] != null;
 
         public bool IsAdminLoggedIn()
         {
