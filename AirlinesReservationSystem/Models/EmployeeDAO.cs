@@ -12,7 +12,7 @@ namespace AirlinesReservationSystem.Models
 
         public static Employee GetEmployee(string EmpID) => db.Employee.FirstOrDefault(e => e.EmpID == EmpID);
 
-        public static IEnumerable<Employee> GetEmployeeList() => db.Employee;
+        public static IEnumerable<Employee> GetEmployeeList() => db.Employee.OrderByDescending(e => e.IsActive);
 
         public static Employee CheckLogin(string EmpID, string Password) => db.Employee.Where(e => e.EmpID.Trim() == EmpID && e.Password == Password).FirstOrDefault();
 
