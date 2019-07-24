@@ -5,8 +5,6 @@
     string modalTitle = "";
 }
 
-<h2>Employee <button class="btn btn-success" data-toggle="modal" data-target="#modal" onclick="setModal('add')">Add new Employee</button></h2>
-
 <div class="col-12" id="employeeList">
 
 
@@ -46,12 +44,15 @@
 
     function setModal(modalType, id) {
         if (modalType == "add") {
-            $("#modalTitle").html("Add new Employee");
-            $("#modalBody").load("/arsadmin/employeeadd");
-            $('#modalBody form').data('validator', null);
+            $("#employeeList").load("/arsadmin/employeeadd");
+            //$('#modalBody form').data('validator', null);
             //$.validator.unobtrusive.parse('#modalBody form');
+        } else if (modalType == "list") {
+            $('#employeeList').load("/arsadmin/employeelist");
         } else if (modalType == "edit") {
-
+            if (id!=null) {
+                $("#employeeList").load("/arsadmin/employeeedit?id="+id);
+            }
         } else if (modalType == "delete") {
             if (id != null) {
                 $("#modalTitle").html("Comfirm delete");

@@ -275,6 +275,7 @@
     <Content Include="Views\ARS\TypeAheadDemo.cshtml" />
     <Content Include="Views\ARSAdmin\EmployeeAdd.cshtml" />
     <Content Include="Views\ARSAdmin\EmployeeList.cshtml" />
+    <Content Include="Views\ARSAdmin\EmployeeEdit.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
