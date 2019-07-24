@@ -10,14 +10,11 @@ namespace AirlinesReservationSystem.Models
     {
         static AirlineDBEntities db = new AirlineDBEntities();
 
-        public static Employee GetEmployee(string EmpID) { return db.Employee.FirstOrDefault(e => e.EmpID == EmpID); }
+        public static Employee GetEmployee(string EmpID) => db.Employee.FirstOrDefault(e => e.EmpID == EmpID);
 
-        public static IEnumerable<Employee> GetEmployeeList() { return db.Employee; }
+        public static IEnumerable<Employee> GetEmployeeList() => db.Employee;
 
-        public static Employee CheckLogin(string EmpID, string Password)
-        {
-            return db.Employee.Where(e => e.EmpID.Trim() == EmpID && e.Password == Password).FirstOrDefault();
-        }
+        public static Employee CheckLogin(string EmpID, string Password) => db.Employee.Where(e => e.EmpID.Trim() == EmpID && e.Password == Password).FirstOrDefault();
 
         public static bool AddEmployee(Employee newE)
         {
