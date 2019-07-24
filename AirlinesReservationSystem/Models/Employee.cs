@@ -19,25 +19,41 @@ namespace AirlinesReservationSystem.Models
         [Key]
         [Display(Name ="Employee ID")]
         public string EmpID { get; set; }
+
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+
         [Required]
+        [StringLength(50)]
         public string Firstname { get; set; }
+
         [Required]
+        [StringLength(50)]
         public string Lastname { get; set; }
+
         [Required]
+        [StringLength(200)]
         public string Address { get; set; }
+
         [Required]
+        [Phone]
         public string Phone { get; set; }
+
         [Required]
+        [EmailAddress]
         public string Email { get; set; }
+
         [Required]
         public bool Sex { get; set; }
+
         [Required]
-        public System.DateTime DoB { get; set; }
+        [DisplayFormat(ApplyFormatInEditMode =true,DataFormatString = "{0:yyyy-MM-dd}")]
+        public DateTime DoB { get; set; }
+
         [Required]
         public bool IsActive { get; set; }
+
         [Required]
         public int ROLE { get; set; }
     }

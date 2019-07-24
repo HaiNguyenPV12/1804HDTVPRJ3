@@ -1,94 +1,80 @@
-﻿@model IEnumerable<AirlinesReservationSystem.Models.Employee>
+﻿
 
 @{
     ViewBag.Title = "Employee";
+    string modalTitle = "";
 }
 
-<h2>Employee @Html.ActionLink("Add new Employee", "AddEmployee", null, new { @class = "btn btn-success" })</h2>
+<h2>Employee <button class="btn btn-success" data-toggle="modal" data-target="#modal" onclick="setModal('add')">Add new Employee</button></h2>
 
-<div class="col-12">
-    <table class="table table-bordered table-hover">
-        <tr class="table-primary">
-            <th>
-                @Html.DisplayNameFor(model => model.EmpID)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Firstname)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Lastname)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Address)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Phone)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Sex)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DoB)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsActive)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ROLE)
-            </th>
-            <th></th>
-        </tr>
+<div class="col-12" id="employeeList">
 
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.EmpID)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Firstname)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Lastname)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Address)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Phone)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    @if (!item.Sex)
-                    {
-                        @:Male
-                    }
-                    else
-                    {
-                        @:Female
-                    }
-                </td>
-                <td>
-                    @item.DoB.ToShortDateString().ToString()
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IsActive)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ROLE)
-                </td>
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.EmpID }, new { @class="btn btn-warning" })
-                    @Html.ActionLink("Delete", "Delete", new {id=item.EmpID }, new { @class="btn btn-danger" })
-                </td>
-            </tr>
-        }
-
-    </table>
 
 </div>
+
+<div class="modal fade" id="modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header bg-ars">
+                <h4 class="modal-title" id="modalTitle">@modalTitle</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" id="modalBody">
+
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success text-hide" data-dismiss="modal" id="btnConfirm">Confirm</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    loadEmpList();
+
+    function loadEmpList() {
+        $("#employeeList").load("/arsadmin/employeelist");
+    }
+
+    function setModal(modalType, id) {
+        if (modalType == "add") {
+            $("#modalTitle").html("Add new Employee");
+            $("#modalBody").load("/arsadmin/employeeadd");
+            $('#modalBody form').data('validator', null);
+            //$.validator.unobtrusive.parse('#modalBody form');
+        } else if (modalType == "edit") {
+
+        } else if (modalType == "delete") {
+            if (id != null) {
+                $("#modalTitle").html("Comfirm delete");
+                $("#modalBody").html("<h3 class='text-danger'>Are you sure to delete employee \"" + id + "\"?</h3>");
+                $("#btnConfirm").removeClass("text-hide");
+                $("#btnConfirm").on("click", function () { deleteEmployee(id); });
+            }
+        } else if (modalType == "") {
+            $("#modalTitle").html("");
+            $("#modalBody").html("");
+        }
+
+    }
+
+    function deleteEmployee(id) {
+        $.post("/arsadmin/employeedelete?id=" + id, function (result) {
+            $('#modal').modal('hide');
+            loadEmpList();
+        });
+    }
+
+    $("#modal").on("hidden.bs.modal", function () {
+        setModal("");
+        $("#btnConfirm").addClass("text-hide");
+    });
+</script>

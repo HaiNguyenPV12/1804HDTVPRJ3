@@ -29,6 +29,7 @@ namespace AirlinesReservationSystem.Controllers
             return RedirectToAction("Login");
         }
 
+        // ================ LOGIN ==================
         public ActionResult Login()
         {
             if (!IsLoggedIn())
@@ -63,20 +64,69 @@ namespace AirlinesReservationSystem.Controllers
             }
             return View();
         }
-
+        // ================ LOGOUT ==================
         public ActionResult Logout()
         {
             Session["employee"] = null;
             return RedirectToAction("Index");
         }
 
+
+        // ================ EMPLOYEE ==================
         public ActionResult Employee()
         {
             if (IsAdminLoggedIn())
             {
-                return View(EmployeeDAO.GetEmployeeList());
+                return View();
             }
             return RedirectToAction("Index");
+        }
+        public ActionResult EmployeeList()
+        {
+            if (IsAdminLoggedIn())
+            {
+                return PartialView(EmployeeDAO.GetEmployeeList());
+            }
+            return Content("");
+        }
+
+        public ActionResult EmployeeDelete(string id)
+        {
+            if (IsAdminLoggedIn())
+            {
+                if (EmployeeDAO.DeleteEmployee(id))
+                {
+                    return Content("OK");
+                }
+            }
+            return Content("Error");
+        }
+
+        public ActionResult EmployeeAdd()
+        {
+            if (IsAdminLoggedIn())
+            {
+                return PartialView();
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public ActionResult EmployeeAdd(Employee newE)
+        {
+            ModelState.Remove("IsActive");
+            ModelState.Remove("ROLE");
+            if (ModelState.IsValid)
+            {
+                newE.IsActive = true;
+                newE.ROLE = 1;
+                if (EmployeeDAO.AddEmployee(newE))
+                {
+                    return Content("Success");
+                }
+                ModelState.AddModelError("", "ID Exists!");
+            }
+            return PartialView();
         }
 
         public bool IsLoggedIn()
