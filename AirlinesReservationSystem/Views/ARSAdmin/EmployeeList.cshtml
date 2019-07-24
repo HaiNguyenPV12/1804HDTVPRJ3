@@ -1,0 +1,93 @@
+﻿@model IEnumerable<AirlinesReservationSystem.Models.Employee>
+<table class="table table-bordered table-hover table-sm">
+    <tr class="table-ars">
+        <th>
+            @Html.DisplayNameFor(model => model.EmpID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Firstname)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Lastname)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Address)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Phone)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Sex)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DoB)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IsActive)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ROLE)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.EmpID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Firstname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Lastname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Phone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @if (item.Sex)
+                {
+                    @:Male
+                }
+                else
+                {
+                    @:Female
+                }
+            </td>
+            <td>
+                @item.DoB.ToShortDateString().ToString()
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsActive)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ROLE)
+            </td>
+            <td>
+                @if (((AirlinesReservationSystem.Models.Employee)Session["employee"]).EmpID != item.EmpID || item.ROLE != 0)
+                {
+                    <button class="btn btn-warning" data-toggle="modal" data-target="#modal" onclick="setModal('edit','@item.EmpID')">Edit</button>
+                    <button class="btn btn-danger" data-toggle="modal" data-target="#modal" onclick="setModal('delete','@item.EmpID')">Delete</button>
+                }
+                else
+                {
+                    <button class="btn btn-secondary">Edit</button>
+                    <button class="btn btn-secondary">Delete</button>
+                }
+
+            </td>
+        </tr>
+    }
+
+</table>

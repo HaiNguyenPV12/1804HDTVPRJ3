@@ -4,8 +4,34 @@
 }
 
     .list-group-item-ars.active {
-        color: #fff;
-        background-color: #ff9933;
-        border-color: #ffca64;
-        font-weight:bold;
+        color: #000;
+        background-color: #ffca64;
+        border-color: #ff9933;
+        font-weight: bold;
     }
+
+.table-ars,
+.table-ars > th,
+.table-ars > td {
+    background-color: #ffca64;
+}
+
+    .table-ars th,
+    .table-ars td,
+    .table-ars thead th,
+    .table-ars tbody + tbody {
+        border-color: #ff9933;
+    }
+
+.table-hover .table-ars:hover {
+    background-color: #fcb269;
+}
+
+    .table-hover .table-ars:hover > td,
+    .table-hover .table-ars:hover > th {
+        background-color: #fcb269;
+    }
+
+.bg-ars {
+    background-color: #ffca64;
+}
