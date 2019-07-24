@@ -24,5 +24,7 @@ namespace AirlinesReservationSystem.Models.ars
         public int Children { get; set; }
 
         public int Senior { get; set; }
+
+        public bool IsRoundTrip { get; set; }
     }
 }

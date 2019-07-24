@@ -1,4 +1,4 @@
-﻿
+﻿@model AirlinesReservationSystem.Models.ars.FlightSearch
 @{
     ViewBag.Title = "Index";
 }
@@ -9,18 +9,48 @@
 <div class="row flightSearch">
     <div class="flightSearch-content">
         <h3>Search for flights</h3>
-
         @using (Html.BeginForm("FlightList", "ARS", FormMethod.Post, new { @id = "flightSearchForm" }))
         {
             <div class="btn-group btn-group-toggle" data-toggle="buttons">
                 <label class="btn btn-secondary active">
-                    <input type="radio" name="options" id="optionOneWay" autocomplete="off" checked> One way
+                    <input type="radio" name="IsRoundTrip" id="optionOneWay" autocomplete="off" checked value="1"> One way
                 </label>
                 <label class="btn btn-secondary">
-                    <input type="radio" name="options" id="optionRoundTrip" autocomplete="off"> Roundtrip
+                    <input type="radio" name="IsRoundTrip" id="optionRoundTrip" autocomplete="off" value="0">Roundtrip
                 </label>
             </div>
-
+            <div class="container-fluid">
+                <div class="form-group row">
+                    <div class="col-md-4 row">
+                        <label class="col-form-label">From: </label>
+                        <input type="text" name="Departure" value="" class="form-control col-md" />
+                    </div>
+                    <!--reverse button-->
+                    <div class="col-md-4 row mx-auto">
+                        <button type="button" class="btn btn-light mx-auto">swap</button>
+                    </div>
+                    <div class="col-md-4 row">
+                        <label class="col-form-label">To: </label>
+                        <input type="text" name="Destination" value="" class="form-control col-md" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-form-label">Departing:</label>
+                    <input type="date" name="DepartureTime" value="" class="form-control col-md-3" />
+                </div>
+                <h5 class="row">Travelers:</h5>
+                <div class="form-group row">
+                    <label class="col-form-label">Adults:</label>
+                    <input type="number" name="Adult" value="" class="form-control col-md-1" placeholder="1" />
+                    <label class="col-form-label">Children:</label>
+                    <input type="number" name="Children" value="" class="form-control col-md-1" placeholder="0" />
+                    <label class="col-form-label">Seniors:</label>
+                    <input type="number" name="Senior" value="" class="form-control col-md-1" placeholder="0" />
+                </div>
+                <div class="row">
+                    <button type="submit" class="btn btn-ars-dark">Search</button>
+                </div>
+            </div>
         }
     </div>
 
