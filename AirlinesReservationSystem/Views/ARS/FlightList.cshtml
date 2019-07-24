@@ -1,0 +1,35 @@
+﻿@model IEnumerable<AirlinesReservationSystem.Models.ars.FlightResult>
+
+@{
+    ViewBag.Title = "FlightList";
+}
+
+<h2>FlightList</h2>
+
+<table class="table">
+    <tr>
+        <th>Departure Time</th>
+        <th>Arrival Time</th>
+        <th>Flight Time</th>
+        <th>Departure</th>
+        <th>Destination</th>
+        <th>Price</th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.FlightVM.DepartureTime</td>
+            <td>@item.FlightVM.ArrivalTime</td>
+            <td>@item.FlightVM.FlightTime</td>
+            <td>@item.RouteVM.Departure</td>
+            <td>@item.RouteVM.Destination</td>
+            <td>@item.FlightVM.BasePrice</td>
+            <td>
+                @Html.ActionLink("Details", "FlightDetails", new { fid = item.FlightVM.FNo, rid = item.RouteVM.RNo })
+            </td>
+        </tr>
+    }
+
+</table>
