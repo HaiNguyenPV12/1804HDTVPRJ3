@@ -24,7 +24,7 @@ namespace AirlinesReservationSystem.Controllers
         {
             ModelState.Remove("Firstname");
             ModelState.Remove("Lastname");
-            ModelState.Remove("Address");
+            ModelState.Remove("Address");   
             ModelState.Remove("Phone");
             ModelState.Remove("Email");
             ModelState.Remove("Sex");
@@ -33,7 +33,7 @@ namespace AirlinesReservationSystem.Controllers
             ModelState.Remove("ROLE");
             if (ModelState.IsValid)
             {
-                var e = EmployeeDAO.CheckLogin(emp.EmpID, emp.Password);
+                var e = EmployeeDAO.CheckLogin(emp.EmpID, emp.Password);    
                 if (e != null)
                 {
                     Session["employee"] = e;
