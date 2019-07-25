@@ -11,7 +11,8 @@ namespace AirlinesReservationSystem.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Service
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -19,11 +20,20 @@ namespace AirlinesReservationSystem.Models
         {
             this.TicketService = new HashSet<TicketService>();
         }
-    
+
+        [Required]
         public string ServiceID { get; set; }
+
+        [Required]
         public string ServiceName { get; set; }
+
+        [Required]
         public string ServiceDetails { get; set; }
+
+        [Required]
         public double ServiceFee { get; set; }
+
+        [Required]
         public bool IsServing { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
