@@ -348,3 +348,4 @@ healthchecksdb
 MigrationBackup/
 AirlinesReservationSystem/bin/AirlinesReservationSystem.dll
 AirlinesReservationSystem/bin/AirlinesReservationSystem.dll
+AirlinesReservationSystem/Web.config
