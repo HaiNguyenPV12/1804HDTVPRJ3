@@ -1,131 +1,73 @@
-﻿@model AirlinesReservationSystem.Models.Employee
+﻿@model List<AirlinesReservationSystem.Models.Employee>
 
-<script src="~/Scripts/jquery.validate.min.js" type="text/javascript"></script>
-<script src="~/Scripts/jquery.validate.unobtrusive.min.js" type="text/javascript"></script>
-<script src="~/Scripts/jquery.unobtrusive-ajax.min.js" type="text/javascript"></script>
 
-<h2>Employee - Add new Employee <button class="btn btn-warning" onclick="setModal('list')">Back to list</button></h2>
-<div class="container">
 
-    @using (Ajax.BeginForm("employeeadd", "arsadmin",
-        new AjaxOptions
-        {
-            // UpdateTargetId = "modalBody",
-            //InsertionMode = InsertionMode.Replace,
-            OnSuccess = "OnFormSubmit",
-            HttpMethod = "Post"
-        },
+<h2>Employee - Add new Employee <a href="/arsadmin/employee" class="btn btn-warning" @*onclick="setModal('list')*@ ">Back to list</a></h2>
+<div class="container" id="EmployeeAdd">
+
+    @using (Html.BeginForm("employeeadd", "arsadmin",
+        //    new AjaxOptions
+        //    {
+        //// UpdateTargetId = "modalBody",
+        ////InsertionMode = InsertionMode.Replace,
+        //OnBegin = "OnFormBegin",
+        //        OnSuccess = "OnFormSubmit",
+        //        HttpMethod = "Post"
+        //    },
+        FormMethod.Post,
         new { @id = "frmEmployeeAdd" }))
     {
         @Html.AntiForgeryToken()
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+        <div id="EmployeeAddList" class="container">
 
-        <div>
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-            <div class="form-group form-inline" style="">
-                @Html.LabelFor(model => model.EmpID, htmlAttributes: new { @class = "control-label col-md-2", @style = "text-align:right" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.EmpID, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
-                </div>
-                <div class="col-md-2"></div>
-                <div class="col-md-10">@Html.ValidationMessageFor(model => model.EmpID, "", new { @class = "text-danger" })</div>
-            </div>
-
-            <div class="form-group form-inline">
-                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" },@type="password" })
-                </div>
-                <div class="col-md-2"></div>
-                <div class="col-md-10">@Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })</div>
-            </div>
-
-            <div class="form-group form-inline">
-                @Html.LabelFor(model => model.Firstname, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-4">
-                    @Html.EditorFor(model => model.Firstname, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
-                </div>
-                @Html.LabelFor(model => model.Lastname, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-4">
-                    @Html.EditorFor(model => model.Lastname, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
-                </div>
-                <div class="col-md-2"></div>
-                <div class="col-md-4">@Html.ValidationMessageFor(model => model.Firstname, "", new { @class = "text-danger" })</div>
-                <div class="col-md-2"></div>
-                <div class="col-md-4">@Html.ValidationMessageFor(model => model.Lastname, "", new { @class = "text-danger" })</div>
-            </div>
-
-            <div class="form-group form-inline">
-                @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
-                </div>
-                <div class="col-md-2"></div>
-                <div class="col-md-10">@Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })</div>
-            </div>
-
-            <div class="form-group form-inline">
-                @Html.LabelFor(model => model.Phone, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
-                </div>
-                <div class="col-md-2"></div>
-                <div class="col-md-10">@Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })</div>
-            </div>
-
-            <div class="form-group form-inline">
-                @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
-                </div>
-                <div class="col-md-2"></div>
-                <div class="col-md-10">@Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })</div>
-            </div>
-
-            <div class="form-group form-inline">
-                @Html.LabelFor(model => model.Sex, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    <div class="form-check-inline">
-                        <label class="form-check-label">
-                            @Html.RadioButtonFor(model => model.Sex, true, new { @checked = true }) Male
-                        </label>
-                    </div>
-                    <div class="form-check-inline">
-                        <label class="form-check-label">
-                            @Html.RadioButtonFor(model => model.Sex, false) Female
-                        </label>
-                    </div>
-                </div>
-                <div class="col-md-2"></div>
-                <div class="col-md-10">
-                    @Html.ValidationMessageFor(model => model.Sex, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group form-inline">
-                @Html.LabelFor(model => model.DoB, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.TextBoxFor(model => model.DoB, new { @class = "form-control", @style = "width:100%", @type = "date" })
-                    @Html.ValidationMessageFor(model => model.DoB, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group form-inline">
-                <div class="col-md-2"></div>
-                <div class="col-md-10">
-                    <input type="submit" value="Add this Employee" class="btn btn-success" id="btnEmployeeAdd" />
-                    <input type="reset" value="Reset" class="btn btn-warning" />
-                </div>
-            </div>
         </div>
+        <button type="button" class="btn btn-success" id="btnAddAppend">Add another</button>
+        <input type="submit" value="Add this Employee" class="btn btn-success" id="btnEmployeeAdd" />
     }
+
+
 </div>
+
+@*<script src="~/Scripts/jquery-3.4.1.js"></script>*@
+@*<script src="~/Scripts/jquery.validate.min.js" type="text/javascript"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js" type="text/javascript"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js" type="text/javascript"></script>*@
+
 <script>
-    function OnFormSubmit(result, status, xhr) {
-        if (result == "Success") {
-            $('#employeeList').load("/arsadmin/employeelist");
-        } else {
-            $('#employeeList').html(result);
+
+    //function OnFormBegin() {
+    //    $("#frmEmployeeAdd input").prop('disabled', true);
+    //}
+
+    //function OnFormSubmit(result, status, xhr) {
+    //    if (result == "Success") {
+    //        //$('#employeeList').load("/arsadmin/employeelist");
+    //        setModal("list");
+    //    } else {
+    //        $('#employeeList').html(result);
+    //    }
+    //}
+
+    $(document).ready(function () {
+        var i = 0;
+        var formData = new FormData();
+        appendForm();
+        i = i + 1;
+        function appendForm() {
+            $.post("/arsadmin/employeeaddtemplate?index=" + i, function (result) {
+                $("#EmployeeAddList").append(result);
+            });
         }
-    }
+
+        $("#btnAddAppend").click(function () {
+            appendForm();
+            i = i + 1;
+        })
+
+
+    });
+    //$('#EmployeeAdd').change(function () {
+    //    $.validator.unobtrusive.parse("#frmEmployeeAdd");
+    //});
 </script>
