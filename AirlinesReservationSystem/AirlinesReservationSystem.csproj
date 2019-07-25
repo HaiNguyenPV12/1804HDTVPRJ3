@@ -283,6 +283,7 @@
     <Content Include="Views\ARSAdmin\EmployeeAddTemplate.cshtml" />
     <Content Include="Views\ARS\FlightDetails.cshtml" />
     <Content Include="Views\ARSAdmin\Service.cshtml" />
+    <Content Include="Views\ARSAdmin\ServiceAdd.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
