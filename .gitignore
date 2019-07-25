@@ -348,6 +348,3 @@ healthchecksdb
 MigrationBackup/
 AirlinesReservationSystem/bin/AirlinesReservationSystem.dll
 AirlinesReservationSystem/bin/AirlinesReservationSystem.dll
-
-[branch "Dung-change"]
-excludesfile = +AirlinesReservationSystem/Web.config
