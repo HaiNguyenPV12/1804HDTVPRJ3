@@ -22,6 +22,9 @@ namespace AirlinesReservationSystem.Models
     
         public string FNo { get; set; }
         public int RNo { get; set; }
+        public Nullable<int> AvailSeatsF { get; set; }
+        public Nullable<int> AvailSeatsB { get; set; }
+        public int AvailSeatsE { get; set; }
         public System.DateTime DepartureTime { get; set; }
         public System.DateTime ArrivalTime { get; set; }
         public double FlightTime { get; set; }
