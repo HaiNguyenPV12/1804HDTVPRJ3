@@ -16,15 +16,28 @@ namespace AirlinesReservationSystem.Controllers
         public ActionResult Login() => View();
 
         [HttpPost]
-        public ActionResult Login(Login login)
+        public ActionResult Login(User login)
         {
+            ModelState.Remove("Firstname");
+            ModelState.Remove("Lastname");
+            ModelState.Remove("Address");
+            ModelState.Remove("Phone");
+            ModelState.Remove("Email");
+            ModelState.Remove("Sex");
+            ModelState.Remove("Age");
+            ModelState.Remove("CCNo");
+            ModelState.Remove("PassportNo_");
+            ModelState.Remove("Skymiles");
             if (ModelState.IsValid)
             {
-                var user = login; //TODO get user from database and check password 
-                Session["user"] = user;
-                return RedirectToAction("Index"); //TODO redirect to previous page instead of home
+                var user = UsersDAO.CheckLogin(login.UserID, login.Password); //TODO get user from database and check password 
+                if (user != null)
+                {
+                    Session["user"] = user;
+                    return RedirectToAction("Index"); //TODO redirect to previous page instead of home
+                }
+                ModelState.AddModelError("", "Invalid login information");
             }
-            ModelState.AddModelError("", "Invalid login information");
             return View();
         }
 
@@ -48,5 +61,21 @@ namespace AirlinesReservationSystem.Controllers
         }
 
         public ActionResult TypeAheadDemo() => View();
+
+        public ActionResult Register() => View();
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Register(User newU)
+        {
+            if (ModelState.IsValid)
+            {
+                if (UsersDAO.AddUser(newU))
+                {
+                    return RedirectToAction("Login");
+                }
+                ModelState.AddModelError("", "Register Error");
+            }
+            return View();
+        }
     }
 }
