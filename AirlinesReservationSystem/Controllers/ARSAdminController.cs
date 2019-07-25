@@ -116,7 +116,7 @@ namespace AirlinesReservationSystem.Controllers
 
         // ================ SERVICE ==================
 
-        public ActionResult Service() => IsAdminLoggedIn() ? View() : (ActionResult)RedirectToAction("Index");
+        public ActionResult Service() => IsAdminLoggedIn() ? View(ServiceDAO.GetServiceList()) : (ActionResult)RedirectToAction("Index");
 
         // ================ CHECK LOGIN ==================
         public bool IsLoggedIn() => Session["employee"] != null;

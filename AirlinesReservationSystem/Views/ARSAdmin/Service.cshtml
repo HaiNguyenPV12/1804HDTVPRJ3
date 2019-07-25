@@ -1,0 +1,56 @@
+﻿@model IEnumerable<AirlinesReservationSystem.Models.Service>
+
+@{
+    ViewBag.Title = "Service";
+}
+
+<h2>Service <a href="/arsadmin/serviceadd" class="btn btn-success">Add new Service</a></h2>
+
+<table class="table table-bordered table-hover table-sm">
+    <tr class="table-ars">
+        <th>
+            @Html.DisplayNameFor(model => model.ServiceName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ServiceDetails)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ServiceFee)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IsServing)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ServiceName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ServiceDetails)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ServiceFee)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsServing)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.ServiceID }, new { @class = "btn btn-warning" })
+                @if (item.IsServing)
+                {
+                    <button type="button" class="btn btn-secondary">Delete</button>
+                }
+                else
+                {
+                    @Html.ActionLink("Delete", "Delete", new { id = item.ServiceID },new { @class="btn btn-danger"})
+                }
+
+            </td>
+        </tr>
+    }
+
+</table>

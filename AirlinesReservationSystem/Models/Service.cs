@@ -22,20 +22,28 @@ namespace AirlinesReservationSystem.Models
         }
 
         [Required]
+        [Key]
+        [RegularExpression("S\\d{2}")]
+        [Display(Name ="Service ID")]
         public string ServiceID { get; set; }
 
         [Required]
+        [StringLength(50, MinimumLength = 3)]
+        [Display(Name = "Service Name")]
         public string ServiceName { get; set; }
 
-        [Required]
+        [Display(Name = "Service Details")]
         public string ServiceDetails { get; set; }
 
         [Required]
+        [Display(Name = "Service Fee")]
+        [Range(5,10000)]
         public double ServiceFee { get; set; }
 
         [Required]
+        [Display(Name = "Service Active")]
         public bool IsServing { get; set; }
-    
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TicketService> TicketService { get; set; }
     }
