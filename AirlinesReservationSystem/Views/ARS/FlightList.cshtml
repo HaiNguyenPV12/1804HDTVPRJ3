@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "FlightList";
+    bool roundTrip = bool.Parse(ViewBag.RoundTrip.ToString());
 }
 
 <h2>FlightList</h2>
@@ -26,6 +27,12 @@
             <td>@item.RouteVM.Departure</td>
             <td>@item.RouteVM.Destination</td>
             <td>@item.FlightVM.BasePrice</td>
+            @if (roundTrip)
+            {
+                <td>
+                    <button class="btn btn-light">add as 1st trip</button>
+                </td>
+            }
             <td>
                 @Html.ActionLink("Details", "FlightDetails", new { fid = item.FlightVM.FNo, rid = item.RouteVM.RNo })
             </td>

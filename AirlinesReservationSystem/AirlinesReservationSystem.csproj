@@ -212,6 +212,7 @@
     </Compile>
     <Compile Include="Models\ars\FlightResult.cs" />
     <Compile Include="Models\ars\FlightSearch.cs" />
+    <Compile Include="Models\ars\FlightSearchDetails.cs" />
     <Compile Include="Models\ars\UsersDAO.cs" />
     <Compile Include="Models\Country.cs">
       <DependentUpon>ArsDBModel.tt</DependentUpon>

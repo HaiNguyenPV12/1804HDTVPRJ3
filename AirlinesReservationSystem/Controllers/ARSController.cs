@@ -13,6 +13,24 @@ namespace AirlinesReservationSystem.Controllers
         // GET: Home
         public ActionResult Index() => View();
 
+        [HttpPost]
+        public ActionResult Index(FlightSearch flightSearch)
+        {
+            int totalPassenger = flightSearch.Adult + flightSearch.Children + flightSearch.Senior;
+            if (ModelState.IsValid && totalPassenger > 0)
+            {
+                Session["searchParams"] = flightSearch;
+                return RedirectToAction("FlightList", flightSearch);
+            }
+            else
+            {
+                if (totalPassenger <= 0)
+                    ModelState.AddModelError("", "Passengers numbers are invalid");
+                ModelState.AddModelError("", "Please enter required values");
+            }
+            return View(flightSearch);
+        }
+
         public ActionResult Login() => View();
 
         [HttpPost]
@@ -47,11 +65,32 @@ namespace AirlinesReservationSystem.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpPost]
+
         public ActionResult FlightList(FlightSearch flightSearch)
         {
+            if (flightSearch.IsRoundTrip)
+            {
+                ViewBag.RoundTrip = true;
+            }
             var model = FlightSearchDAO.GetFlightResults(flightSearch);
             return View(model);
+        }
+
+        public ActionResult FlightListReturn(FlightSearch flightSearch)
+        {
+            var roundTripEnd = flightSearch.Departure;
+            var roundTripStart = flightSearch.Destination;
+            flightSearch.Departure = roundTripStart;
+            flightSearch.Destination = roundTripEnd;
+            flightSearch.DepartureTime = flightSearch.ReturnDepartureTime;
+            var model = FlightSearchDAO.GetFlightResults(flightSearch);
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult FlightList(FlightSearchDetails flightSearchDetails)
+        {
+            return View();
         }
 
         public ActionResult FlightDetails(string fid, int rid)
