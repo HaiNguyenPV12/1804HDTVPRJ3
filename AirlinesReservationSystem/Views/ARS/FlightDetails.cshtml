@@ -1,0 +1,53 @@
+﻿@model AirlinesReservationSystem.Models.ars.FlightResult
+
+@{
+    ViewBag.Title = "FlightDetails";
+    bool fcs = false, bs = false;
+    if (Model.RouteVM.AvailSeatsF >= 0) { fcs = true; }
+    if (Model.RouteVM.AvailSeatsB >= 0) { bs = true; }
+}
+
+<h2>FlightDetails</h2>
+
+<div>
+    <table class="table">
+        <tr>
+            <th>Departure Time</th>
+            <th>Arrival Time</th>
+            <th>Flight Time</th>
+            <th>Departure</th>
+            <th>Destination</th>
+            @if (fcs)
+            {
+                <th>FC Seats</th>
+            }
+            @if (bs)
+            {
+                <th>Business Seats</th>
+            }
+            <th>Economy Seats</th>
+            <th>Price</th>
+            <th></th>
+        </tr>
+        <tr>
+            <td>@Model.FlightVM.DepartureTime</td>
+            <td>@Model.FlightVM.ArrivalTime</td>
+            <td>@Model.FlightVM.FlightTime</td>
+            <td>@Model.RouteVM.Departure</td>
+            <td>@Model.RouteVM.Destination</td>
+            @if (fcs)
+            {
+                <td>@Model.RouteVM.AvailSeatsF</td>
+            }
+            @if (bs)
+            {
+                <td>@Model.RouteVM.AvailSeatsB</td>
+            }
+            <td>@Model.RouteVM.AvailSeatsE</td>
+            <td>@Model.FlightVM.BasePrice</td>
+        </tr>
+    </table>
+</div>
+<p>
+    @Html.ActionLink("Back to List", "Index")
+</p>

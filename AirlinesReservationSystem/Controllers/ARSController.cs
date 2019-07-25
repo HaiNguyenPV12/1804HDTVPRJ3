@@ -1,4 +1,5 @@
-﻿using AirlinesReservationSystem.Models.ars;
+﻿using AirlinesReservationSystem.Models;
+using AirlinesReservationSystem.Models.ars;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,8 +37,14 @@ namespace AirlinesReservationSystem.Controllers
         [HttpPost]
         public ActionResult FlightList(FlightSearch flightSearch)
         {
-            //var flights = from flightAndRoutes in db
-            return View();
+            var model = FlightSearchDAO.GetFlightResults(flightSearch);
+            return View(model);
+        }
+
+        public ActionResult FlightDetails(string fid, int rid)
+        {
+            var model = FlightSearchDAO.GetFlightResult(fid, rid);
+            return View(model);
         }
 
         public ActionResult TypeAheadDemo() => View();

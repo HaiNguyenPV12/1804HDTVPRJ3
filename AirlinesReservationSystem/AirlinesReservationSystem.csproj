@@ -210,6 +210,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ArsDBModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\ars\FlightResult.cs" />
     <Compile Include="Models\ars\FlightSearch.cs" />
     <Compile Include="Models\ars\Login.cs" />
     <Compile Include="Models\Country.cs">
@@ -228,6 +229,7 @@
     <Compile Include="Models\FlightDistance.cs">
       <DependentUpon>ArsDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\FlightSearchDAO.cs" />
     <Compile Include="Models\Order.cs">
       <DependentUpon>ArsDBModel.tt</DependentUpon>
     </Compile>
@@ -275,8 +277,10 @@
     <Content Include="Views\ARS\TypeAheadDemo.cshtml" />
     <Content Include="Views\ARSAdmin\EmployeeAdd.cshtml" />
     <Content Include="Views\ARSAdmin\EmployeeList.cshtml" />
+    <Content Include="Views\ARS\FlightList.cshtml" />
     <Content Include="Views\ARSAdmin\EmployeeEdit.cshtml" />
     <Content Include="Views\ARSAdmin\EmployeeAddTemplate.cshtml" />
+    <Content Include="Views\ARS\FlightDetails.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
