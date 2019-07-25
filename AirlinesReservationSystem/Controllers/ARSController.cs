@@ -16,6 +16,7 @@ namespace AirlinesReservationSystem.Controllers
         [HttpPost]
         public ActionResult Index(FlightSearch flightSearch)
         {
+            Session["searchParams"] = flightSearch;
             int totalPassenger = flightSearch.Adult + flightSearch.Children + flightSearch.Senior;
             if (ModelState.IsValid && totalPassenger > 0)
             {
