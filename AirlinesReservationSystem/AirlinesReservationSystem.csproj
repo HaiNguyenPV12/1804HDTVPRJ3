@@ -230,7 +230,6 @@
       <DependentUpon>ArsDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\FlightSearchDAO.cs" />
-    <Compile Include="Models\Metadata.cs" />
     <Compile Include="Models\Order.cs">
       <DependentUpon>ArsDBModel.tt</DependentUpon>
     </Compile>
