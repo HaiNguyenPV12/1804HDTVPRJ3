@@ -17,7 +17,7 @@ namespace AirlinesReservationSystem.Models
     {
         [Required]
         [Key]
-        [Display(Name ="Employee ID")]
+        [Display(Name = "Employee ID")]
         [StringLength(50)]
         public string EmpID { get; set; }
 
@@ -49,7 +49,7 @@ namespace AirlinesReservationSystem.Models
         public bool Sex { get; set; }
 
         [Required]
-        [DisplayFormat(ApplyFormatInEditMode =true,DataFormatString = "{0:yyyy-MM-dd}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         [Display(Name = "Birthday")]
         public DateTime DoB { get; set; }
 
@@ -58,6 +58,6 @@ namespace AirlinesReservationSystem.Models
         public bool IsActive { get; set; }
 
         [Required]
-        public int ROLE { get; set; }
+        public int Role { get; set; }
     }
 }

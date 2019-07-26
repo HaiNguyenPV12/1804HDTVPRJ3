@@ -80,11 +80,11 @@ namespace AirlinesReservationSystem.Controllers
                 if (ModelState.IsValid)
                 {
                     e.IsActive = true;
-                    e.ROLE = 1;
+                    e.Role = 1;
                     if (EmployeeDAO.AddEmployee(e))
                     {
                         if (e == newEs.Last())
-                            return Content("Success");     
+                            return Content("Success");
                     }
                     else
                     {
@@ -116,7 +116,41 @@ namespace AirlinesReservationSystem.Controllers
 
         // ================ SERVICE ==================
 
-        public ActionResult Service() => IsAdminLoggedIn() ? View() : (ActionResult)RedirectToAction("Index");
+        public ActionResult Service() => IsLoggedIn() ? View(ServiceDAO.GetServiceList()) : (ActionResult)RedirectToAction("Index");
+
+        public ActionResult ServiceDelete(string id) => IsLoggedIn() && ServiceDAO.DeleteService(id) ? Content("OK") : Content("Error");
+
+        public ActionResult ServiceAdd()
+        {
+            if (IsLoggedIn())
+            {
+                ViewBag.ServiceID = ServiceDAO.GetNextServiceID();
+                return View();
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ServiceAdd(Service newS)
+        {
+            ModelState.Remove("IsServing");
+
+            if (ModelState.IsValid)
+            {
+                newS.IsServing = true;
+                if (ServiceDAO.AddService(newS))
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "This service ID is exists!");
+                }
+            }
+            ViewBag.ServiceID = ServiceDAO.GetNextServiceID();
+            return View();
+        }
 
         // ================ CHECK LOGIN ==================
         public bool IsLoggedIn() => Session["employee"] != null;
@@ -126,7 +160,7 @@ namespace AirlinesReservationSystem.Controllers
             Employee e = (Employee)Session["employee"];
             if (e != null)
             {
-                if (e.ROLE == 0)
+                if (e.Role == 0)
                 {
                     return true;
                 }

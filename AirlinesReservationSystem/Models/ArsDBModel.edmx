@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="AirlineDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="AirlineDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Aircraft">
           <Key>
             <PropertyRef Name="AircraftID" />
@@ -67,7 +67,7 @@
           <Property Name="Sex" Type="bit" Nullable="false" />
           <Property Name="DoB" Type="datetime" Nullable="false" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
-          <Property Name="ROLE" Type="int" Nullable="false" />
+          <Property Name="Role" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Flight">
           <Key>
@@ -75,6 +75,9 @@
           </Key>
           <Property Name="FNo" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="RNo" Type="int" Nullable="false" />
+          <Property Name="AvailSeatsF" Type="int" />
+          <Property Name="AvailSeatsB" Type="int" />
+          <Property Name="AvailSeatsE" Type="int" Nullable="false" />
           <Property Name="DepartureTime" Type="datetime" Nullable="false" />
           <Property Name="ArrivalTime" Type="datetime" Nullable="false" />
           <Property Name="FlightTime" Type="float" Nullable="false" />
@@ -95,7 +98,7 @@
           </Key>
           <Property Name="OrderID" Type="bigint" Nullable="false" />
           <Property Name="UserID" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="STATUS" Type="int" Nullable="false" />
+          <Property Name="Status" Type="int" Nullable="false" />
           <Property Name="OrderDate" Type="datetime" Nullable="false" />
           <Property Name="Total" Type="float" Nullable="false" />
         </EntityType>
@@ -106,9 +109,6 @@
           <Property Name="RNo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="RAirline" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="RAircraft" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="AvailSeatsF" Type="int" />
-          <Property Name="AvailSeatsB" Type="int" />
-          <Property Name="AvailSeatsE" Type="int" Nullable="false" />
           <Property Name="Departure" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="Destination" Type="varchar" MaxLength="10" Nullable="false" />
         </EntityType>
@@ -403,8 +403,7 @@
             <End Role="TicketService" EntitySet="TicketService" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="AirlineDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -480,7 +479,7 @@
           <Property Name="Sex" Type="Boolean" Nullable="false" />
           <Property Name="DoB" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <Property Name="ROLE" Type="Int32" Nullable="false" />
+          <Property Name="Role" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Flight">
           <Key>
@@ -488,13 +487,16 @@
           </Key>
           <Property Name="FNo" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="RNo" Type="Int32" Nullable="false" />
+          <Property Name="AvailSeatsF" Type="Int32" Nullable="true" />
+          <Property Name="AvailSeatsB" Type="Int32" Nullable="true" />
+          <Property Name="AvailSeatsE" Type="Int32" Nullable="false" />
           <Property Name="DepartureTime" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ArrivalTime" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="FlightTime" Type="Double" Nullable="false" />
           <Property Name="BasePrice" Type="Double" Nullable="false" />
           <NavigationProperty Name="Route" Relationship="Self.FK_Flight_Route_RNo" FromRole="Flight" ToRole="Route" />
           <NavigationProperty Name="Ticket" Relationship="Self.FK_Ticket_FNo_Flight_FNo" FromRole="Flight" ToRole="Ticket" />
-        </EntityType>
+          </EntityType>
         <EntityType Name="FlightDistance">
           <Key>
             <PropertyRef Name="ID" />
@@ -512,11 +514,11 @@
           </Key>
           <Property Name="OrderID" Type="Int64" Nullable="false" />
           <Property Name="UserID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="STATUS" Type="Int32" Nullable="false" />
           <Property Name="OrderDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Total" Type="Double" Nullable="false" />
           <NavigationProperty Name="User" Relationship="Self.FK_Order_UserID_User_UserID" FromRole="Order" ToRole="User" />
           <NavigationProperty Name="Ticket" Relationship="Self.FK_Ticket_OrderID_Order_OrderID" FromRole="Order" ToRole="Ticket" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Route">
           <Key>
@@ -525,9 +527,6 @@
           <Property Name="RNo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="RAirline" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="RAircraft" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="AvailSeatsF" Type="Int32" />
-          <Property Name="AvailSeatsB" Type="Int32" />
-          <Property Name="AvailSeatsE" Type="Int32" Nullable="false" />
           <Property Name="Departure" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Destination" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="Aircraft" Relationship="Self.FK_Route_RAircraft_Aircraft_AircraftID" FromRole="Route" ToRole="Aircraft" />
@@ -896,6 +895,7 @@
           <EntitySetMapping Name="Employee">
             <EntityTypeMapping TypeName="AirlineDBModel.Employee">
               <MappingFragment StoreEntitySet="Employee">
+                <ScalarProperty Name="Role" ColumnName="Role" />
                 <ScalarProperty Name="EmpID" ColumnName="EmpID" />
                 <ScalarProperty Name="Password" ColumnName="Password" />
                 <ScalarProperty Name="Firstname" ColumnName="Firstname" />
@@ -906,13 +906,15 @@
                 <ScalarProperty Name="Sex" ColumnName="Sex" />
                 <ScalarProperty Name="DoB" ColumnName="DoB" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="ROLE" ColumnName="ROLE" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Flight">
             <EntityTypeMapping TypeName="AirlineDBModel.Flight">
               <MappingFragment StoreEntitySet="Flight">
+                <ScalarProperty Name="AvailSeatsE" ColumnName="AvailSeatsE" />
+                <ScalarProperty Name="AvailSeatsB" ColumnName="AvailSeatsB" />
+                <ScalarProperty Name="AvailSeatsF" ColumnName="AvailSeatsF" />
                 <ScalarProperty Name="FNo" ColumnName="FNo" />
                 <ScalarProperty Name="RNo" ColumnName="RNo" />
                 <ScalarProperty Name="DepartureTime" ColumnName="DepartureTime" />
@@ -935,9 +937,9 @@
           <EntitySetMapping Name="Order">
             <EntityTypeMapping TypeName="AirlineDBModel.Order">
               <MappingFragment StoreEntitySet="Order">
+                <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="OrderID" ColumnName="OrderID" />
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
-                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
                 <ScalarProperty Name="OrderDate" ColumnName="OrderDate" />
                 <ScalarProperty Name="Total" ColumnName="Total" />
               </MappingFragment>
@@ -949,9 +951,6 @@
                 <ScalarProperty Name="RNo" ColumnName="RNo" />
                 <ScalarProperty Name="RAirline" ColumnName="RAirline" />
                 <ScalarProperty Name="RAircraft" ColumnName="RAircraft" />
-                <ScalarProperty Name="AvailSeatsF" ColumnName="AvailSeatsF" />
-                <ScalarProperty Name="AvailSeatsB" ColumnName="AvailSeatsB" />
-                <ScalarProperty Name="AvailSeatsE" ColumnName="AvailSeatsE" />
                 <ScalarProperty Name="Departure" ColumnName="Departure" />
                 <ScalarProperty Name="Destination" ColumnName="Destination" />
               </MappingFragment>
