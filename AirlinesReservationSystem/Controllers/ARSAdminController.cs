@@ -13,7 +13,9 @@ namespace AirlinesReservationSystem.Controllers
         // GET: ARSAdmin
         public ActionResult Index() => IsLoggedIn() ? View() : (ActionResult)RedirectToAction("Login");
 
+        // ================ ROUTE ==================
         public ActionResult Route() => IsLoggedIn() ? View() : (ActionResult)RedirectToAction("Login");
+
 
         // ================ LOGIN ==================
         public ActionResult Login() => !IsLoggedIn() ? View() : (ActionResult)RedirectToAction("Index");
@@ -43,6 +45,8 @@ namespace AirlinesReservationSystem.Controllers
             }
             return View();
         }
+
+
         // ================ LOGOUT ==================
         public ActionResult Logout()
         {
@@ -57,25 +61,40 @@ namespace AirlinesReservationSystem.Controllers
 
         public ActionResult EmployeeDelete(string id) => IsAdminLoggedIn() && EmployeeDAO.DeleteEmployee(id) ? Content("OK") : Content("Error");
 
-        public ActionResult EmployeeAdd() => IsAdminLoggedIn() ? PartialView() : (ActionResult)RedirectToAction("Index");
+        public ActionResult EmployeeAdd() => IsAdminLoggedIn() ? View() : (ActionResult)RedirectToAction("Index");
+
+        public ActionResult EmployeeAddTemplate(int index)
+        {
+            ViewBag.AddIndex = index;
+            return View();
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EmployeeAdd(Employee newE)
+        public ActionResult EmployeeAdd(List<Employee> newEs)
         {
             ModelState.Remove("IsActive");
             ModelState.Remove("ROLE");
-            if (ModelState.IsValid)
+            foreach (var e in newEs)
             {
-                newE.IsActive = true;
-                newE.ROLE = 1;
-                if (EmployeeDAO.AddEmployee(newE))
+                if (ModelState.IsValid)
                 {
-                    return Content("Success");
+                    e.IsActive = true;
+                    e.Role = 1;
+                    if (EmployeeDAO.AddEmployee(e))
+                    {
+                        if (e == newEs.Last())
+                            return Content("Success");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Cannot add " + e.EmpID);
+                        break;
+                    }
                 }
-                ModelState.AddModelError("", "ID Exists!");
             }
-            return PartialView();
+
+            return View();
         }
 
         public ActionResult EmployeeEdit(string id) => IsAdminLoggedIn() && EmployeeDAO.GetEmployee(id) != null ? PartialView(EmployeeDAO.GetEmployee(id)) : (ActionResult)RedirectToAction("Index");
@@ -95,6 +114,44 @@ namespace AirlinesReservationSystem.Controllers
             return PartialView();
         }
 
+        // ================ SERVICE ==================
+
+        public ActionResult Service() => IsLoggedIn() ? View(ServiceDAO.GetServiceList()) : (ActionResult)RedirectToAction("Index");
+
+        public ActionResult ServiceDelete(string id) => IsLoggedIn() && ServiceDAO.DeleteService(id) ? Content("OK") : Content("Error");
+
+        public ActionResult ServiceAdd()
+        {
+            if (IsLoggedIn())
+            {
+                ViewBag.ServiceID = ServiceDAO.GetNextServiceID();
+                return View();
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ServiceAdd(Service newS)
+        {
+            ModelState.Remove("IsServing");
+
+            if (ModelState.IsValid)
+            {
+                newS.IsServing = true;
+                if (ServiceDAO.AddService(newS))
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "This service ID is exists!");
+                }
+            }
+            ViewBag.ServiceID = ServiceDAO.GetNextServiceID();
+            return View();
+        }
+
         // ================ CHECK LOGIN ==================
         public bool IsLoggedIn() => Session["employee"] != null;
 
@@ -103,7 +160,7 @@ namespace AirlinesReservationSystem.Controllers
             Employee e = (Employee)Session["employee"];
             if (e != null)
             {
-                if (e.ROLE == 0)
+                if (e.Role == 0)
                 {
                     return true;
                 }

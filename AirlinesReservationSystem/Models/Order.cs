@@ -22,9 +22,9 @@ namespace AirlinesReservationSystem.Models
     
         public long OrderID { get; set; }
         public string UserID { get; set; }
-        public int STATUS { get; set; }
         public System.DateTime OrderDate { get; set; }
         public double Total { get; set; }
+        public int Status { get; set; }
     
         public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

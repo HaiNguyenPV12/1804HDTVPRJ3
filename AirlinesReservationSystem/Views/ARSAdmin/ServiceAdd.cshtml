@@ -1,0 +1,79 @@
+﻿@model AirlinesReservationSystem.Models.Service
+
+@{
+    ViewBag.Title = "ServiceAdd";
+    string nextID = ViewBag.ServiceID;
+}
+<h2>Service - Add new Service <a href="/arsadmin/service" class="btn btn-warning" @*onclick="setModal('list')*@ ">Back to list</a></h2>
+<div class="container">
+
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="">
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group form-inline">
+                @Html.LabelFor(model => model.ServiceID, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <input type="text" name="ServiceID" id="ServiceID" value="@nextID" readonly style="width:100%" class="form-control"/>
+                    @*@Html.TextBoxFor(model => model.ServiceID, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" }, @readonly = true, @value = "\""+nextID+"\"" })*@
+                </div>
+                <div class="col-md-2">
+                </div>
+                <div class="col-md-10">
+                    @Html.ValidationMessageFor(model => model.ServiceID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group form-inline">
+                @Html.LabelFor(model => model.ServiceName, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ServiceName, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
+                </div>
+                <div class="col-md-2">
+                </div>
+                <div class="col-md-10">
+                    @Html.ValidationMessageFor(model => model.ServiceName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group form-inline">
+                @Html.LabelFor(model => model.ServiceDetails, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ServiceDetails, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
+                </div>
+                <div class="col-md-2">
+                </div>
+                <div class="col-md-10">
+                    @Html.ValidationMessageFor(model => model.ServiceDetails, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group form-inline">
+                @Html.LabelFor(model => model.ServiceFee, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ServiceFee, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
+                </div>
+                <div class="col-md-2">
+                </div>
+                <div class="col-md-10">
+                    @Html.ValidationMessageFor(model => model.ServiceFee, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+
+            <div class="form-group form-inline">
+                <div class="col-md-2">
+                </div>
+                <div class="col-md-10">
+                    <input type="submit" value="Create" class="btn btn-success" />
+                    <input type="reset" value="Reset" class="btn btn-warning" />
+                </div>
+            </div>
+        </div>
+    }
+</div>
