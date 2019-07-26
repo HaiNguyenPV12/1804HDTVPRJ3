@@ -73,7 +73,7 @@
                 @Html.DisplayFor(modelItem => item.IsActive)
             </td>
             <td>
-                @if (item.ROLE==0)
+                @if (item.Role==0)
                 {
                     @:Admin
                 }
@@ -83,7 +83,7 @@
                 }
             </td>
             <td>
-                @if (((AirlinesReservationSystem.Models.Employee)Session["employee"]).EmpID != item.EmpID || item.ROLE != 0)
+                @if (((AirlinesReservationSystem.Models.Employee)Session["employee"]).EmpID != item.EmpID || item.Role != 0)
                 {
                     <button class="btn btn-warning" onclick="setModal('edit','@item.EmpID')">Edit</button>
                     <button class="btn btn-danger" data-toggle="modal" data-target="#modal" onclick="setModal('delete','@item.EmpID')">Delete</button>

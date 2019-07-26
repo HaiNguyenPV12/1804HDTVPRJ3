@@ -3,8 +3,8 @@
 @{
     ViewBag.Title = "FlightDetails";
     bool fcs = false, bs = false;
-    if (Model.RouteVM.AvailSeatsF >= 0) { fcs = true; }
-    if (Model.RouteVM.AvailSeatsB >= 0) { bs = true; }
+    if (Model.FlightVM.AvailSeatsF >= 0) { fcs = true; }
+    if (Model.FlightVM.AvailSeatsB >= 0) { bs = true; }
 }
 
 <h2>FlightDetails</h2>
@@ -37,13 +37,13 @@
             <td>@Model.RouteVM.Destination</td>
             @if (fcs)
             {
-                <td>@Model.RouteVM.AvailSeatsF</td>
+                <td>@Model.FlightVM.AvailSeatsF</td>
             }
             @if (bs)
             {
-                <td>@Model.RouteVM.AvailSeatsB</td>
+                <td>@Model.FlightVM.AvailSeatsB</td>
             }
-            <td>@Model.RouteVM.AvailSeatsE</td>
+            <td>@Model.FlightVM.AvailSeatsE</td>
             <td>@Model.FlightVM.BasePrice</td>
         </tr>
     </table>

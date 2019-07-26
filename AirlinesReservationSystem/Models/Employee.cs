@@ -11,53 +11,19 @@ namespace AirlinesReservationSystem.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-
+    
     public partial class Employee
     {
-        [Required]
-        [Key]
-        [Display(Name ="Employee ID")]
-        [StringLength(50)]
         public string EmpID { get; set; }
-
-        [Required]
-        [StringLength(256)]
         public string Password { get; set; }
-
-        [Required]
-        [StringLength(50)]
         public string Firstname { get; set; }
-
-        [Required]
-        [StringLength(50)]
         public string Lastname { get; set; }
-
-        [Required]
-        [StringLength(200)]
         public string Address { get; set; }
-
-        [Required]
-        [Phone]
         public string Phone { get; set; }
-
-        [Required]
-        [EmailAddress]
         public string Email { get; set; }
-
-        [Required]
         public bool Sex { get; set; }
-
-        [Required]
-        [DisplayFormat(ApplyFormatInEditMode =true,DataFormatString = "{0:yyyy-MM-dd}")]
-        [Display(Name = "Birthday")]
-        public DateTime DoB { get; set; }
-
-        [Required]
-        [Display(Name = "Active")]
+        public System.DateTime DoB { get; set; }
         public bool IsActive { get; set; }
-
-        [Required]
-        public int ROLE { get; set; }
+        public int Role { get; set; }
     }
 }

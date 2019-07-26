@@ -80,7 +80,7 @@ namespace AirlinesReservationSystem.Controllers
                 if (ModelState.IsValid)
                 {
                     e.IsActive = true;
-                    e.ROLE = 1;
+                    e.Role = 1;
                     if (EmployeeDAO.AddEmployee(e))
                     {
                         if (e == newEs.Last())
@@ -160,7 +160,7 @@ namespace AirlinesReservationSystem.Controllers
             Employee e = (Employee)Session["employee"];
             if (e != null)
             {
-                if (e.ROLE == 0)
+                if (e.Role == 0)
                 {
                     return true;
                 }
