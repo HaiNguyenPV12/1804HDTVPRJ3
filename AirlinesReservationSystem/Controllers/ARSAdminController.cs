@@ -4,8 +4,9 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using AirlinesReservationSystem.Models;
-using AirlinesReservationSystem.Models.ars;
 using AirlinesReservationSystem.Models.arsadmin;
+using AirlinesReservationSystem.Models.ars;
+
 
 namespace AirlinesReservationSystem.Controllers
 {
@@ -301,6 +302,10 @@ namespace AirlinesReservationSystem.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult FlightAdd(Flight newF)
         {
+            ModelState.Remove("AvailSeatsF");
+            ModelState.Remove("AvailSeatsE");
+            ModelState.Remove("AvailSeatsB");
+            ModelState.Remove("FlightTime");
             if (ModelState.IsValid)
             {
                 string addResult = FlightDAO.AddFlight(newF);
@@ -337,6 +342,12 @@ namespace AirlinesReservationSystem.Controllers
         }
 
 
+        // ================ ORDER ==================
+        //
+        public ActionResult Order() => IsLoggedIn() ? View(ServiceDAO.GetServiceList()) : (ActionResult)RedirectToAction("Index");
+        public ActionResult OrderDetails(long id) => IsLoggedIn() ? View(ServiceDAO.GetServiceList()) : (ActionResult)RedirectToAction("Index");
+
+        public ActionResult TicketEdit(long id) => IsLoggedIn() ? View(ServiceDAO.GetServiceList()) : (ActionResult)RedirectToAction("Index");
         // ================ CHECK LOGIN ==================
         public bool IsLoggedIn() => Session["employee"] != null;
 
@@ -353,6 +364,6 @@ namespace AirlinesReservationSystem.Controllers
             return false;
         }
 
-
+        
     }
 }

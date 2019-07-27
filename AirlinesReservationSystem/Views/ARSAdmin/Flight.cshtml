@@ -43,6 +43,8 @@
                     @Html.DisplayFor(modelItem => item.Route.DepartureAirport.CityName) (@Html.DisplayFor(modelItem => item.Route.DepartureAirport.Country.CountryName))
                     ==>
                     @Html.DisplayFor(modelItem => item.Route.DestinationAirport.CityName) (@Html.DisplayFor(modelItem => item.Route.DestinationAirport.Country.CountryName))
+                    <br />
+                    <i class="text-muted">@Html.DisplayFor(modelItem => item.Route.Aircraft.AircraftName)</i>
                 </div>
             </td>
             <td>
@@ -59,20 +61,21 @@
 
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DepartureTime)
+                @item.DepartureTime.ToShortDateString()
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ArrivalTime)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.FlightTime)
+                @System.TimeSpan.FromHours(item.FlightTime).ToString(@"h\:mm")
+                @*@Html.DisplayFor(modelItem => item.FlightTime)*@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.BasePrice)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.FNo },new { @class="btn btn-warning"})
-                @Html.ActionLink("Delete", "Delete", new { id = item.FNo },new { @class="btn btn-danger"})
+                @Html.ActionLink("Edit", "Edit", new { id = item.FNo }, new { @class = "btn btn-warning" })
+                @Html.ActionLink("Delete", "Delete", new { id = item.FNo }, new { @class = "btn btn-danger" })
             </td>
         </tr>
     }

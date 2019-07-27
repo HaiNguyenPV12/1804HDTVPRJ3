@@ -37,8 +37,8 @@ namespace AirlinesReservationSystem.Models.arsadmin
                 {
                     s += "Flight Number (existed)";
                 }
-
-                if (db.Route.FirstOrDefault(r => r.RNo == newF.RNo) == null)
+                var route = db.Route.FirstOrDefault(r => r.RNo == newF.RNo);
+                if (route == null)
                 {
                     if (s != "")
                         s += ", ";
@@ -47,9 +47,10 @@ namespace AirlinesReservationSystem.Models.arsadmin
                 }
                 else
                 {
-                    newF.AvailSeatsF = newF.Route.Aircraft.FirstClassSeats;
-                    newF.AvailSeatsB = newF.Route.Aircraft.BussinessSeats;
-                    newF.AvailSeatsE = newF.Route.Aircraft.EconomySeats;
+
+                    newF.AvailSeatsF = route.Aircraft.FirstClassSeats;
+                    newF.AvailSeatsB = route.Aircraft.BussinessSeats;
+                    newF.AvailSeatsE = route.Aircraft.EconomySeats;
                 }
 
                 if (newF.DepartureTime > newF.ArrivalTime)

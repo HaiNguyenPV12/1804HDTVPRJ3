@@ -30,10 +30,10 @@
             <div class="form-group form-inline">
                 @Html.LabelFor(model => model.RNo, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    <select class="form-control" style="width:100%">
+                    <select class="form-control" style="width:100%" id="RNo" name="RNo">
                         @foreach (var route in RouteData)
                         {
-                            <option value="@route.RNo">@route.DepartureAirport.AirportName => @route.DestinationAirport.AirportName</option>
+                            <option value="@route.RNo">@route.Airline.AirlineName (@route.Airline.AirlineID): @route.DepartureAirport.AirportName => @route.DestinationAirport.AirportName</option>
                         }
                     </select>
                 </div>
