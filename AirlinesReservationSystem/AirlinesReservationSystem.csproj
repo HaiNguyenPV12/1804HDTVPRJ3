@@ -239,6 +239,7 @@
     <Compile Include="Models\Service.cs">
       <DependentUpon>ArsDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ServiceDAO.cs" />
     <Compile Include="Models\Ticket.cs">
       <DependentUpon>ArsDBModel.tt</DependentUpon>
     </Compile>
@@ -279,13 +280,17 @@
     <Content Include="Views\ARSAdmin\EmployeeList.cshtml" />
     <Content Include="Views\ARS\FlightList.cshtml" />
     <Content Include="Views\ARSAdmin\EmployeeEdit.cshtml" />
+    <Content Include="Views\ARSAdmin\EmployeeAddTemplate.cshtml" />
     <Content Include="Views\ARS\FlightDetails.cshtml" />
+    <Content Include="Views\ARSAdmin\Service.cshtml" />
+    <Content Include="Views\ARSAdmin\ServiceAdd.cshtml" />
     <Content Include="Views\ARS\Register.cshtml" />
     <Content Include="Views\ARS\ProfileUser.cshtml" />
     <Content Include="Views\ARSAdmin\Customer.cshtml" />
     <Content Include="Views\ARSAdmin\CustomerList.cshtml" />
     <Content Include="Views\ARS\EditUser.cshtml" />
     <Content Include="Views\ARSAdmin\CustomerEdit.cshtml" />
+    <Content Include="Views\ARSAdmin\ServiceEdit.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

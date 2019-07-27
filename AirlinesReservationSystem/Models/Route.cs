@@ -23,9 +23,6 @@ namespace AirlinesReservationSystem.Models
         public int RNo { get; set; }
         public string RAirline { get; set; }
         public string RAircraft { get; set; }
-        public Nullable<int> AvailSeatsF { get; set; }
-        public Nullable<int> AvailSeatsB { get; set; }
-        public int AvailSeatsE { get; set; }
         public string Departure { get; set; }
         public string Destination { get; set; }
     

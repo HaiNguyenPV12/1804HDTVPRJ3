@@ -1,0 +1,99 @@
+﻿@model IEnumerable<AirlinesReservationSystem.Models.Service>
+
+@{
+    ViewBag.Title = "Service";
+}
+
+<h2>Service <a href="/arsadmin/serviceadd" class="btn btn-success">Add new Service</a></h2>
+
+<table class="table table-bordered table-hover table-sm">
+    <tr class="table-ars">
+        <th>
+            @Html.DisplayNameFor(model => model.ServiceName)
+        </th>
+        <th style="width:40vw">
+            @Html.DisplayNameFor(model => model.ServiceDetails)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ServiceFee)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IsServing)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ServiceName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ServiceDetails)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ServiceFee)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsServing)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "ServiceEdit", new { id = item.ServiceID }, new { @class = "btn btn-warning" })
+
+                @if (item.IsServing)
+                {
+                    <button type="button" class="btn btn-secondary" data-toggle="tooltip" title="Can only delete inactive services." data-placement="bottom">Delete</button>
+                }
+                else
+                {
+                    <input type="button" value="Delete" data-toggle="modal" data-target="#modal" class="btn btn-danger" onclick="confirmDeleteService('@item.ServiceID')"/>
+                    @*@Html.ActionLink("Delete", "Delete", new { id = item.ServiceID }, new { @class = "btn btn-danger" })*@
+                }
+
+            </td>
+        </tr>
+    }
+
+</table>
+
+<div class="modal fade" id="modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header bg-ars">
+                <h4 class="modal-title" id="modalTitle">Delete confirm</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" id="modalBody">
+                
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-dismiss="modal" id="btnConfirm">Confirm</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+    function confirmDeleteService(id) {
+        $("#modalBody").html("<h3 class='text-danger'>Are you sure to delete service \"" + id + "\"?</h3>");
+        $("#btnConfirm").on("click", function () { deleteService(id); });
+    }
+    function deleteService(id) {
+        $.post("/arsadmin/servicedelete?id=" + id, function (result) {
+            $('#modal').modal('hide');
+            location.reload();
+        });
+    }
+</script>
