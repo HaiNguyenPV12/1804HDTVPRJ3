@@ -301,6 +301,10 @@ namespace AirlinesReservationSystem.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult FlightAdd(Flight newF)
         {
+            ModelState.Remove("AvailSeatsF");
+            ModelState.Remove("AvailSeatsE");
+            ModelState.Remove("AvailSeatsB");
+            ModelState.Remove("FlightTime");
             if (ModelState.IsValid)
             {
                 string addResult = FlightDAO.AddFlight(newF);
