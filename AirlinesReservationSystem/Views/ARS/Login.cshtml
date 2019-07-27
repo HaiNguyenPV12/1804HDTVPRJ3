@@ -4,14 +4,15 @@
     ViewBag.Title = "Login";
 }
 
-<h2>Login</h2>
+
 
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
 
-    <div class="form-horizontal">
+    <center><h2>Login</h2></center>
+    <div class="form-horizontal" style="margin-left:200px">
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
             @Html.LabelFor(model => model.UserID, htmlAttributes: new { @class = "col-form-label col-md-2" })
@@ -32,16 +33,15 @@
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Login" class="btn btn-dark" />
+                @Html.ActionLink("Back to List", "Index",null,new { @class = "btn btn-success"})
+                <hr />
+                <a href="@Url.Action("Register","ARS")">Create an Account</a>
             </div>
         </div>
     </div>
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index",null,new { @class = "btn btn-success"})
-    <hr />
-    <a href="@Url.Action("Register","ARS")">Create an Account</a>
-</div>
+
 
 <script src="~/Scripts/jquery.validate.min.js"></script>
 <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>

@@ -11,7 +11,8 @@ namespace AirlinesReservationSystem.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class User
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -19,18 +20,51 @@ namespace AirlinesReservationSystem.Models
         {
             this.Order = new HashSet<Order>();
         }
-    
+        [Key]
+        [Required]
+        [StringLength(50)]
         public string UserID { get; set; }
+
+        [Required]
+        [StringLength(256)]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
+
+        [Required]
+        [StringLength(50)]
         public string FirstName { get; set; }
+
+        [Required]
+        [StringLength(50)]
         public string LastName { get; set; }
+
+        [Required]
+        [StringLength(200)]
         public string Address { get; set; }
+
+        [Required]
+        [StringLength(12)]
+        [RegularExpression("[0-9]{11,12}", ErrorMessage = "Not a valid Phone number")]
         public string Phone { get; set; }
+
+        [Required]
+        [StringLength(256)]
+        [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
+
+        [Required]
         public bool Sex { get; set; }
+
+        [Required]
+        [Range(0,150)]
         public int Age { get; set; }
+
+        [Required]
         public string CCNo { get; set; }
         public string PassportNo_ { get; set; }
+
+        [Required]
+       
         public int Skymiles { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

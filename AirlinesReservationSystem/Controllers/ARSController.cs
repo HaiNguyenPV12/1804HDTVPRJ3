@@ -33,7 +33,7 @@ namespace AirlinesReservationSystem.Controllers
                 var user = UsersDAO.CheckLogin(login.UserID, login.Password); //TODO get user from database and check password 
                 if (user != null)
                 {
-                    Session["user"] = user;
+                    Session["user"] = user.UserID;
                     return RedirectToAction("Index"); //TODO redirect to previous page instead of home
                 }
                 ModelState.AddModelError("", "Invalid login information");
@@ -46,6 +46,8 @@ namespace AirlinesReservationSystem.Controllers
             Session["user"] = null;
             return RedirectToAction("Index");
         }
+
+
 
         [HttpPost]
         public ActionResult FlightList(FlightSearch flightSearch)
@@ -74,6 +76,46 @@ namespace AirlinesReservationSystem.Controllers
                     return RedirectToAction("Login");
                 }
                 ModelState.AddModelError("", "Register Error");
+            }
+            return View();
+        }
+
+        public ActionResult ProfileUser()
+        {
+            if (Session["user"] != null)
+            {
+                var model = UsersDAO.GetUser(Session["user"].ToString());
+                if (model != null)
+                {
+                    return View(model);
+                }
+            }
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult EditUser()
+        {
+            if (Session["user"] != null)
+            {
+                var model = UsersDAO.GetUser(Session["user"].ToString());
+                if (model != null)
+                {
+                    return View(model);
+                }
+            }
+            return RedirectToAction("Index");
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditUser(User updateU)
+        {
+            if (ModelState.IsValid)
+            {
+                if (UsersDAO.UpdateUser(updateU))
+                {
+                    return RedirectToAction("ProfileUser");
+                }
+                ModelState.AddModelError("", "Update Error");
             }
             return View();
         }
