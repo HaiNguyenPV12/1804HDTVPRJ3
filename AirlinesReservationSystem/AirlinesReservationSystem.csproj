@@ -307,6 +307,7 @@
     <Content Include="Views\ARSAdmin\Order.cshtml" />
     <Content Include="Views\ARSAdmin\OrderDetails.cshtml" />
     <Content Include="Views\ARSAdmin\TicketEdit.cshtml" />
+
     <Content Include="Views\ARSAdmin\FlightEdit.cshtml" />
     <Content Include="Views\ARS\Payment.cshtml" />
     <Content Include="Views\ARS\JqueryUIDemo.cshtml" />

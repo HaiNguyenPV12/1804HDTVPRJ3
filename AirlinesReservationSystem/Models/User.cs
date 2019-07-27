@@ -43,7 +43,7 @@ namespace AirlinesReservationSystem.Models
 
         [Required]
         [StringLength(12)]
-        [RegularExpression("[0-9]{11,12}", ErrorMessage = "Not a valid Phone number")]
+        [DataType(DataType.PhoneNumber)]
         public string Phone { get; set; }
 
         [Required]
