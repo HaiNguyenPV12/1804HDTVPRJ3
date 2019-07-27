@@ -1,10 +1,10 @@
 ﻿@model AirlinesReservationSystem.Models.Service
 
 @{
-    ViewBag.Title = "ServiceAdd";
-    string nextID = ViewBag.ServiceID;
+    ViewBag.Title = "ServiceEdit";
 }
-<h2>Service - Add new Service <a href="/arsadmin/service" class="btn btn-warning" @*onclick="setModal('list')"*@ >Back to list</a></h2>
+
+<h2>Service - Edit: @Model.ServiceName <a href="/arsadmin/service" class="btn btn-warning">Back to list</a></h2>
 <div class="container">
 
 
@@ -12,15 +12,13 @@
     {
         @Html.AntiForgeryToken()
 
-        <div class="">
-
+        <div>
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
             <div class="form-group form-inline">
                 @Html.LabelFor(model => model.ServiceID, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    <input type="text" name="ServiceID" id="ServiceID" value="@nextID" readonly style="width:100%" class="form-control"/>
-                    @*@Html.TextBoxFor(model => model.ServiceID, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" }, @readonly = true, @value = "\""+nextID+"\"" })*@
+                    <input type="text" name="ServiceID" id="ServiceID" value="@Model.ServiceID" readonly style="width:100%" class="form-control" />
                 </div>
                 <div class="col-md-2">
                 </div>
@@ -65,15 +63,27 @@
                 </div>
             </div>
 
+            <div class="form-group form-inline">
+                @Html.LabelFor(model => model.IsServing, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.CheckBoxFor(model => model.IsServing, new { htmlAttributes = new { @class = "form-check"} })
+                </div>
+                <div class="col-md-2">
+                </div>
+                <div class="col-md-10">
+                    @Html.ValidationMessageFor(model => model.ServiceFee, "", new { @class = "text-danger" })
+                </div>
+            </div>
 
             <div class="form-group form-inline">
                 <div class="col-md-2">
                 </div>
                 <div class="col-md-10">
-                    <input type="submit" value="Add this service" class="btn btn-success" />
+                    <input type="submit" value="Update service" class="btn btn-success" />
                     <input type="reset" value="Reset" class="btn btn-warning" />
                 </div>
             </div>
         </div>
     }
+
 </div>

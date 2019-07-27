@@ -35,6 +35,22 @@ namespace AirlinesReservationSystem.Models
             }
             return false;
         }
+
+        public static bool UpdateService(Service updateS)
+        {
+            var s = GetService(updateS.ServiceID);
+            if (s != null)
+            {
+                s.ServiceName = updateS.ServiceName;
+                s.ServiceDetails = updateS.ServiceDetails;
+                s.ServiceFee = updateS.ServiceFee;
+                s.IsServing = updateS.IsServing;
+                db.SaveChanges();
+                return true;
+            }
+            return false;
+        }
+
         public static string GetNextServiceID()
         {
             string nextID = "";
