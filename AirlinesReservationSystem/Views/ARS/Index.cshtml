@@ -8,11 +8,12 @@
 
 <div class="row flightSearch">
     <div class="flightSearch-content">
+        <span class="text-danger">@TempData["errorM"]</span>
         <h3>Search for flights</h3>
         @using (Html.BeginForm("Index", "ARS", FormMethod.Post, new { @id = "flightSearchForm" }))
         {
             @Html.ValidationSummary(false, "", new { @class = "text-danger" })
-            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <div class="btn-group btn-group-toggle" data-toggle="buttons" id="roundTripRadio">
                 <label class="btn btn-secondary active">
                     <input type="radio" name="IsRoundTrip" id="optionOneWay" autocomplete="off" checked value="false"> One way
                 </label>
@@ -23,7 +24,7 @@
             <div class="container-fluid">
                 <div class="form-group row">
                     <div class="col-md-4 row">
-                        <label class="col-form-label">From: </label>
+                        <label class="col-form-label">From: &nbsp;</label>
                         @Html.TextBoxFor(item => item.Departure, new { @class = "form-control col-md" })
                         @*@Html.ValidationMessageFor(item => item.Departure, "", new { @class = "text-danger" })*@
                     </div>
@@ -32,16 +33,20 @@
                         <button type="button" class="btn btn-light mx-auto" tabindex="99">swap</button>
                     </div>
                     <div class="col-md-4 row">
-                        <label class="col-form-label">To: </label>
+                        <label class="col-form-label">To: &nbsp;</label>
                         @Html.TextBoxFor(item => item.Destination, new { @class = "form-control col-md" })
                         @*@Html.ValidationMessageFor(item => item.Destination, "", new { @class = "text-danger" })*@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label class="col-form-label">Departing:</label>
-                    @*<input type="date" name="DepartureTime" value="" class="form-control col-md-3" />*@
-                    @Html.TextBoxFor(item => item.DepartureTime, "{0:yyyy-MM-dd}", new { @type = "date", @class = "form-control col-md-3" })
-                    @*@Html.ValidationMessageFor(item => item.DepartureTime, "", new { @class = "text-danger" })*@
+                    <div class="col-md-6 row">
+                        <label class="col-form-label">Departing: &nbsp;</label>
+                        @Html.TextBoxFor(item => item.DepartureTime, "{0:yyyy-MM-dd}", new { @type = "date", @class = "form-control col-md-6" })
+                    </div>
+                    <div id="returnDate" class="col-md-6 row">
+                        <label class="col-form-label">Returning: &nbsp;</label>
+                        @Html.TextBoxFor(item => item.ReturnDepartureTime, "{0:yyyy-MM-dd}", new { @type = "date", @class = "form-control col-md-6" })
+                    </div>
                 </div>
                 <h5 class="row">Travelers:</h5>
                 <div class="form-group row">
@@ -58,6 +63,16 @@
             </div>
         }
     </div>
-
 </div>
 
+<script>
+    $(document).ready(function () {
+        $('#returnDate').hide();
+        $('#roundTripRadio').change(function () {
+            if ($('#optionRoundTrip').is(':checked')) {
+                $('#returnDate').show();
+            }
+            else { $('#returnDate').hide(); }
+        });
+    });
+</script>

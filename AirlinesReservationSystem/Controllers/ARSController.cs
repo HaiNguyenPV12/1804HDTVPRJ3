@@ -80,27 +80,27 @@ namespace AirlinesReservationSystem.Controllers
             try
             {
                 FlightResult firstTrip = FlightSearchDAO.GetFlightResult(fid, rid);
-                FlightSearch flightSearch = Session["searchParams"];
+                FlightSearch flightSearch = (FlightSearch)Session["searchParams"];
                 var seatsLeft = firstTrip.FlightVM.AvailSeatsB + firstTrip.FlightVM.AvailSeatsF + firstTrip.FlightVM.AvailSeatsE;
                 if (seatsLeft == 0)
                 {
                     TempData["NoSeatsMessage"] = "Sorry, there are no more seats left for flight " + firstTrip.FlightVM.FNo;
                     return RedirectToAction("FlightList", flightSearch);
                 }
-                ViewBag["firstTrip"] = firstTrip;
+                ViewBag.firstTrip = firstTrip;
+                var roundTripEnd = flightSearch.Departure;
+                var roundTripStart = flightSearch.Destination;
+                flightSearch.Departure = roundTripStart;
+                flightSearch.Destination = roundTripEnd;
+                flightSearch.DepartureTime = flightSearch.ReturnDepartureTime;
+                var model = FlightSearchDAO.GetFlightResults(flightSearch);
+                return View(model);
             }
             catch (Exception)
             {
                 TempData["errorM"] = "There was an error executing your requests. Please try again";
                 return RedirectToAction("Index");
             }
-            var roundTripEnd = flightSearch.Departure;
-            var roundTripStart = flightSearch.Destination;
-            flightSearch.Departure = roundTripStart;
-            flightSearch.Destination = roundTripEnd;
-            flightSearch.DepartureTime = flightSearch.ReturnDepartureTime;
-            var model = FlightSearchDAO.GetFlightResults(flightSearch);
-            return View(model);
         }
 
         [HttpPost]

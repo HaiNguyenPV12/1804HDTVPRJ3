@@ -8,23 +8,25 @@
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/ars/layout.css" type="text/css" rel="stylesheet" />
     <script src="~/Scripts/modernizr-2.8.3.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/umd/popper.min.js"></script>
 </head>
 @*@{
-    AirlinesReservationSystem.Models.User u;
-    if (Session["user"] == null)
-    {
-        u = null;
-    }
-    else
-    {
-        u = (AirlinesReservationSystem.Models.User)Session["user"];
-    }
-}*@
+        AirlinesReservationSystem.Models.User u;
+        if (Session["user"] == null)
+        {
+            u = null;
+        }
+        else
+        {
+            u = (AirlinesReservationSystem.Models.User)Session["user"];
+        }
+    }*@
 <body>
     <!--start of navbar-->
     <nav class="navbar navbar-expand-lg fixed-top navbar-light bg-ars">
         <div class="container">
-            <a href="#" class="navbar-brand">
+            <a href="/ars/Index" class="navbar-brand">
                 <img src="~/img/ars/Logo.png" alt="ARS" class="d-inline-block align-top img-fluid" />
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,10 +55,10 @@
                         else
                         {
                             <a class="nav-link dropdown-toggle waves-effect waves-light" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Welcome!<b>@(Session["user"])</b></a>
-                                <div class="dropdown-menu dropdown-info" aria-labelledby="navbarDropdownMenuLink">
-                                    <a class="dropdown-item waves-effect waves-light" href="@Url.Action("ProfileUser","ARS")">Profile</a>
-                                    <a class="dropdown-item waves-effect waves-light" href="@Url.Action("Logout","ARS")">Logout</a>                                
-                                </div>
+                            <div class="dropdown-menu dropdown-info" aria-labelledby="navbarDropdownMenuLink">
+                                <a class="dropdown-item waves-effect waves-light" href="@Url.Action("ProfileUser","ARS")">Profile</a>
+                                <a class="dropdown-item waves-effect waves-light" href="@Url.Action("Logout","ARS")">Logout</a>
+                            </div>
                             @*<div class="navbar-text">Welcone!<b>@(u.UserID) @Html.ActionLink("Logout", "Logout", "ARS", new { @class = "nav-link" })</b></div>*@
 
                         }
@@ -76,7 +78,6 @@
         </div>
     </footer>
 
-    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
 </body>
 </html>
