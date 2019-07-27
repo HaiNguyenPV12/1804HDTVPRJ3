@@ -4,6 +4,9 @@
 }
 
 <link href="~/Content/ars/index.css" rel="stylesheet" />
+<link href="~/Content/jquery-ui.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Scripts/ars/indexAiports.js"></script>
 
 
 <div class="row flightSearch">
@@ -25,7 +28,17 @@
                 <div class="form-group row">
                     <div class="col-md-5 row">
                         <label class="col-form-label">From: &nbsp;</label>
-                        @Html.TextBoxFor(item => item.Departure, new { @class = "form-control col-md" })
+                        @*@Html.TextBoxFor(item => item.Departure, new { @class = "form-control col-md" })*@
+                        <div class="ui-widget">
+                            <select id="combobox" name="Departure">
+                                <option></option>
+                                @foreach (var item in AirlinesReservationSystem.Models.FlightSearchDAO.GetAirports())
+                                {
+                                    <option value="@item.AirportID">@item.CityName (@item.AirportID)</option>
+                                }
+                            </select>
+                        </div>
+                        <button id="toggle" hidden>Show underlying select</button>
                     </div>
                     <!--reverse button-->
                     <div class="col-md-2 row mx-auto">
@@ -33,7 +46,17 @@
                     </div>
                     <div class="col-md-5 row">
                         <label class="col-form-label">To: &nbsp;</label>
-                        @Html.TextBoxFor(item => item.Destination, new { @class = "form-control col-md" })
+                        @*@Html.TextBoxFor(item => item.Destination, new { @class = "form-control col-md" })*@
+                        <div class="ui-widget">
+                            <select id="combobox1" name="Destination">
+                                <option></option>
+                                @foreach (var item in AirlinesReservationSystem.Models.FlightSearchDAO.GetAirports())
+                                {
+                                    <option value="@item.AirportID">@item.CityName (@item.AirportID)</option>
+                                }
+                            </select>
+                        </div>
+                        <button id="toggle" hidden>Show underlying select</button>
                     </div>
                 </div>
                 <div class="form-group row" id="formDate">
