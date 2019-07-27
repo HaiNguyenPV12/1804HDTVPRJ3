@@ -337,6 +337,12 @@ namespace AirlinesReservationSystem.Controllers
         }
 
 
+        // ================ ORDER ==================
+        //
+        public ActionResult Order() => IsLoggedIn() ? View(ServiceDAO.GetServiceList()) : (ActionResult)RedirectToAction("Index");
+        public ActionResult OrderDetails(long id) => IsLoggedIn() ? View(ServiceDAO.GetServiceList()) : (ActionResult)RedirectToAction("Index");
+
+        public ActionResult TicketEdit(long id) => IsLoggedIn() ? View(ServiceDAO.GetServiceList()) : (ActionResult)RedirectToAction("Index");
         // ================ CHECK LOGIN ==================
         public bool IsLoggedIn() => Session["employee"] != null;
 
@@ -353,6 +359,6 @@ namespace AirlinesReservationSystem.Controllers
             return false;
         }
 
-
+        
     }
 }

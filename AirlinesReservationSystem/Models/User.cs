@@ -27,7 +27,6 @@ namespace AirlinesReservationSystem.Models
 
         [Required]
         [StringLength(256)]
-        [DataType(DataType.Password)]
         public string Password { get; set; }
 
         [Required]
