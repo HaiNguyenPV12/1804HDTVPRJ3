@@ -1,0 +1,80 @@
+﻿@model IEnumerable<AirlinesReservationSystem.Models.Flight>
+
+@{
+    ViewBag.Title = "Flight";
+}
+
+<h2>Flight <a href="/arsadmin/flightadd" class="btn btn-success">Add new Route</a></h2>
+
+<table class="table  table-bordered table-hover table-sm">
+    <tr class="table-ars">
+        <th>
+            @Html.DisplayNameFor(model => model.FNo)
+        </th>
+        <th>
+            Route
+        </th>
+        <th>
+            Available Seats
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DepartureTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ArrivalTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FlightTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.BasePrice)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FNo)
+            </td>
+            <td>
+                <div>
+                    @Html.DisplayFor(modelItem => item.Route.DepartureAirport.CityName) (@Html.DisplayFor(modelItem => item.Route.DepartureAirport.Country.CountryName))
+                    ==>
+                    @Html.DisplayFor(modelItem => item.Route.DestinationAirport.CityName) (@Html.DisplayFor(modelItem => item.Route.DestinationAirport.Country.CountryName))
+                </div>
+            </td>
+            <td>
+                @if (item.AvailSeatsF != null)
+                {
+                    @:First Class: @Html.DisplayFor(modelItem => item.AvailSeatsF)<br />
+                }
+                @if (item.AvailSeatsB != null)
+                {
+                    @:Bussiness: @Html.DisplayFor(modelItem => item.AvailSeatsB)<br />
+                }
+
+                Economy: @Html.DisplayFor(modelItem => item.AvailSeatsE)
+
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DepartureTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ArrivalTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FlightTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BasePrice)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.FNo },new { @class="btn btn-warning"})
+                @Html.ActionLink("Delete", "Delete", new { id = item.FNo },new { @class="btn btn-danger"})
+            </td>
+        </tr>
+    }
+
+</table>

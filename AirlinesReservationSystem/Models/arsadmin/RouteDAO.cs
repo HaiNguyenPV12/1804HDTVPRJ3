@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace AirlinesReservationSystem.Models
+namespace AirlinesReservationSystem.Models.arsadmin
 {
     public class RouteDAO
     {
@@ -26,9 +26,12 @@ namespace AirlinesReservationSystem.Models
             var r = GetRoute(id);
             if (r != null)
             {
-                db.Route.Remove(r);
-                db.SaveChanges();
-                return true;
+                if (db.Flight.FirstOrDefault(f => f.RNo == id) == null)
+                {
+                    db.Route.Remove(r);
+                    db.SaveChanges();
+                    return true;
+                }
             }
             return false;
         }
