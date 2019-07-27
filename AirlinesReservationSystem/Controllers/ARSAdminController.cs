@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using AirlinesReservationSystem.Models;
 using AirlinesReservationSystem.Models.ars;
+using AirlinesReservationSystem.Models.arsadmin;
 
 namespace AirlinesReservationSystem.Controllers
 {
@@ -269,6 +270,72 @@ namespace AirlinesReservationSystem.Controllers
             }
             return View(updateS);
         }
+
+        // ================ FLIGHT ==================
+        // FLIGHT's VIEW
+        public ActionResult Flight()
+        {
+            if (IsLoggedIn())
+            {
+                return View(FlightDAO.GetFlightList());
+            }
+            return RedirectToAction("Index");
+        }
+
+        // FLIGHT DELETE's PROCESS
+        public ActionResult FlightDelete(string id) => IsLoggedIn() && FlightDAO.DeleteFlight(id) ? Content("OK") : Content("Error");
+
+        // ROUTE ADD'S VIEW
+        public ActionResult FlightAdd()
+        {
+            if (IsLoggedIn())
+            {
+                ViewBag.RouteData = RouteDAO.GetRouteList();
+                return View();
+            }
+            return RedirectToAction("Index");
+        }
+
+        // ROUTE ADD'S PROCESS
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult FlightAdd(Flight newF)
+        {
+            if (ModelState.IsValid)
+            {
+                string addResult = FlightDAO.AddFlight(newF);
+                if (addResult == "ok")
+                {
+                    return RedirectToAction("Flight");
+                }
+                else
+                {
+                    ModelState.AddModelError("", addResult);
+                }
+            }
+            ViewBag.RouteData = RouteDAO.GetRouteList();
+            return View();
+        }
+        // EMPLOYEE EDIT'S VIEW
+        public ActionResult FlightEdit(string id) => IsLoggedIn() && FlightDAO.GetFlight(id) != null ? View(FlightDAO.GetFlight(id)) : (ActionResult)RedirectToAction("Index");
+
+        // EMPLOYEE EDIT'S PROCESS
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult FlightEdit(Route updateF)
+        {
+            if (ModelState.IsValid)
+            {
+                var editResult = RouteDAO.UpdateRoute(updateF);
+                if (editResult == "ok")
+                {
+                    return RedirectToAction("Route");
+                }
+                ModelState.AddModelError("", editResult);
+            }
+            return View(updateF);
+        }
+
 
         // ================ CHECK LOGIN ==================
         public bool IsLoggedIn() => Session["employee"] != null;

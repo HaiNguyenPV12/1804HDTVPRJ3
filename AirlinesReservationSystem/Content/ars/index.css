@@ -18,3 +18,7 @@
     background-color: #ff9933 !important;
     color: black !important;
 }
+
+.text-danger {
+    color: #f74f5f !important; /*lighter red color for form*/
+}

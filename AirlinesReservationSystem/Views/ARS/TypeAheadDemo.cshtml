@@ -35,24 +35,52 @@
         };
     };
 
-    var states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California',
-        'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii',
-        'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
-        'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
-        'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
-        'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
-        'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island',
-        'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
-        'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
+    //var states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California',
+    //    'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii',
+    //    'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
+    //    'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
+    //    'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
+    //    'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
+    //    'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island',
+    //    'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
+    //    'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
+    //];
+
+    var states = ["Banjarmasin (BDJ)", "Bandung (BDO)", "Biak (BIK)", "Kota Kinabalu (BKI)",
+        "Bangkok (BKK)", "Bengkulu (BKS)", "Batam (BTH)", "Aceh Besar Regency (BTJ)",
+        "Bandar Seri Begawan (BWN)", "Banyuwangi Regency (BWX)", "Lapu-Lapu (CEB)", "Chiang Rai (CEI)",
+        "Tangerang (CGK)", "Chiang Mai (CNX)", "Angeles (CRK)", "Nha Trang (CXR)", "Da Nang (DAD)", "Dili (DIL)",
+        "Jambi City (DJB)", "Jayapura (DJJ)", "Dalat (DLI)", "Bangkok (DMK)", "Denpasar (DPS)", "Siborong - Borong (DTB)",
+        "Davao City (DVO)", "General Santos (GES)", "Gunung Sitoli (GNS)", "Hanoi (HAN)", "Hat Yai (HDY)", "Phuket (HKT)",
+        "Jakarta (HLP)", "Hai Phong (HPH)", "Hue (HUI)", "Iloilo City (ILO)", "Ipoh (IPH)", "Johor Bahru (JHB)",
+        "Sleman Regency (JOG)", "Kota Bharu (KBR)", "Krabi (KBV)", "Kuching (KCH)", "Majalengka Regency (KJT)",
+        "Kalibo (KLO)", "Deli Serdang Regency (KNO)", "Krong Siem Reap (KOS)", "Kuala Lumpur (KUL)", "Laoag (LAO)",
+        "Langkawi (LGK)", "Lubuklinggau (LLG)", "Mataram (LOP)", "Luang Prabang (LPQ)", "Manado (MDC)", "Mandalay (MDL)",
+        "Merauke (MKQ)", "Manila (MNL)", "Naypyidaw (NYT)", "Padang (PDG)", "Penang (PEN)", "Pekanbaru (PKU)", "Pakse (PKZ)",
+        "Palembang (PLM)", "Phnom Penh (PNH)", "Pontianak (PNK)", "Puerto Princesa (PPS)", "Phu Quoc (PQC)",
+        "Krong Preah Sihanouk (REP)", "Yangon (RGN)", "Olongapo (SFS)", "Ho Chi Minh City (SGN)", "Singapore (SIN)",
+        "Boyolali Regency (SOC)", "Semarang (SRG)", "Samarinda (SRI)", "Sidoarjo Regency (SUB)", "Subang (SZB)",
+        "Panglao  Island (TAG)", "Tanjung Pandan (TJQ)", "Bandar Lampung (TKG)", "Tanjung Pinang (TNJ)", "Tarakan (TRK)",
+        "Makassar (UPG)", "Surat Thani (URT)", "Ko Samui (USM)", "Udon Thani (UTH)", "Rayong (UTP)", "Can Tho (VCA)",
+        "Quang Nam (VCL)", "Quang Ninh (VDO)", "Vientiane (VTE)", "Zamboanga City (ZAM)"
     ];
+
+    function getAirports() {
+        $.post('/ars/GetAirports', function (result) {
+            console.log(result);
+            return result;
+        })
+    }
 
     $('#the-basics .typeahead').typeahead({
         hint: true,
         highlight: true,
-        minLength: 1
+        minlength: 1
     },
         {
             name: 'states',
-            source: substringMatcher(states)
+            source: substringmatcher(states)
         });
+
+
 </script>
