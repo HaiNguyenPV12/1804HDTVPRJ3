@@ -1,0 +1,76 @@
+﻿@model AirlinesReservationSystem.Models.Route
+
+@{
+    ViewBag.Title = "RouteEdit";
+}
+
+<h2>Route - Edit <a href="/arsadmin/route" class="btn btn-warning">Back to list</a></h2>
+<div class="container">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+    <div>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.RNo)
+
+        <div class="form-group form-inline">
+            @Html.LabelFor(model => model.RAirline, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.RAirline, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-10">
+                @Html.ValidationMessageFor(model => model.RAirline, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group form-inline">
+            @Html.LabelFor(model => model.RAircraft, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.RAircraft, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-10">
+                @Html.ValidationMessageFor(model => model.RAircraft, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group form-inline">
+            @Html.LabelFor(model => model.Departure, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Departure, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-10">
+                @Html.ValidationMessageFor(model => model.Departure, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group form-inline">
+            @Html.LabelFor(model => model.Destination, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Destination, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-10">
+                @Html.ValidationMessageFor(model => model.Destination, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group form-inline">
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-10">
+                <input type="submit" value="Update" class="btn btn-success" />
+                <input type="reset" value="Reset" class="btn btn-warning" />
+            </div>
+        </div>
+    </div>
+    }
+
+</div>

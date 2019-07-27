@@ -1,6 +1,6 @@
 ﻿<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -126,6 +126,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ArsDBModel.cs</LastGenOutput>
     </Content>
+    <Content Include="Scripts\ars\index.js" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -212,6 +213,7 @@
     </Compile>
     <Compile Include="Models\ars\FlightResult.cs" />
     <Compile Include="Models\ars\FlightSearch.cs" />
+    <Compile Include="Models\ars\FlightSearchDetails.cs" />
     <Compile Include="Models\ars\UsersDAO.cs" />
     <Compile Include="Models\Country.cs">
       <DependentUpon>ArsDBModel.tt</DependentUpon>
@@ -222,24 +224,25 @@
     <Compile Include="Models\Employee.cs">
       <DependentUpon>ArsDBModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\EmployeeDAO.cs" />
+    <Compile Include="Models\arsadmin\EmployeeDAO.cs" />
     <Compile Include="Models\Flight.cs">
       <DependentUpon>ArsDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\FlightDistance.cs">
       <DependentUpon>ArsDBModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\FlightSearchDAO.cs" />
+    <Compile Include="Models\ars\FlightSearchDAO.cs" />
     <Compile Include="Models\Order.cs">
       <DependentUpon>ArsDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Route.cs">
       <DependentUpon>ArsDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\arsadmin\RouteDAO.cs" />
     <Compile Include="Models\Service.cs">
       <DependentUpon>ArsDBModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ServiceDAO.cs" />
+    <Compile Include="Models\arsadmin\ServiceDAO.cs" />
     <Compile Include="Models\Ticket.cs">
       <DependentUpon>ArsDBModel.tt</DependentUpon>
     </Compile>
@@ -272,7 +275,6 @@
     <Content Include="Views\ARSAdmin\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_AdminLayout.cshtml" />
     <Content Include="Views\ARSAdmin\Index.cshtml" />
-    <Content Include="Views\ARSAdmin\Route.cshtml" />
     <Content Include="Views\ARSAdmin\Login.cshtml" />
     <Content Include="Views\ARSAdmin\Employee.cshtml" />
     <Content Include="Views\ARS\TypeAheadDemo.cshtml" />
@@ -280,6 +282,7 @@
     <Content Include="Views\ARSAdmin\EmployeeList.cshtml" />
     <Content Include="Views\ARS\FlightList.cshtml" />
     <Content Include="Views\ARSAdmin\EmployeeEdit.cshtml" />
+    <Content Include="Views\ARS\FlightDetails.cshtml" />
     <Content Include="Views\ARSAdmin\EmployeeAddTemplate.cshtml" />
     <Content Include="Views\ARS\FlightDetails.cshtml" />
     <Content Include="Views\ARSAdmin\Service.cshtml" />
@@ -291,6 +294,10 @@
     <Content Include="Views\ARS\EditUser.cshtml" />
     <Content Include="Views\ARSAdmin\CustomerEdit.cshtml" />
     <Content Include="Views\ARSAdmin\ServiceEdit.cshtml" />
+    <Content Include="Views\ARSAdmin\Route.cshtml" />
+    <Content Include="Views\ARSAdmin\RouteAdd.cshtml" />
+    <Content Include="Views\ARSAdmin\RouteEdit.cshtml" />
+    <Content Include="Views\ARS\FlightListReturn.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
