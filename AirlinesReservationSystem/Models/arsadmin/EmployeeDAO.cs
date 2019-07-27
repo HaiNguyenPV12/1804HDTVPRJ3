@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Data.Entity;
 
-namespace AirlinesReservationSystem.Models
+namespace AirlinesReservationSystem.Models.arsadmin
 {
     public class EmployeeDAO
     {

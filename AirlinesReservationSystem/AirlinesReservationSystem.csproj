@@ -195,6 +195,7 @@
     <Compile Include="Models\Airport.cs">
       <DependentUpon>ArsDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\arsadmin\FlightDAO.cs" />
     <Compile Include="Models\ArsDBModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -289,6 +290,8 @@
     <Content Include="Views\ARSAdmin\Route.cshtml" />
     <Content Include="Views\ARSAdmin\RouteAdd.cshtml" />
     <Content Include="Views\ARSAdmin\RouteEdit.cshtml" />
+    <Content Include="Views\ARSAdmin\Flight.cshtml" />
+    <Content Include="Views\ARSAdmin\FlightAdd.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
