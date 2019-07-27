@@ -291,6 +291,7 @@
     <Content Include="Views\ARSAdmin\Route.cshtml" />
     <Content Include="Views\ARSAdmin\RouteAdd.cshtml" />
     <Content Include="Views\ARSAdmin\RouteEdit.cshtml" />
+    <Content Include="Views\ARS\FlightListReturn.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
