@@ -69,6 +69,7 @@ namespace AirlinesReservationSystem.Controllers
 
         public ActionResult FlightList(FlightSearch flightSearch)
         {
+            //TODO sub string to get Airport IDs
             ViewBag.RoundTrip = flightSearch.IsRoundTrip;
             var model = FlightSearchDAO.GetFlightResults(flightSearch);
             Session["searchResultsFirstTrip"] = model;
@@ -171,6 +172,17 @@ namespace AirlinesReservationSystem.Controllers
                 ModelState.AddModelError("", "Update Error");
             }
             return View();
+        }
+
+        public ActionResult GetAirports()
+        {
+            List<string> airports = new List<string>();
+            var airportsDB = FlightSearchDAO.GetAirports();
+            foreach (var item in airportsDB)
+            {
+                airports.Add(string.Format("{0} ({1})", item.CityName, item.AirportID));
+            }
+            return Json(airports.ToArray(), JsonRequestBehavior.AllowGet);
         }
     }
 }

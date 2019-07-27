@@ -211,6 +211,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ArsDBModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\ars\AirportSearch.cs" />
     <Compile Include="Models\ars\FlightResult.cs" />
     <Compile Include="Models\ars\FlightSearch.cs" />
     <Compile Include="Models\ars\FlightSearchDetails.cs" />

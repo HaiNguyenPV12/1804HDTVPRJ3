@@ -8,12 +8,12 @@
 
 <div class="row flightSearch">
     <div class="flightSearch-content">
-        <span class="text-danger">@TempData["errorM"]</span>
+        <span class="text-danger" id="errorMessage">@TempData["errorM"]</span>
         <h3>Search for flights</h3>
         @using (Html.BeginForm("Index", "ARS", FormMethod.Post, new { @id = "flightSearchForm" }))
         {
             @Html.ValidationSummary(false, "", new { @class = "text-danger" })
-            <div class="btn-group btn-group-toggle" data-toggle="buttons" id="roundTripRadio">
+            <div class="btn-group btn-group-toggle pb-2" data-toggle="buttons" id="roundTripRadio">
                 <label class="btn btn-secondary active">
                     <input type="radio" name="IsRoundTrip" id="optionOneWay" autocomplete="off" checked value="false"> One way
                 </label>
@@ -23,22 +23,20 @@
             </div>
             <div class="container-fluid">
                 <div class="form-group row">
-                    <div class="col-md-4 row">
+                    <div class="col-md-5 row">
                         <label class="col-form-label">From: &nbsp;</label>
                         @Html.TextBoxFor(item => item.Departure, new { @class = "form-control col-md" })
-                        @*@Html.ValidationMessageFor(item => item.Departure, "", new { @class = "text-danger" })*@
                     </div>
                     <!--reverse button-->
-                    <div class="col-md-4 row mx-auto">
-                        <button type="button" class="btn btn-light mx-auto" tabindex="99">swap</button>
+                    <div class="col-md-2 row mx-auto">
+                        <button type="button" class="btn btn-light mx-auto" tabindex="99" id="btnSwap">swap</button>
                     </div>
-                    <div class="col-md-4 row">
+                    <div class="col-md-5 row">
                         <label class="col-form-label">To: &nbsp;</label>
                         @Html.TextBoxFor(item => item.Destination, new { @class = "form-control col-md" })
-                        @*@Html.ValidationMessageFor(item => item.Destination, "", new { @class = "text-danger" })*@
                     </div>
                 </div>
-                <div class="form-group row">
+                <div class="form-group row" id="formDate">
                     <div class="col-md-6 row">
                         <label class="col-form-label">Departing: &nbsp;</label>
                         @Html.TextBoxFor(item => item.DepartureTime, "{0:yyyy-MM-dd}", new { @type = "date", @class = "form-control col-md-6" })
@@ -58,21 +56,14 @@
                     <input type="number" name="Senior" value="0" class="form-control col-md-1" min="0" />
                 </div>
                 <div class="row">
-                    <button type="submit" class="btn btn-ars-dark">Search</button>
+                    <button type="submit" class="btn btn-ars-dark" id="btnSubmit">Search</button>
                 </div>
             </div>
         }
     </div>
 </div>
 
+<script src="~/Scripts/ars/index.js"></script>
 <script>
-    $(document).ready(function () {
-        $('#returnDate').hide();
-        $('#roundTripRadio').change(function () {
-            if ($('#optionRoundTrip').is(':checked')) {
-                $('#returnDate').show();
-            }
-            else { $('#returnDate').hide(); }
-        });
-    });
+
 </script>
