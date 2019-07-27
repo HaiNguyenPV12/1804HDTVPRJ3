@@ -10,9 +10,9 @@ namespace AirlinesReservationSystem.Models.ars
     {
         static AirlineDBEntities db = new AirlineDBEntities();
 
-        public static User GetUser(string UserID) => db.User.FirstOrDefault(e => e.UserID == UserID);
+        public static User GetUser(string UserID) => db.User.Find(UserID);
 
-        public static IEnumerable<User> GetEmployeeList() => db.User.ToList();
+        public static IEnumerable<User> GetUserList() => db.User;
 
         public static User CheckLogin(string UserID, string Password) => db.User.Where(e => e.UserID.Trim() == UserID && e.Password == Password).FirstOrDefault();
 
