@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using AirlinesReservationSystem.Models;
+using AirlinesReservationSystem.Models.ars;
 
 namespace AirlinesReservationSystem.Controllers
 {
@@ -121,6 +122,29 @@ namespace AirlinesReservationSystem.Controllers
             }
             return PartialView();
         }
+        //================ CUSTOMER ==================
+
+        public ActionResult Customer() => IsLoggedIn() ? View() : (ActionResult)RedirectToAction("Index");
+        public ActionResult CustomerList() => IsLoggedIn() ? PartialView(UsersDAO.GetUserList()) : (ActionResult)Content("");
+
+        public ActionResult CustomerEdit(string id) => IsLoggedIn() && UsersDAO.GetUser(id) != null ? PartialView(UsersDAO.GetUser(id)) : (ActionResult)RedirectToAction("Index");
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CustomerEdit(User updateU)
+        {
+            if (ModelState.IsValid)
+            {
+                if (UsersDAO.UpdateUser(updateU))
+                {
+                    return RedirectToAction("Customer");
+                    //return Content("SuccessCustomer");
+                }
+                ModelState.AddModelError("", "Error updating this User!");
+            }
+            return PartialView();
+        }
+
 
         // ================ SERVICE ==================
         // SERVICE VIEW
@@ -212,5 +236,7 @@ namespace AirlinesReservationSystem.Controllers
             }
             return false;
         }
+
+
     }
 }

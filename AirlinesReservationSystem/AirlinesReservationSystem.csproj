@@ -285,6 +285,11 @@
     <Content Include="Views\ARSAdmin\Service.cshtml" />
     <Content Include="Views\ARSAdmin\ServiceAdd.cshtml" />
     <Content Include="Views\ARS\Register.cshtml" />
+    <Content Include="Views\ARS\ProfileUser.cshtml" />
+    <Content Include="Views\ARSAdmin\Customer.cshtml" />
+    <Content Include="Views\ARSAdmin\CustomerList.cshtml" />
+    <Content Include="Views\ARS\EditUser.cshtml" />
+    <Content Include="Views\ARSAdmin\CustomerEdit.cshtml" />
     <Content Include="Views\ARSAdmin\ServiceEdit.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
