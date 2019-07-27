@@ -69,11 +69,9 @@ namespace AirlinesReservationSystem.Controllers
 
         public ActionResult FlightList(FlightSearch flightSearch)
         {
-            if (flightSearch.IsRoundTrip)
-            {
-                ViewBag.RoundTrip = true;
-            }
+            ViewBag.RoundTrip = flightSearch.IsRoundTrip;
             var model = FlightSearchDAO.GetFlightResults(flightSearch);
+            Session["searchResultsFirstTrip"] = model;
             return View(model);
         }
 
