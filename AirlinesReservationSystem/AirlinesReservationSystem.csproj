@@ -285,7 +285,6 @@
     <Content Include="Views\ARSAdmin\EmployeeEdit.cshtml" />
     <Content Include="Views\ARS\FlightDetails.cshtml" />
     <Content Include="Views\ARSAdmin\EmployeeAddTemplate.cshtml" />
-    <Content Include="Views\ARS\FlightDetails.cshtml" />
     <Content Include="Views\ARSAdmin\Service.cshtml" />
     <Content Include="Views\ARSAdmin\ServiceAdd.cshtml" />
     <Content Include="Views\ARS\Register.cshtml" />
@@ -305,6 +304,7 @@
     <Content Include="Views\ARSAdmin\OrderDetails.cshtml" />
     <Content Include="Views\ARSAdmin\TicketEdit.cshtml" />
     <Content Include="Views\ARSAdmin\FlightEdit.cshtml" />
+    <Content Include="Views\ARS\Payment.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

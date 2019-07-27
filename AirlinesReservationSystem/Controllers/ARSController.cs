@@ -172,5 +172,18 @@ namespace AirlinesReservationSystem.Controllers
             }
             return View();
         }
+
+        //---------------- PAYMENT ------------------
+        // PAYMENT's VIEW
+        public ActionResult Payment()
+        {
+            //if (Session["user"] != null)
+            //{
+            //    return View();
+            //}
+            //return RedirectToAction("Login");
+            ViewBag.PeopleNum = 2;
+            return View();
+        }
     }
 }
