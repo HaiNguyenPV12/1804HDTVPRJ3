@@ -18,6 +18,7 @@ namespace AirlinesReservationSystem.Controllers
         {
             Session["searchParams"] = flightSearch;
             int totalPassenger = flightSearch.Adult + flightSearch.Children + flightSearch.Senior;
+            if (!flightSearch.IsRoundTrip) { ModelState.Remove("ReturnDepartureTime"); }
             if (ModelState.IsValid && totalPassenger > 0)
             {
                 Session["searchParams"] = flightSearch;

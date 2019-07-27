@@ -4,7 +4,7 @@
 }
 
 <h2>JqueryUIDemo</h2>
-
+<link href="~/Content/jquery-ui.css" rel="stylesheet" />
 <style>
     .custom-combobox {
         position: relative;
@@ -24,8 +24,9 @@
         padding: 5px 10px;
     }
 </style>
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+@*<script src="https://code.jquery.com/jquery-1.12.4.js"></script>*@
+@*<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>*@
+<script src="~/Scripts/jquery-ui.js"></script>
 <script>
   $( function() {
     $.widget( "custom.combobox", {
