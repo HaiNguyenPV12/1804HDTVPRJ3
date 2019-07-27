@@ -302,6 +302,7 @@
     <Content Include="Views\ARS\FlightListReturn.cshtml" />
     <Content Include="Views\ARSAdmin\Flight.cshtml" />
     <Content Include="Views\ARSAdmin\FlightAdd.cshtml" />
+    <Content Include="Views\ARS\JqueryUIDemo.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
