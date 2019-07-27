@@ -13,6 +13,25 @@ namespace AirlinesReservationSystem.Controllers
         // GET: Home
         public ActionResult Index() => View();
 
+        [HttpPost]
+        public ActionResult Index(FlightSearch flightSearch)
+        {
+            Session["searchParams"] = flightSearch;
+            int totalPassenger = flightSearch.Adult + flightSearch.Children + flightSearch.Senior;
+            if (ModelState.IsValid && totalPassenger > 0)
+            {
+                Session["searchParams"] = flightSearch;
+                return RedirectToAction("FlightList", flightSearch);
+            }
+            else
+            {
+                if (totalPassenger <= 0)
+                    ModelState.AddModelError("", "Passengers numbers are invalid");
+                ModelState.AddModelError("", "Please enter required values");
+            }
+            return View(flightSearch);
+        }
+
         public ActionResult Login() => View();
 
         [HttpPost]
@@ -33,7 +52,7 @@ namespace AirlinesReservationSystem.Controllers
                 var user = UsersDAO.CheckLogin(login.UserID, login.Password); //TODO get user from database and check password 
                 if (user != null)
                 {
-                    Session["user"] = user;
+                    Session["user"] = user.UserID;
                     return RedirectToAction("Index"); //TODO redirect to previous page instead of home
                 }
                 ModelState.AddModelError("", "Invalid login information");
@@ -47,11 +66,47 @@ namespace AirlinesReservationSystem.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpPost]
+
         public ActionResult FlightList(FlightSearch flightSearch)
         {
+            ViewBag.RoundTrip = flightSearch.IsRoundTrip;
             var model = FlightSearchDAO.GetFlightResults(flightSearch);
+            Session["searchResultsFirstTrip"] = model;
             return View(model);
+        }
+
+        public ActionResult FlightListReturn(string fid, int rid)
+        {
+            try
+            {
+                FlightResult firstTrip = FlightSearchDAO.GetFlightResult(fid, rid);
+                FlightSearch flightSearch = (FlightSearch)Session["searchParams"];
+                var seatsLeft = firstTrip.FlightVM.AvailSeatsB + firstTrip.FlightVM.AvailSeatsF + firstTrip.FlightVM.AvailSeatsE;
+                if (seatsLeft == 0)
+                {
+                    TempData["NoSeatsMessage"] = "Sorry, there are no more seats left for flight " + firstTrip.FlightVM.FNo;
+                    return RedirectToAction("FlightList", flightSearch);
+                }
+                ViewBag.firstTrip = firstTrip;
+                var roundTripEnd = flightSearch.Departure;
+                var roundTripStart = flightSearch.Destination;
+                flightSearch.Departure = roundTripStart;
+                flightSearch.Destination = roundTripEnd;
+                flightSearch.DepartureTime = flightSearch.ReturnDepartureTime;
+                var model = FlightSearchDAO.GetFlightResults(flightSearch);
+                return View(model);
+            }
+            catch (Exception)
+            {
+                TempData["errorM"] = "There was an error executing your requests. Please try again";
+                return RedirectToAction("Index");
+            }
+        }
+
+        [HttpPost]
+        public ActionResult FlightList(FlightSearchDetails flightSearchDetails)
+        {
+            return View();
         }
 
         public ActionResult FlightDetails(string fid, int rid)
@@ -74,6 +129,46 @@ namespace AirlinesReservationSystem.Controllers
                     return RedirectToAction("Login");
                 }
                 ModelState.AddModelError("", "Register Error");
+            }
+            return View();
+        }
+
+        public ActionResult ProfileUser()
+        {
+            if (Session["user"] != null)
+            {
+                var model = UsersDAO.GetUser(Session["user"].ToString());
+                if (model != null)
+                {
+                    return View(model);
+                }
+            }
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult EditUser()
+        {
+            if (Session["user"] != null)
+            {
+                var model = UsersDAO.GetUser(Session["user"].ToString());
+                if (model != null)
+                {
+                    return View(model);
+                }
+            }
+            return RedirectToAction("Index");
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditUser(User updateU)
+        {
+            if (ModelState.IsValid)
+            {
+                if (UsersDAO.UpdateUser(updateU))
+                {
+                    return RedirectToAction("ProfileUser");
+                }
+                ModelState.AddModelError("", "Update Error");
             }
             return View();
         }

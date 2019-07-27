@@ -2,10 +2,14 @@
 
 @{
     ViewBag.Title = "FlightList";
-    bool roundTrip = bool.Parse(ViewBag.RoundTrip.ToString());
+    var firstTrip = (AirlinesReservationSystem.Models.ars.FlightResult)ViewBag.firstTrip;
 }
 
 <h2>FlightList</h2>
+
+<div>
+    First trip: @firstTrip.FlightVM.FNo
+</div>
 
 <table class="table">
     <tr>
@@ -27,12 +31,6 @@
             <td>@item.RouteVM.Departure</td>
             <td>@item.RouteVM.Destination</td>
             <td>@item.FlightVM.BasePrice</td>
-            @if (roundTrip)
-            {
-                <td>
-                    @Html.ActionLink("Add as 1st trip", "FlightListReturn", new { fid = item.FlightVM.FNo, rid = item.RouteVM.RNo })
-                </td>
-            }
             <td>
                 @Html.ActionLink("Details", "FlightDetails", new { fid = item.FlightVM.FNo, rid = item.RouteVM.RNo })
             </td>
