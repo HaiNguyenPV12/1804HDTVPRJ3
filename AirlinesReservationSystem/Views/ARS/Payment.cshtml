@@ -1,0 +1,54 @@
+﻿
+@{
+    ViewBag.Title = "Payment";
+    int PeopleNum = ViewBag.PeopleNum;
+}
+
+<h2>Payment</h2>
+
+<div class="row container-fluid">
+    @* ----- MAIN ----- *@
+    <div class="col-9">
+        <form>
+            @Html.AntiForgeryToken()
+            <div class="card">
+                <div class="card-header">
+                    <h3>Passenger Information</h3>
+                </div>
+                <div class="card-body">
+                    @for (int i = 1; i <= PeopleNum; i++)
+                    {
+                        <div class="card mt-2 container">
+
+                            <h5>Passenger @i</h5>
+
+                            <div class="card-body">
+                                <div class="form-group form-inline">
+                                    <div class="col-md-5">
+                                        <input type="text" name="Firstname" id="Firstname_@i" class="form-control" style="width:100%" placeholder="Passenger @i's Firstname" />
+                                    </div>
+                                    <div class="col-md-5">
+                                        <input type="text" name="Lastname" id="Lastname_@i" class="form-control" style="width:100%" placeholder="Passenger @i's Lastname"/>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <select name="Sex" class="form-control">
+                                            <option value="">Gender</option>
+                                            <option value="1">Male</option>
+                                            <option value="0">Female</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+
+        </form>
+    </div>
+    @* ----- PAYMENT DETAIL ----- *@
+    <div class="col-3 border">
+        2
+    </div>
+</div>

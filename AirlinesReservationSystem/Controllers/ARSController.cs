@@ -176,6 +176,19 @@ namespace AirlinesReservationSystem.Controllers
             return View();
         }
 
+        //---------------- PAYMENT ------------------
+        // PAYMENT's VIEW
+        public ActionResult Payment()
+        {
+            //if (Session["user"] != null)
+            //{
+            //    return View();
+            //}
+            //return RedirectToAction("Login");
+            ViewBag.PeopleNum = 2;
+            return View();
+        }
+        
         public ActionResult GetAirports()
         {
             List<string> airports = new List<string>();
@@ -184,7 +197,6 @@ namespace AirlinesReservationSystem.Controllers
             {
                 airports.Add(string.Format("{0} ({1})", item.CityName, item.AirportID));
             }
-            return Json(airports.ToArray(), JsonRequestBehavior.AllowGet);
             return Json(airports.ToArray(), JsonRequestBehavior.AllowGet);
         }
     }

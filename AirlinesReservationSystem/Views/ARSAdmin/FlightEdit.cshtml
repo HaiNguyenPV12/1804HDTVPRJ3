@@ -1,27 +1,30 @@
 ﻿@model AirlinesReservationSystem.Models.Flight
 
 @{
-    ViewBag.Title = "FlightAdd";
+    ViewBag.Title = "FlightEdit";
     var RouteData = (IEnumerable<AirlinesReservationSystem.Models.Route>)ViewBag.RouteData;
 }
-
-<h2>Flight - Add new Flight <a href="/arsadmin/flight" class="btn btn-warning">Back to list</a></h2>
+@helper routeSelect(int RNo)
+{
+    if (Model.RNo == RNo)
+    {
+        @:selected
+    }
+}
+<h2>Flight - Edit <a href="/arsadmin/flight" class="btn btn-warning">Back to list</a></h2>
 <div class="container">
+
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
 
         <div class="">
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
             <div class="form-group form-inline">
                 @Html.LabelFor(model => model.FNo, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.FNo, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
-                </div>
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-10">
-                    @Html.ValidationMessageFor(model => model.FNo, "", new { @class = "text-danger" })
+                    @Html.TextBoxFor(model => model.FNo, new { @class = "form-control", @style = "width:100%", @readonly = true })
                 </div>
             </div>
 
@@ -31,7 +34,7 @@
                     <select class="form-control" style="width:100%" id="RNo" name="RNo">
                         @foreach (var route in RouteData)
                         {
-                            <option value="@route.RNo">@route.Airline.AirlineName (@route.Aircraft.AircraftName): @route.DepartureAirport.AirportName => @route.DestinationAirport.AirportName</option>
+                            <option value="@route.RNo" @routeSelect(route.RNo)>@route.Airline.AirlineName (@route.Aircraft.AircraftName): @route.DepartureAirport.AirportName => @route.DestinationAirport.AirportName</option>
                         }
                     </select>
                 </div>
@@ -44,11 +47,11 @@
             <div class="form-group form-inline">
                 @Html.LabelFor(model => model.DepartureTime, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-4">
-                    @Html.TextBoxFor(model => model.DepartureTime, new { @class = "form-control", @style = "width:100%", @type = "datetime-local" })
+                    @Html.TextBoxFor(model => model.DepartureTime,"{0:s}" ,new { @class = "form-control", @style = "width:100%", @type = "datetime-local" })
                 </div>
                 @Html.LabelFor(model => model.ArrivalTime, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-4">
-                    @Html.TextBoxFor(model => model.ArrivalTime, new { @class = "form-control", @style = "width:100%", @type = "datetime-local" })
+                    @Html.TextBoxFor(model => model.ArrivalTime,"{0:s}" ,new { @class = "form-control", @style = "width:100%", @type = "datetime-local" })
                 </div>
                 <div class="col-md-2">
                 </div>
@@ -78,7 +81,7 @@
                 <div class="col-md-2">
                 </div>
                 <div class="col-md-10">
-                    <input type="submit" value="Add this Flight" class="btn btn-success" />
+                    <input type="submit" value="Update" class="btn btn-success" />
                     <input type="reset" value="Reset" class="btn btn-warning" />
                 </div>
             </div>
