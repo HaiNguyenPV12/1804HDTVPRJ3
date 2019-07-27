@@ -9,9 +9,12 @@
     <link href="~/Content/ars/layout.css" type="text/css" rel="stylesheet" />
     <link href="~/Content/ars/layoutadmin.css" type="text/css" rel="stylesheet" />
     <script src="~/Scripts/modernizr-2.8.3.js"></script>
+
+    <script src="~/Scripts/umd/popper.min.js"></script>
+    @*<script src="https://unpkg.com/popper.js@1.15.0/dist/umd/popper.min.js"></script>*@
     <script src="~/Scripts/jquery-3.4.1.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
-
+    
 
 </head>
 @{
@@ -40,16 +43,16 @@
                 <ul class="navbar-nav mr-auto">
 
                     @*<li class="nav-item">
-                        <a href="#" class="nav-link">Admin Something</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle waves-effect waves-light" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-                        <div class="dropdown-menu dropdown-info" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item waves-effect waves-light" href="#">Action Admin</a>
-                            <a class="dropdown-item waves-effect waves-light" href="#">Another action Admin</a>
-                            <a class="dropdown-item waves-effect waves-light" href="#">Something else here admin</a>
-                        </div>
-                    </li>*@
+                            <a href="#" class="nav-link">Admin Something</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle waves-effect waves-light" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+                            <div class="dropdown-menu dropdown-info" aria-labelledby="navbarDropdownMenuLink">
+                                <a class="dropdown-item waves-effect waves-light" href="#">Action Admin</a>
+                                <a class="dropdown-item waves-effect waves-light" href="#">Another action Admin</a>
+                                <a class="dropdown-item waves-effect waves-light" href="#">Something else here admin</a>
+                            </div>
+                        </li>*@
                 </ul>
                 <div class="navbar-nav">
 
@@ -94,10 +97,10 @@
                     {
                         @LeftMenu("Employee")
                         @*@LeftMenu("Country")
-                        @LeftMenu("Airline")
-                        @LeftMenu("Airport")
-                        @LeftMenu("FlightDistance")
-                        @LeftMenu("Aircraft")*@
+                            @LeftMenu("Airline")
+                            @LeftMenu("Airport")
+                            @LeftMenu("FlightDistance")
+                            @LeftMenu("Aircraft")*@
                     }
                 }
 
@@ -133,7 +136,8 @@
             <p>&copy; @DateTime.Now.Year - HDTV</p>
         </div>
     </footer>
-
+    
 
 </body>
 </html>
+
