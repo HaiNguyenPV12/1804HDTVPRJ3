@@ -2,40 +2,81 @@
 @{
     ViewBag.Title = "Payment";
     int PeopleNum = ViewBag.PeopleNum;
+    AirlinesReservationSystem.Models.Flight FInfo = AirlinesReservationSystem.Models.arsadmin.FlightDAO.GetFlight(ViewBag.FNo);
+    AirlinesReservationSystem.Models.Flight ReFInfo = null;
+    if (!string.IsNullOrEmpty(ViewBag.RFNo))
+    {
+        ReFInfo = AirlinesReservationSystem.Models.arsadmin.FlightDAO.GetFlight(ViewBag.RFNo);
+    }
+
+    var user = AirlinesReservationSystem.Models.ars.UsersDAO.GetUser(Session["user"].ToString());
+    var serviceList = AirlinesReservationSystem.Models.arsadmin.ServiceDAO.GetServiceList();
 }
 
 <h2>Payment</h2>
 
 <div class="row container-fluid">
     @* ----- MAIN ----- *@
-    <div class="col-9">
+    <div class="col-8">
         <form>
             @Html.AntiForgeryToken()
             <div class="card">
                 <div class="card-header">
-                    <h3>Passenger Information</h3>
+                    <h4>Passenger Information</h4>
                 </div>
                 <div class="card-body">
+                    <input type="hidden" id="PeopleNum" name="PeopleNum" value="@PeopleNum" />
+                    <input type="hidden" name="FNo" id="FNo" value="@FInfo.FNo" />
+                    <input type="hidden" id="FPrice" value="@FInfo.BasePrice" />
+                    @if (ReFInfo != null)
+                    {
+                        <input type="hidden" name="ReFNo" id="ReFNo" value="@ReFInfo.FNo" />
+                        <input type="hidden" id="ReFPrice" value="@ReFInfo.BasePrice" />
+                    }
+
                     @for (int i = 1; i <= PeopleNum; i++)
                     {
-                        <div class="card mt-2 container">
-
-                            <h5>Passenger @i</h5>
-
-                            <div class="card-body">
-                                <div class="form-group form-inline">
-                                    <div class="col-md-5">
-                                        <input type="text" name="Firstname" id="Firstname_@i" class="form-control" style="width:100%" placeholder="Passenger @i's Firstname" />
-                                    </div>
-                                    <div class="col-md-5">
-                                        <input type="text" name="Lastname" id="Lastname_@i" class="form-control" style="width:100%" placeholder="Passenger @i's Lastname"/>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <select name="Sex" class="form-control">
-                                            <option value="">Gender</option>
-                                            <option value="1">Male</option>
-                                            <option value="0">Female</option>
-                                        </select>
+                        <h5>Passenger @i</h5>
+                        <div class="form-group form-inline">
+                            <h6 class="col-md-5">
+                                Firstname
+                            </h6>
+                            <h6 class="col-md-5">
+                                Lastname
+                            </h6>
+                            <h6 class="col-md-2">
+                                Gender
+                            </h6>
+                            <div class="col-md-5">
+                                <input type="text" name="Firstname" id="Firstname_@i" class="form-control" style="width:100%" placeholder="Passenger @i's Firstname" required />
+                            </div>
+                            <div class="col-md-5">
+                                <input type="text" name="Lastname" id="Lastname_@i" class="form-control" style="width:100%" placeholder="Passenger @i's Lastname" required/>
+                            </div>
+                            <div class="col-md-2">
+                                <select name="Sex" class="form-control" required>
+                                    <option value="">Gender</option>
+                                    <option value="1">Male</option>
+                                    <option value="0">Female</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card ml-3">
+                            <div class="card-header">
+                                <a class="card-link" data-toggle="collapse" href="#div_service_@i">Service for Passenger @i</a>
+                            </div>
+                            <div id="div_service_@i" class="collapse hide">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        @foreach (var item in serviceList)
+                                        {
+                                            <div class="form-check-inline">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input" value="@item.ServiceID" value2="@item.ServiceFee" name="Service@(i)[]" onchange="refreshPayment()">
+                                                    @item.ServiceName
+                                                </label>
+                                            </div>
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -44,11 +85,134 @@
                 </div>
             </div>
 
+            <div class="card mt-2">
+                <div class="card-header">
+                    <h4>Booking User</h4>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-5 text-right">Name</dt>
+                        <dd class="col-7">@user.FirstName @user.LastName</dd>
+                        <dt class="col-5 text-right">Email</dt>
+                        <dd class="col-7">@user.Email</dd>
+                        <dt class="col-5 text-right">Phone</dt>
+                        <dd class="col-7">@user.Phone</dd>
+                        <dt class="col-5 text-right">Credit Card No.</dt>
+                        <dd class="col-7">
+                            @user.CCNo.Substring(0, 4)
+                            @for (int i = 0; i < @user.CCNo.Length - 4; i++)
+                            {
+                                @:*
+                            }
+                        </dd>
+                    </dl>
+                </div>
+            </div>
 
+            <div class="text-center mt-2">
+                <button type="submit" class="btn btn-success">
+                    <h2>Book</h2>
+                    <i>Permanently buy this flight</i>
+                </button>
+                <button type="button" class="btn btn-warning">
+                    <h2>Block</h2>
+                    <i>Preserve first and pay after</i>
+                </button>
+            </div>
         </form>
     </div>
+
     @* ----- PAYMENT DETAIL ----- *@
-    <div class="col-3 border">
-        2
+    <div class="col-4">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="text-center">Payment's detail</h4>
+            </div>
+            <div class="card-body" id="paymentDiv">
+
+            </div>
+        </div>
+
+
     </div>
 </div>
+
+<script>
+    var fprice = $("#FPrice").val();
+    var refprice = null;
+    if ($("#FPrice").length) {
+        refprice = $("#ReFPrice").val();
+    }
+    refreshPayment();
+
+    function refreshPayment() {
+        $("#paymentDiv").html("");
+        var result = "";
+        var peopleTotal = @(FInfo.BasePrice * PeopleNum);
+        var serviceTotal = @(FInfo.Route.Aircraft.ServiceFee * PeopleNum);
+
+        var rePeopleTotal = 0;
+        var reServiceTotal = 0;
+        if (refprice!=null) {
+            rePeopleTotal = @(ReFInfo.BasePrice * PeopleNum);
+            reServiceTotal = @(ReFInfo.Route.Aircraft.ServiceFee * PeopleNum);
+        }
+
+        var total = +0;
+        // First Flight
+        result += "<dl class='row' style='background-color:#bababa'>";
+        result += "<dt class='col-6'>";
+        if (refprice == null) {
+            result += "Flight:";
+        } else {
+            result += "First Flight:";
+        }
+        result += "</dt>";
+        result += "<dd class='col-6 text-right'>@FInfo.Route.DepartureAirport.AirportID => @FInfo.Route.DestinationAirport.AirportID </dd>";
+        result += "</dl>";
+
+        result += "<dl class='row'>";
+        result += "<dt class='col-7 text-right'>@PeopleNum x people(s)</dt>";
+        result += "<dd class='col-5 text-right'>" + peopleTotal + "$</dd>";
+
+        for (var i = 1; i <= @PeopleNum; i++) {
+            $("#div_service_" + i + " input[name='Service" + i + "[]']:checked").each(function () {
+                serviceTotal += +$(this).attr('value2');
+                if (refprice!=null) {
+                    reServiceTotal += +$(this).attr('value2');
+                }
+            });
+        }
+        if (serviceTotal>0) {
+            result += "<dt class='col-7 text-right'>Services's fee</dt>";
+            result += "<dd class='col-5 text-right'>" + serviceTotal + "$</dd>";
+        }
+
+        result += "</dl>";
+
+        // Return Flight
+        if (refprice != null) {
+            result += "<dl class='row' style='background-color:#bababa'>";
+            result += "<dt class='col-6'>Return Flight</dt>";
+            result += "<dd class='col-6 text-right'>@ReFInfo.Route.DepartureAirport.AirportID => @ReFInfo.Route.DestinationAirport.AirportID </dd>";
+            result += "</dl>";
+
+            result += "<dl class='row'>";
+            result += "<dt class='col-7 text-right'>@PeopleNum x people(s)</dt>";
+            result += "<dd class='col-5 text-right'>" + rePeopleTotal + "$</dd>";
+
+            if (reServiceTotal>0) {
+                result += "<dt class='col-7 text-right'>Services's fee</dt>";
+                result += "<dd class='col-5 text-right'>" + reServiceTotal + "$</dd>";
+            }
+            result += "</dl>";
+        }
+        result += "<hr>";
+        result += "<dl class='row'>";
+        result += "<dt class='col-6'>Total</dt>";
+        total = peopleTotal + rePeopleTotal + serviceTotal + reServiceTotal;
+        result += "<dd class='col-6 text-right'>" + total + "$</dd>";
+
+        $("#paymentDiv").html(result);
+    }
+</script>
