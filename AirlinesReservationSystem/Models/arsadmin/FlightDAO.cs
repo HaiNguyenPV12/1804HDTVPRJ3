@@ -13,6 +13,11 @@ namespace AirlinesReservationSystem.Models.arsadmin
 
         public static IEnumerable<Flight> GetFlightList() => db.Flight;
 
+        public static bool IsExistInTicket(string FNo)
+        {
+            return (db.Ticket.FirstOrDefault(t => t.FNo == FNo) != null);
+        }
+
         public static bool DeleteFlight(string FNo)
         {
             var f = GetFlight(FNo);
@@ -94,7 +99,8 @@ namespace AirlinesReservationSystem.Models.arsadmin
 
                 if (db.Ticket.FirstOrDefault(t => t.FNo == updateF.FNo) == null)
                 {
-                    if (db.Route.FirstOrDefault(r => r.RNo == updateF.RNo) == null)
+                    var route = db.Route.FirstOrDefault(r => r.RNo == updateF.RNo);
+                    if (route == null)
                     {
                         if (s != "")
                             s += ", ";
@@ -104,9 +110,9 @@ namespace AirlinesReservationSystem.Models.arsadmin
                     else
                     {
                         f.RNo = updateF.RNo;
-                        updateF.AvailSeatsF = updateF.Route.Aircraft.FirstClassSeats;
-                        updateF.AvailSeatsB = updateF.Route.Aircraft.BussinessSeats;
-                        updateF.AvailSeatsE = updateF.Route.Aircraft.EconomySeats;
+                        f.AvailSeatsF = route.Aircraft.FirstClassSeats;
+                        f.AvailSeatsB = route.Aircraft.BussinessSeats;
+                        f.AvailSeatsE = route.Aircraft.EconomySeats;
                     }
                 }
 

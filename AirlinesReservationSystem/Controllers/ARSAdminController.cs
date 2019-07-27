@@ -321,22 +321,39 @@ namespace AirlinesReservationSystem.Controllers
             return View();
         }
         // EMPLOYEE EDIT'S VIEW
-        public ActionResult FlightEdit(string id) => IsLoggedIn() && FlightDAO.GetFlight(id) != null ? View(FlightDAO.GetFlight(id)) : (ActionResult)RedirectToAction("Index");
+        public ActionResult FlightEdit(string id)
+        {
+            if (IsLoggedIn())
+            {
+                var f = FlightDAO.GetFlight(id);
+                if (f != null)
+                {
+                    ViewBag.RouteData = RouteDAO.GetRouteList();
+                    return View(f);
+                }   
+            }
+            return RedirectToAction("Index");
+        }
 
         // EMPLOYEE EDIT'S PROCESS
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult FlightEdit(Route updateF)
+        public ActionResult FlightEdit(Flight updateF)
         {
+            ModelState.Remove("AvailSeatsF");
+            ModelState.Remove("AvailSeatsE");
+            ModelState.Remove("AvailSeatsB");
+            ModelState.Remove("FlightTime");
             if (ModelState.IsValid)
             {
-                var editResult = RouteDAO.UpdateRoute(updateF);
+                var editResult = FlightDAO.UpdateFlight(updateF);
                 if (editResult == "ok")
                 {
-                    return RedirectToAction("Route");
+                    return RedirectToAction("Flight");
                 }
                 ModelState.AddModelError("", editResult);
             }
+            ViewBag.RouteData = RouteDAO.GetRouteList();
             return View(updateF);
         }
 
@@ -363,6 +380,6 @@ namespace AirlinesReservationSystem.Controllers
             return false;
         }
 
-        
+
     }
 }

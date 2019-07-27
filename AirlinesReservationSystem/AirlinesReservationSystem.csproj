@@ -304,6 +304,7 @@
     <Content Include="Views\ARSAdmin\Order.cshtml" />
     <Content Include="Views\ARSAdmin\OrderDetails.cshtml" />
     <Content Include="Views\ARSAdmin\TicketEdit.cshtml" />
+    <Content Include="Views\ARSAdmin\FlightEdit.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
