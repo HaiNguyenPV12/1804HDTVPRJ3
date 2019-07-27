@@ -49,20 +49,30 @@ namespace AirlinesReservationSystem.Models
 
                     s += "Aircraft";
                 }
-                if (db.Airport.FirstOrDefault(ap1 => ap1.AirportID == newR.Departure) == null)
-                {
-                    if (s != "")
-                        s += ", ";
+                //if (db.Airport.FirstOrDefault(ap1 => ap1.AirportID == newR.Departure) == null)
+                //{
+                //    if (s != "")
+                //        s += ", ";
 
-                    s += "Departure";
-                }
-                if (db.Airport.FirstOrDefault(ap2 => ap2.AirportID == newR.Destination) == null)
-                {
-                    if (s != "")
-                        s += ", ";
+                //    s += "Departure";
+                //}
+                //if (db.Airport.FirstOrDefault(ap2 => ap2.AirportID == newR.Destination) == null)
+                //{
+                //    if (s != "")
+                //        s += ", ";
 
-                    s += "Destination";
+                //    s += "Destination";
+                //}
+                if (db.FlightDistance.Where(fd => fd.AirportID1 == newR.Departure && fd.AirportID2 == newR.Destination).FirstOrDefault() == null)
+                {
+                    if (db.FlightDistance.Where(fd => fd.AirportID2 == newR.Departure && fd.AirportID1 == newR.Destination).FirstOrDefault() == null)
+                    {
+                        if (s != "")
+                            s += ", ";
+                        s += "Departure and Destination";
+                    }
                 }
+
 
                 if (s != "")
                 {
@@ -100,19 +110,29 @@ namespace AirlinesReservationSystem.Models
 
                     s += "Aircraft";
                 }
-                if (db.Airport.FirstOrDefault(ap1 => ap1.AirportID == updateR.Departure) == null)
-                {
-                    if (s != "")
-                        s += ", ";
+                //if (db.Airport.FirstOrDefault(ap1 => ap1.AirportID == updateR.Departure) == null)
+                //{
+                //    if (s != "")
+                //        s += ", ";
 
-                    s += "Departure";
-                }
-                if (db.Airport.FirstOrDefault(ap2 => ap2.AirportID == updateR.Destination) == null)
-                {
-                    if (s != "")
-                        s += ", ";
+                //    s += "Departure";
+                //}
+                //if (db.Airport.FirstOrDefault(ap2 => ap2.AirportID == updateR.Destination) == null)
+                //{
+                //    if (s != "")
+                //        s += ", ";
 
-                    s += "Destination";
+                //    s += "Destination";
+                //}
+
+                if (db.FlightDistance.Where(fd => fd.AirportID1 == updateR.Departure && fd.AirportID2 == updateR.Destination).FirstOrDefault() == null)
+                {
+                    if (db.FlightDistance.Where(fd => fd.AirportID2 == updateR.Departure && fd.AirportID1 == updateR.Destination).FirstOrDefault() == null)
+                    {
+                        if (s != "")
+                            s += ", ";
+                        s += "Departure and Destination";
+                    }
                 }
 
                 if (s != "")

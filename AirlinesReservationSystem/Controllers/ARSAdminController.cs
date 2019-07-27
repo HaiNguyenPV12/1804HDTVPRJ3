@@ -86,7 +86,7 @@ namespace AirlinesReservationSystem.Controllers
             return View();
         }
         // EMPLOYEE EDIT'S VIEW
-        public ActionResult RouteEdit(int id) => IsAdminLoggedIn() && RouteDAO.GetRoute(id) != null ? View(RouteDAO.GetRoute(id)) : (ActionResult)RedirectToAction("Index");
+        public ActionResult RouteEdit(int id) => IsLoggedIn() && RouteDAO.GetRoute(id) != null ? View(RouteDAO.GetRoute(id)) : (ActionResult)RedirectToAction("Index");
 
         // EMPLOYEE EDIT'S PROCESS
         [HttpPost]
@@ -102,7 +102,7 @@ namespace AirlinesReservationSystem.Controllers
                 }
                 ModelState.AddModelError("", editResult);
             }
-            return View(updateR);
+            return View();
         }
 
         // ================ EMPLOYEE ==================

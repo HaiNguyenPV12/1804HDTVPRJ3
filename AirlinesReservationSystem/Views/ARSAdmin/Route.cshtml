@@ -43,7 +43,7 @@
                 <i class="text-muted">@Html.DisplayFor(modelItem => item.DestinationAirport.AirportName)</i>
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.RNo }, new { @class = "btn btn-warning" })
+                @Html.ActionLink("Edit", "RouteEdit", new { id = item.RNo }, new { @class = "btn btn-warning" })
                 <input type="button" value="Delete" data-toggle="modal" data-target="#modal" class="btn btn-danger" onclick="confirmDeleteRoute('@item.RNo')" />
 
             </td>
