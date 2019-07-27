@@ -198,7 +198,6 @@ namespace AirlinesReservationSystem.Controllers
                 airports.Add(string.Format("{0} ({1})", item.CityName, item.AirportID));
             }
             return Json(airports.ToArray(), JsonRequestBehavior.AllowGet);
-            return Json(airports.ToArray(), JsonRequestBehavior.AllowGet);
         }
     }
 }
