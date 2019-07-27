@@ -11,7 +11,9 @@ namespace AirlinesReservationSystem.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+
     public partial class Route
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -19,17 +21,33 @@ namespace AirlinesReservationSystem.Models
         {
             this.Flight = new HashSet<Flight>();
         }
-    
+        [Key]
+        [Required]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int RNo { get; set; }
+
+        [Required]
+        [StringLength(10)]
+        [Display(Name ="Route's Airline")]
         public string RAirline { get; set; }
+
+        [Required]
+        [StringLength(50)]
+        [Display(Name = "Route's Aircraft")]
         public string RAircraft { get; set; }
+
+        [Required]
+        [StringLength(10)]
         public string Departure { get; set; }
+
+        [Required]
+        [StringLength(10)]
         public string Destination { get; set; }
     
         public virtual Aircraft Aircraft { get; set; }
         public virtual Airline Airline { get; set; }
-        public virtual Airport Airport { get; set; }
-        public virtual Airport Airport1 { get; set; }
+        public virtual Airport DepartureAirport { get; set; }
+        public virtual Airport DestinationAirport { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Flight> Flight { get; set; }
     }

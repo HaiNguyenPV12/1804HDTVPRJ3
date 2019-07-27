@@ -531,8 +531,8 @@
           <Property Name="Destination" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="Aircraft" Relationship="Self.FK_Route_RAircraft_Aircraft_AircraftID" FromRole="Route" ToRole="Aircraft" />
           <NavigationProperty Name="Airline" Relationship="Self.FK_Route_RAirline_Airline_AirlineID" FromRole="Route" ToRole="Airline" />
-          <NavigationProperty Name="Airport" Relationship="Self.FK_Route_Departure_Airport_AirportID" FromRole="Route" ToRole="Airport" />
-          <NavigationProperty Name="Airport1" Relationship="Self.FK_Route_Destination_Airport_AirportID" FromRole="Route" ToRole="Airport" />
+          <NavigationProperty Name="DepartureAirport" Relationship="Self.FK_Route_Departure_Airport_AirportID" FromRole="Route" ToRole="Airport" />
+          <NavigationProperty Name="DestinationAirport" Relationship="Self.FK_Route_Destination_Airport_AirportID" FromRole="Route" ToRole="Airport" />
           <NavigationProperty Name="Flight" Relationship="Self.FK_Flight_Route_RNo" FromRole="Route" ToRole="Flight" />
         </EntityType>
         <EntityType Name="Service">

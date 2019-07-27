@@ -1,7 +1,91 @@
-﻿
+﻿@model IEnumerable<AirlinesReservationSystem.Models.Route>
+
 @{
     ViewBag.Title = "Route";
 }
 
-<h2>Route</h2>
+<h2>Route <a href="/arsadmin/routeadd" class="btn btn-success">Add new Route</a></h2>
 
+<table class="table table-bordered table-hover table-sm">
+    <tr class="table-ars">
+        <th>
+            @Html.DisplayNameFor(model => model.Airline.AirlineName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Aircraft.AircraftName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DepartureAirport.AirportName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DestinationAirport.AirportName)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Airline.AirlineName)<br />
+                <i class="text-muted">@Html.DisplayFor(modelItem => item.Airline.AirlineID)</i>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Aircraft.AircraftName)<br />
+                <i class="text-muted">@Html.DisplayFor(modelItem => item.Aircraft.AircraftID)</i>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DepartureAirport.CityName)<br />
+                <i class="text-muted">@Html.DisplayFor(modelItem => item.DepartureAirport.AirportName)</i>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DestinationAirport.CityName)<br />
+                <i class="text-muted">@Html.DisplayFor(modelItem => item.DestinationAirport.AirportName)</i>
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.RNo }, new { @class = "btn btn-warning" })
+                <input type="button" value="Delete" data-toggle="modal" data-target="#modal" class="btn btn-danger" onclick="confirmDeleteRoute('@item.RNo')" />
+
+            </td>
+        </tr>
+    }
+
+</table>
+
+<div class="modal fade" id="modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header bg-ars">
+                <h4 class="modal-title" id="modalTitle">Delete confirm</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" id="modalBody">
+
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-dismiss="modal" id="btnConfirm">Confirm</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function confirmDeleteRoute(id) {
+        $("#modalBody").html("<h3 class='text-danger'>Are you sure to delete route \"" + id + "\"?</h3>");
+        $("#btnConfirm").on("click", function () { deleteRoute(id); });
+    }
+    function deleteRoute(id) {
+        $.post("/arsadmin/routedelete?id=" + id, function (result) {
+            $('#modal').modal('hide');
+            location.reload();
+        });
+    }
+</script>

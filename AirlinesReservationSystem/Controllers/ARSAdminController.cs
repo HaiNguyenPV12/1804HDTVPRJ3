@@ -9,13 +9,8 @@ namespace AirlinesReservationSystem.Controllers
 {
     public class ARSAdminController : Controller
     {
-
         // GET: ARSAdmin
         public ActionResult Index() => IsLoggedIn() ? View() : (ActionResult)RedirectToAction("Login");
-
-        // ================ ROUTE ==================
-        public ActionResult Route() => IsLoggedIn() ? View() : (ActionResult)RedirectToAction("Login");
-
 
         // ================ LOGIN ==================
         // LOGIN VIEW
@@ -47,7 +42,6 @@ namespace AirlinesReservationSystem.Controllers
             return View();
         }
 
-
         // ================ LOGOUT ==================
         public ActionResult Logout()
         {
@@ -55,15 +49,70 @@ namespace AirlinesReservationSystem.Controllers
             return RedirectToAction("Index");
         }
 
+        // ================ ROUTE ==================
+        // ROUTE's VIEW
+        public ActionResult Route()
+        {
+            if (IsLoggedIn())
+            {
+                return View(RouteDAO.GetRouteList());
+            }
+            return RedirectToAction("Index");
+        }
+
+        // ROUTE DELETE's PROCESS
+        public ActionResult RouteDelete(int id) => IsLoggedIn() && RouteDAO.DeleteRoute(id) ? Content("OK") : Content("Error");
+
+        // ROUTE ADD'S VIEW
+        public ActionResult RouteAdd() => IsLoggedIn() ? View() : (ActionResult)RedirectToAction("Index");
+
+        // ROUTE ADD'S PROCESS
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult RouteAdd(Route newR)
+        {
+            if (ModelState.IsValid)
+            {
+                string addResult = RouteDAO.AddRoute(newR);
+                if (addResult == "ok")
+                {
+                    return RedirectToAction("Route");
+                }
+                else
+                {
+                    ModelState.AddModelError("", addResult);
+                }
+            }
+            return View();
+        }
+        // EMPLOYEE EDIT'S VIEW
+        public ActionResult RouteEdit(int id) => IsAdminLoggedIn() && RouteDAO.GetRoute(id) != null ? View(RouteDAO.GetRoute(id)) : (ActionResult)RedirectToAction("Index");
+
+        // EMPLOYEE EDIT'S PROCESS
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult RouteEdit(Route updateR)
+        {
+            if (ModelState.IsValid)
+            {
+                var editResult = RouteDAO.UpdateRoute(updateR);
+                if (editResult == "ok")
+                {
+                    return RedirectToAction("Route");
+                }
+                ModelState.AddModelError("", editResult);
+            }
+            return View(updateR);
+        }
 
         // ================ EMPLOYEE ==================
-        // EMPLOYEE VIEW
+        // EMPLOYEE's VIEW
         public ActionResult Employee() => IsAdminLoggedIn() ? View() : (ActionResult)RedirectToAction("Index");
 
-        // EMPLOYEE LIST
+        // EMPLOYEE's LIST
         public ActionResult EmployeeList() => IsAdminLoggedIn() ? PartialView(EmployeeDAO.GetEmployeeList()) : (ActionResult)Content("");
 
-        // EMPLOYEE DELETE PROCESS
+        // EMPLOYEE DELETE's PROCESS
         public ActionResult EmployeeDelete(string id) => IsAdminLoggedIn() && EmployeeDAO.DeleteEmployee(id) ? Content("OK") : Content("Error");
 
         // EMPLOYEE ADD'S VIEW
@@ -123,10 +172,10 @@ namespace AirlinesReservationSystem.Controllers
         }
 
         // ================ SERVICE ==================
-        // SERVICE VIEW
+        // SERVICE's VIEW
         public ActionResult Service() => IsLoggedIn() ? View(ServiceDAO.GetServiceList()) : (ActionResult)RedirectToAction("Index");
 
-        // SERVICE DELETE PROCESS
+        // SERVICE DELETE's PROCESS
         public ActionResult ServiceDelete(string id) => IsLoggedIn() && ServiceDAO.DeleteService(id) ? Content("OK") : Content("Error");
 
         // SERVICE ADD'S VIEW

@@ -222,24 +222,25 @@
     <Compile Include="Models\Employee.cs">
       <DependentUpon>ArsDBModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\EmployeeDAO.cs" />
+    <Compile Include="Models\arsadmin\EmployeeDAO.cs" />
     <Compile Include="Models\Flight.cs">
       <DependentUpon>ArsDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\FlightDistance.cs">
       <DependentUpon>ArsDBModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\FlightSearchDAO.cs" />
+    <Compile Include="Models\arsadmin\FlightSearchDAO.cs" />
     <Compile Include="Models\Order.cs">
       <DependentUpon>ArsDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Route.cs">
       <DependentUpon>ArsDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\arsadmin\RouteDAO.cs" />
     <Compile Include="Models\Service.cs">
       <DependentUpon>ArsDBModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ServiceDAO.cs" />
+    <Compile Include="Models\arsadmin\ServiceDAO.cs" />
     <Compile Include="Models\Ticket.cs">
       <DependentUpon>ArsDBModel.tt</DependentUpon>
     </Compile>
@@ -272,7 +273,6 @@
     <Content Include="Views\ARSAdmin\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_AdminLayout.cshtml" />
     <Content Include="Views\ARSAdmin\Index.cshtml" />
-    <Content Include="Views\ARSAdmin\Route.cshtml" />
     <Content Include="Views\ARSAdmin\Login.cshtml" />
     <Content Include="Views\ARSAdmin\Employee.cshtml" />
     <Content Include="Views\ARS\TypeAheadDemo.cshtml" />
@@ -286,6 +286,8 @@
     <Content Include="Views\ARSAdmin\ServiceAdd.cshtml" />
     <Content Include="Views\ARS\Register.cshtml" />
     <Content Include="Views\ARSAdmin\ServiceEdit.cshtml" />
+    <Content Include="Views\ARSAdmin\Route.cshtml" />
+    <Content Include="Views\ARSAdmin\RouteAdd.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
