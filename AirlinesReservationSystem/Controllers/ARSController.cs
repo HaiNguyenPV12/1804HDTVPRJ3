@@ -18,6 +18,7 @@ namespace AirlinesReservationSystem.Controllers
         {
             Session["searchParams"] = flightSearch;
             int totalPassenger = flightSearch.Adult + flightSearch.Children + flightSearch.Senior;
+            if (!flightSearch.IsRoundTrip) { ModelState.Remove("ReturnDepartureTime"); }
             if (ModelState.IsValid && totalPassenger > 0)
             {
                 Session["searchParams"] = flightSearch;
@@ -69,6 +70,7 @@ namespace AirlinesReservationSystem.Controllers
 
         public ActionResult FlightList(FlightSearch flightSearch)
         {
+            //TODO sub string to get Airport IDs
             ViewBag.RoundTrip = flightSearch.IsRoundTrip;
             var model = FlightSearchDAO.GetFlightResults(flightSearch);
             Session["searchResultsFirstTrip"] = model;
@@ -116,6 +118,7 @@ namespace AirlinesReservationSystem.Controllers
         }
 
         public ActionResult TypeAheadDemo() => View();
+        public ActionResult JqueryUIDemo() => View();
 
         public ActionResult Register() => View();
         [HttpPost]
@@ -184,6 +187,18 @@ namespace AirlinesReservationSystem.Controllers
             //return RedirectToAction("Login");
             ViewBag.PeopleNum = 2;
             return View();
+        }
+        
+        public ActionResult GetAirports()
+        {
+            List<string> airports = new List<string>();
+            var airportsDB = FlightSearchDAO.GetAirports();
+            foreach (var item in airportsDB)
+            {
+                airports.Add(string.Format("{0} ({1})", item.CityName, item.AirportID));
+            }
+            return Json(airports.ToArray(), JsonRequestBehavior.AllowGet);
+            return Json(airports.ToArray(), JsonRequestBehavior.AllowGet);
         }
     }
 }

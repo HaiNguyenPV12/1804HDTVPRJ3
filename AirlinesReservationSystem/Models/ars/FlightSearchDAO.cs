@@ -15,7 +15,7 @@ namespace AirlinesReservationSystem.Models
         public static IEnumerable<Route> GetRoutes() => db.Route;
 
         public static IEnumerable<FlightResult> GetFlightResults(FlightSearch flightSearch)
-        {            
+        {
             var routes = GetRoutes();
             var flights = GetFlights();
             var model = from r in routes
@@ -30,10 +30,12 @@ namespace AirlinesReservationSystem.Models
             var routes = GetRoutes();
             var flights = GetFlights();
             var model = (from r in routes
-                        join f in flights on r.RNo equals f.RNo
-                        where r.RNo == rid && f.FNo == fid
-                        select new FlightResult { FlightVM = f, RouteVM = r }).FirstOrDefault();
+                         join f in flights on r.RNo equals f.RNo
+                         where r.RNo == rid && f.FNo == fid
+                         select new FlightResult { FlightVM = f, RouteVM = r }).FirstOrDefault();
             return model;
         }
+
+        public static IEnumerable<Airport> GetAirports() => db.Airport;
     }
 }
