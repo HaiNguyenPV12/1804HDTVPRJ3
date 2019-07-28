@@ -178,18 +178,88 @@ namespace AirlinesReservationSystem.Controllers
 
         //---------------- PAYMENT ------------------
         // PAYMENT's VIEW
-        public ActionResult Payment()
+        public ActionResult Payment(string FNo, string ReFNo, int PeopleNum)
         {
             if (Session["user"] != null)
             {
-                ViewBag.FNo = "VNA0001";
-                ViewBag.RFNo = "VNA0002";
-                ViewBag.PeopleNum = 2;
+                ViewBag.FNo = FNo;
+                ViewBag.RFNo = ReFNo;
+                ViewBag.PeopleNum = PeopleNum;
                 return View();
             }
             return RedirectToAction("Login");
         }
-        
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Payment(FormCollection frmPayment)
+        {
+            // Prepare model object
+            Payment objP = new Payment();
+            List<Passenger> objPaList = new List<Passenger>();
+            objP.FNo = frmPayment["FNo"];
+            objP.ReFNo = frmPayment["ReFNo"];
+            objP.PeopleNum = int.Parse(frmPayment["PeopleNum"]);
+            string[] Firstname = frmPayment["Firstname"].Split(',');
+            string[] Lastname = frmPayment["Lastname"].Split(',');
+            string[] SexStr = frmPayment["Sex"].Split(',');
+            string[] PassportNo = frmPayment["PassportNo"].Split(',');
+            string[] Class = frmPayment["Class"].Split(',');
+            string[] ReClass = null;
+            if (frmPayment["ReClass"] != null)
+            {
+                ReClass = frmPayment["ReClass"].Split(',');
+            }
+            bool[] Sex = new bool[objP.PeopleNum];
+            int a = 0;
+            foreach (var item in SexStr)
+            {
+                Sex[a++] = Convert.ToBoolean(int.Parse(item));
+            }
+            string[] Age = frmPayment["Age"].Split(',');
+
+            //string[][] Service = new string[objP.PeopleNum][];
+            for (int i = 0; i < objP.PeopleNum; i++)
+            {
+                Passenger objPa = new Passenger();
+                objPa.Firstname = Firstname[i];
+                objPa.Lastname = Lastname[i];
+                objPa.Sex = Sex[i];
+                objPa.Age = int.Parse(Age[i]);
+                objPa.PassportNo = PassportNo[i];
+                objPa.Class = Class[i];
+                if (frmPayment["ReClass"] != null)
+                {
+                    objPa.ReClass = ReClass[i];
+                }
+                if (frmPayment["Service" + (i + 1)] != null)
+                {
+                    objPa.Service = frmPayment["Service" + (i + 1)].Split(',');
+                }
+                else
+                {
+                    objPa.Service = new string[0];
+                }
+
+                objPaList.Add(objPa);
+            }
+            objP.Passengers = objPaList;
+            objP.UserID = Session["user"].ToString();
+            // Send to DAO to process data
+            string s = PaymentDAO.ProcessPayment(objP);
+
+            return Content(s);
+        }
+
+        public ActionResult PaymentResult(Int64 id)
+        {
+            if (Session["user"] != null)
+            {
+                return View(PaymentDAO.GetOrder(id));
+            }
+            return RedirectToAction("Login");
+        }
+
         public ActionResult GetAirports()
         {
             List<string> airports = new List<string>();
