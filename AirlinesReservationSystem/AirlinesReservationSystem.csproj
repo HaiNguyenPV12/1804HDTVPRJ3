@@ -100,6 +100,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\ars\FlightList.css" />
     <Content Include="Content\ars\index.css" />
     <Content Include="Content\ars\layoutadmin.css" />
     <Content Include="Content\ars\layout.css" />
@@ -113,6 +114,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="Content\typeahead.css" />
     <Content Include="Global.asax" />
+    <Content Include="img\ars\Logo.png" />
     <Content Include="Models\ArsDBModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ArsDBModel.Context.cs</LastGenOutput>
@@ -310,7 +312,6 @@
     <Content Include="Views\ARSAdmin\Order.cshtml" />
     <Content Include="Views\ARSAdmin\OrderDetails.cshtml" />
     <Content Include="Views\ARSAdmin\TicketEdit.cshtml" />
-
     <Content Include="Views\ARSAdmin\FlightEdit.cshtml" />
     <Content Include="Views\ARS\Payment.cshtml" />
     <Content Include="Views\ARS\JqueryUIDemo.cshtml" />

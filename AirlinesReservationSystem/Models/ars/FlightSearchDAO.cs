@@ -18,10 +18,12 @@ namespace AirlinesReservationSystem.Models
         {
             var routes = GetRoutes();
             var flights = GetFlights();
+            var airlines = GetAirlines();
             var model = from r in routes
                         join f in flights on r.RNo equals f.RNo
+                        join a in airlines on r.RAirline equals a.AirlineID
                         where r.Departure == flightSearch.Departure && r.Destination == flightSearch.Destination && f.DepartureTime.Date == flightSearch.DepartureTime.Date
-                        select new FlightResult { FlightVM = f, RouteVM = r };
+                        select new FlightResult { FlightVM = f, RouteVM = r, AirlineVM = a };
             return model;
         }
 
@@ -37,5 +39,15 @@ namespace AirlinesReservationSystem.Models
         }
 
         public static IEnumerable<Airport> GetAirports() => db.Airport;
+
+        public static IEnumerable<Airline> GetAirlines() => db.Airline;
+
+        public static string GetAirlineIcon(string airlineID)
+        {
+            var airlines = GetAirlines();
+            var airline = airlines.Where(item => item.AirlineID == airlineID).FirstOrDefault();
+            var icon = airline.AirlineIcon;
+            return icon;
+        }
     }
 }
