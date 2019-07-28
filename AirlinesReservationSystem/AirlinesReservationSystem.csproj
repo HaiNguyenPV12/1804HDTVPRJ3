@@ -219,6 +219,9 @@
     <Compile Include="Models\ars\FlightResult.cs" />
     <Compile Include="Models\ars\FlightSearch.cs" />
     <Compile Include="Models\ars\FlightSearchDetails.cs" />
+    <Compile Include="Models\ars\Payment.cs" />
+    <Compile Include="Models\ars\PaymentDAO.cs" />
+    <Compile Include="Models\ars\TicketServiceDAO.cs" />
     <Compile Include="Models\ars\UsersDAO.cs" />
     <Compile Include="Models\Country.cs">
       <DependentUpon>ArsDBModel.tt</DependentUpon>
@@ -311,6 +314,7 @@
     <Content Include="Views\ARSAdmin\FlightEdit.cshtml" />
     <Content Include="Views\ARS\Payment.cshtml" />
     <Content Include="Views\ARS\JqueryUIDemo.cshtml" />
+    <Content Include="Views\ARS\PaymentResult.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

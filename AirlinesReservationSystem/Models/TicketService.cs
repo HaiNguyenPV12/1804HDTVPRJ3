@@ -11,11 +11,17 @@ namespace AirlinesReservationSystem.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+
     public partial class TicketService
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int TSID { get; set; }
+        [Required]
         public long TicketID { get; set; }
+        [Required]
         public string ServiceID { get; set; }
     
         public virtual Service Service { get; set; }

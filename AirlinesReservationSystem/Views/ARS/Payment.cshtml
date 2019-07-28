@@ -15,10 +15,10 @@
 
 <h2>Payment</h2>
 
-<div class="row container-fluid">
+<div class="row container-fluid" id="paymentMainDiv">
     @* ----- MAIN ----- *@
     <div class="col-8">
-        <form>
+        <form id="frmPayment" name="frmPayment">
             @Html.AntiForgeryToken()
             <div class="card">
                 <div class="card-header">
@@ -38,20 +38,23 @@
                     {
                         <h5>Passenger @i</h5>
                         <div class="form-group form-inline">
-                            <h6 class="col-md-5">
+                            <h6 class="col-md-4">
                                 Firstname
                             </h6>
-                            <h6 class="col-md-5">
+                            <h6 class="col-md-4">
                                 Lastname
                             </h6>
                             <h6 class="col-md-2">
                                 Gender
                             </h6>
-                            <div class="col-md-5">
-                                <input type="text" name="Firstname" id="Firstname_@i" class="form-control" style="width:100%" placeholder="Passenger @i's Firstname" required />
+                            <h6 class="col-md-2">
+                                Age
+                            </h6>
+                            <div class="col-md-4">
+                                <input type="text" name="Firstname" id="Firstname_@i" class="form-control" style="width:100%" placeholder="Passenger @i's Firstname" required maxlength="50" />
                             </div>
-                            <div class="col-md-5">
-                                <input type="text" name="Lastname" id="Lastname_@i" class="form-control" style="width:100%" placeholder="Passenger @i's Lastname" required/>
+                            <div class="col-md-4">
+                                <input type="text" name="Lastname" id="Lastname_@i" class="form-control" style="width:100%" placeholder="Passenger @i's Lastname" required maxlength="50" />
                             </div>
                             <div class="col-md-2">
                                 <select name="Sex" class="form-control" required>
@@ -60,8 +63,71 @@
                                     <option value="0">Female</option>
                                 </select>
                             </div>
+                            <div class="col-md-2">
+                                <input type="number" name="Age" id="Age_@i" class="form-control" style="width:100%" min="1" max="100" required />
+                            </div>
                         </div>
-                        <div class="card ml-3">
+                        <div class="form-group form-inline">
+                            <h6 class="col-md-4">
+                                Passport No.
+                            </h6>
+                            <h6 class="col-md-4">
+                                Seat Class
+                            </h6>
+                            @if (ReFInfo != null)
+                            {
+                                <h6 class="col-md-4">
+                                    Return Seat Class
+                                </h6>
+                            }
+                            else
+                            {
+                                <div class="col-md-4"></div>
+                            }
+                            <div class="col-md-4">
+                                <input type="text" name="PassportNo" class="form-control" style="width:100%" placeholder="Passport Number" required maxlength="10" />
+                            </div>
+                            <div class="col-md-4">
+                                <select name="Class" class="form-control" required style="width:100%" onchange="refreshPayment()">
+                                    @if (FInfo.AvailSeatsE >= PeopleNum)
+                                    {
+                                        <option value="E">Economy</option>
+                                    }
+                                    @if (FInfo.AvailSeatsB >= PeopleNum)
+                                    {
+                                        <option value="B">Bussiness</option>
+                                    }
+                                    @if (FInfo.AvailSeatsF >= PeopleNum)
+                                    {
+                                        <option value="F">First Class</option>
+                                    }
+                                </select>
+                            </div>
+                            @if (ReFInfo != null)
+                            {
+                                <div class="col-md-4">
+                                    <select name="ReClass" class="form-control" required style="width:100%" onchange="refreshPayment()">
+                                        @if (ReFInfo.AvailSeatsE >= PeopleNum)
+                                        {
+                                            <option value="E">Economy</option>
+                                        }
+                                        @if (ReFInfo.AvailSeatsB >= PeopleNum)
+                                        {
+                                            <option value="B">Bussiness</option>
+                                        }
+                                        @if (ReFInfo.AvailSeatsF >= PeopleNum)
+                                        {
+                                            <option value="F">First Class</option>
+                                        }
+                                    </select>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-md-4"></div>
+                            }
+                        </div>
+                        <div class="card ml-3 mb-3">
                             <div class="card-header">
                                 <a class="card-link" data-toggle="collapse" href="#div_service_@i">Service for Passenger @i</a>
                             </div>
@@ -72,7 +138,7 @@
                                         {
                                             <div class="form-check-inline">
                                                 <label class="form-check-label">
-                                                    <input type="checkbox" class="form-check-input" value="@item.ServiceID" value2="@item.ServiceFee" name="Service@(i)[]" onchange="refreshPayment()">
+                                                    <input type="checkbox" class="form-check-input" value="@item.ServiceID" value2="@item.ServiceFee" name="Service@(i)" onchange="refreshPayment()">
                                                     @item.ServiceName
                                                 </label>
                                             </div>
@@ -110,10 +176,11 @@
             </div>
 
             <div class="text-center mt-2">
-                <button type="submit" class="btn btn-success">
+                <button type="button" class="btn btn-success" onclick="validatePayment()">
                     <h2>Book</h2>
                     <i>Permanently buy this flight</i>
                 </button>
+                <input type="submit" name="name" value="" class="text-hide" />
                 <button type="button" class="btn btn-warning">
                     <h2>Block</h2>
                     <i>Preserve first and pay after</i>
@@ -136,26 +203,47 @@
 
     </div>
 </div>
+<div class="row container-fluid" id="paymentConfirmDiv">
 
+</div>
 <script>
     var fprice = $("#FPrice").val();
     var refprice = null;
     if ($("#FPrice").length) {
         refprice = $("#ReFPrice").val();
     }
+
     refreshPayment();
+
+    function validatePayment() {
+        if ($('#frmPayment')[0].checkValidity()) {
+            var form = $("#frmPayment").serialize();
+            $.post("/ars/payment", form, function (result) {
+                if (result.substring(0, 2) == "ok") {
+                    window.location.href = "/ars/paymentresult?id=" + result.substring(3, result.length);
+                } else {
+                    $('#paymentConfirmDiv').html(result);
+                }
+                
+                console.log(result);
+            });
+        } else {
+            $('#frmPayment').find(':submit').click();
+        }
+    }
 
     function refreshPayment() {
         $("#paymentDiv").html("");
         var result = "";
         var peopleTotal = @(FInfo.BasePrice * PeopleNum);
         var serviceTotal = @(FInfo.Route.Aircraft.ServiceFee * PeopleNum);
-
+        var classTotal = 0;
         var rePeopleTotal = 0;
         var reServiceTotal = 0;
-        if (refprice!=null) {
-            rePeopleTotal = @(ReFInfo.BasePrice * PeopleNum);
-            reServiceTotal = @(ReFInfo.Route.Aircraft.ServiceFee * PeopleNum);
+        @if (ReFInfo!=null)
+        {
+            @:rePeopleTotal = @(ReFInfo.BasePrice * PeopleNum);
+            @:reServiceTotal = @(ReFInfo.Route.Aircraft.ServiceFee * PeopleNum);
         }
 
         var total = +0;
@@ -176,41 +264,75 @@
         result += "<dd class='col-5 text-right'>" + peopleTotal + "$</dd>";
 
         for (var i = 1; i <= @PeopleNum; i++) {
-            $("#div_service_" + i + " input[name='Service" + i + "[]']:checked").each(function () {
+            $("#div_service_" + i + " input[name='Service" + i + "']:checked").each(function () {
                 serviceTotal += +$(this).attr('value2');
-                if (refprice!=null) {
-                    reServiceTotal += +$(this).attr('value2');
+                @if (ReFInfo!=null)
+                {
+                    @:reServiceTotal += +$(this).attr('value2');
                 }
+
             });
         }
         if (serviceTotal>0) {
             result += "<dt class='col-7 text-right'>Services's fee</dt>";
             result += "<dd class='col-5 text-right'>" + serviceTotal + "$</dd>";
         }
+        $("select[name='Class']").each(function () {
+            var classVal = $(this).val();
+            if (classVal == "F") {
+                result += "<dt class='col-7 text-right'>First Class's fee</dt>";
+                result += "<dd class='col-5 text-right'>20$</dd>";
+                classTotal += 20;
+            } else if (classVal == "B") {
+                result += "<dt class='col-7 text-right'>Bussiness Class's fee</dt>";
+                result += "<dd class='col-5 text-right'>10$</dd>";
+                classTotal += 10;
+            } else if (classVal == "E") {
+                result += "<dt class='col-7 text-right'>Economy Class's fee</dt>";
+                result += "<dd class='col-5 text-right'>0$</dd>";
+            }
+        });
 
         result += "</dl>";
 
         // Return Flight
-        if (refprice != null) {
-            result += "<dl class='row' style='background-color:#bababa'>";
-            result += "<dt class='col-6'>Return Flight</dt>";
-            result += "<dd class='col-6 text-right'>@ReFInfo.Route.DepartureAirport.AirportID => @ReFInfo.Route.DestinationAirport.AirportID </dd>";
-            result += "</dl>";
+        @if (ReFInfo!=null)
+        {
+            @:result += "<dl class='row' style='background-color:#bababa'>";
+            @:result += "<dt class='col-6'>Return Flight</dt>";
+            @:result += "<dd class='col-6 text-right'>@ReFInfo.Route.DepartureAirport.AirportID => @ReFInfo.Route.DestinationAirport.AirportID </dd>";
+            @:result += "</dl>";
 
-            result += "<dl class='row'>";
-            result += "<dt class='col-7 text-right'>@PeopleNum x people(s)</dt>";
-            result += "<dd class='col-5 text-right'>" + rePeopleTotal + "$</dd>";
+            @:result += "<dl class='row'>";
+            @:result += "<dt class='col-7 text-right'>@PeopleNum x people(s)</dt>";
+            @:result += "<dd class='col-5 text-right'>" + rePeopleTotal + "$</dd>";
 
-            if (reServiceTotal>0) {
-                result += "<dt class='col-7 text-right'>Services's fee</dt>";
-                result += "<dd class='col-5 text-right'>" + reServiceTotal + "$</dd>";
-            }
-            result += "</dl>";
+            @:if (reServiceTotal>0) {
+                @:result += "<dt class='col-7 text-right'>Services's fee</dt>";
+                @:result += "<dd class='col-5 text-right'>" + reServiceTotal + "$</dd>";
+            @:}
+
+            @:$("select[name='ReClass']").each(function () {
+            @:    var classVal = $(this).val();
+            @:    if (classVal == "F") {
+            @:        result += "<dt class='col-7 text-right'>First Class's fee</dt>";
+            @:       result += "<dd class='col-5 text-right'>20$</dd>";
+            @:        classTotal += 20;
+            @:    } else if (classVal == "B") {
+            @:        result += "<dt class='col-7 text-right'>Bussiness Class's fee</dt>";
+            @:        result += "<dd class='col-5 text-right'>10$</dd>";
+            @:        classTotal += 10;
+            @:    } else if (classVal == "E") {
+            @:        result += "<dt class='col-7 text-right'>Economy Class's fee</dt>";
+            @:        result += "<dd class='col-5 text-right'>0$</dd>";
+            @:    }
+            @:});
+            @:result += "</dl>";
         }
         result += "<hr>";
         result += "<dl class='row'>";
         result += "<dt class='col-6'>Total</dt>";
-        total = peopleTotal + rePeopleTotal + serviceTotal + reServiceTotal;
+        total = peopleTotal + serviceTotal + rePeopleTotal + reServiceTotal + classTotal;
         result += "<dd class='col-6 text-right'>" + total + "$</dd>";
 
         $("#paymentDiv").html(result);
