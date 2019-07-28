@@ -180,13 +180,14 @@ namespace AirlinesReservationSystem.Controllers
         // PAYMENT's VIEW
         public ActionResult Payment()
         {
-            //if (Session["user"] != null)
-            //{
-            //    return View();
-            //}
-            //return RedirectToAction("Login");
-            ViewBag.PeopleNum = 2;
-            return View();
+            if (Session["user"] != null)
+            {
+                ViewBag.FNo = "VNA0001";
+                ViewBag.RFNo = "VNA0002";
+                ViewBag.PeopleNum = 2;
+                return View();
+            }
+            return RedirectToAction("Login");
         }
         
         public ActionResult GetAirports()
