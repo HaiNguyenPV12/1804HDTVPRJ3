@@ -251,17 +251,30 @@ namespace AirlinesReservationSystem.Controllers
 
         //---------------- PAYMENT ------------------
         // PAYMENT's VIEW
-        public ActionResult Payment(string FNo, string ReFNo, int PeopleNum)
+        public ActionResult Payment()
         {
-            if (Session["user"] != null)
+            if (Session["searchParams"] != null)
             {
-                ViewBag.FNo = FNo;
-                ViewBag.RFNo = ReFNo;
-                ViewBag.PeopleNum = PeopleNum;
-                return View();
+                var searchParam = (FlightSearch)Session["searchParams"];
+                if (Session["fid1"] != null)
+                {
+                    if (Session["user"] == null)
+                    {
+                        Session["GotoPayment"] = string.Format("/ars/payment");
+                        return RedirectToAction("Login");
+                    }
+                    ViewBag.FNo = Session["fid1"].ToString();
+                    if (Session["fid2"] != null)
+                    {
+                        ViewBag.RFNo = Session["fid2"].ToString();
+                    }
+                    ViewBag.PeopleNum = searchParam.Adult + searchParam.Children + searchParam.Senior;
+                    ViewBag.AdultNum = searchParam.Adult;
+                    ViewBag.ChildNum = searchParam.Children;
+                    return View();
+                }
             }
-            Session["GotoPayment"] = string.Format("/ars/payment?FNo={0}&ReFNo={1}&PeopleNum={2}", FNo, ReFNo, PeopleNum);
-            return RedirectToAction("Login");
+            return RedirectToAction("Index");
         }
 
         [HttpPost]

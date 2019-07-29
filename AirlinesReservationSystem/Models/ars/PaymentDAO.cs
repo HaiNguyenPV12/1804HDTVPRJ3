@@ -135,6 +135,10 @@ namespace AirlinesReservationSystem.Models.ars
 
                 db.SaveChanges();
                 db.Order.FirstOrDefault(o => o.OrderID == OrderID).Total = Total;
+                if (order.Status == 1)
+                {
+
+                }
                 db.SaveChanges();
 
                 return "ok:" + OrderID;
