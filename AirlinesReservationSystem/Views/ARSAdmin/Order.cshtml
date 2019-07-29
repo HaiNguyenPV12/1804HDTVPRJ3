@@ -51,7 +51,7 @@
             }
             else if(item.Status == 2)
             {
-                @: Canceled
+                @: Cancelled
             }
             else
             {
@@ -59,8 +59,11 @@
             }
         </td>
         <td>
-            @Html.ActionLink("Details", "OrderDetails", new { id=item.OrderID }, new { @class = "btn btn-danger"}) 
-            @Html.ActionLink("Cancelled", "Cancelorder", new { id=item.OrderID }, new { @class = "btn btn-primary"}) 
+            @Html.ActionLink("Details", "OrderDetails", new { id=item.OrderID }, new { @class = "btn btn-danger"})
+            @if (item.Status != 2)
+            {
+                @Html.ActionLink("Cancelled", "Cancelorder", new { id=item.OrderID }, new { @class = "btn btn-primary"}) 
+            }
         </td>
     </tr>
 }
