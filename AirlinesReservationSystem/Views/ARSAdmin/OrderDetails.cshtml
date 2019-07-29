@@ -4,13 +4,13 @@
     ViewBag.Title = "OrderDetails";
 }
 
-<h2>OrderDetails</h2>
+    <h2>OrderDetails @Html.ActionLink("Back to List", "Order", null, new { @class = "btn btn-primary" }) </h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
+<table class="table table-bordered table-hover table-sm">
+    <tr class="table-ars">
+        <th>
+            @Html.DisplayNameFor(model => model.TicketID)
+        </th>
         <th>
             @Html.DisplayNameFor(model => model.OrderID)
         </th>
@@ -47,6 +47,9 @@
 @foreach (var item in Model) {
     <tr>
         <td>
+            @Html.DisplayFor(modelItem => item.TicketID)
+        </td>
+        <td>
             @Html.DisplayFor(modelItem => item.OrderID)
         </td>
         <td>
@@ -77,9 +80,8 @@
             @Html.DisplayFor(modelItem => item.Price)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.TicketID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.TicketID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.TicketID })
+            @Html.ActionLink("Edit", "TicketEdit", new { id=item.TicketID }, new { @class = "btn btn-success"}) 
+            
         </td>
     </tr>
 }

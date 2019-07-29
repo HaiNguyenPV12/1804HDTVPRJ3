@@ -37,14 +37,32 @@ namespace AirlinesReservationSystem.Controllers
             return View(flightSearch);
         }
 
-        public ActionResult Login(string Goto)
+        public ActionResult Login()
         {
-            ViewBag.Goto = Goto;
+            if (Session["user"] == null)
+            {
+                try
+                {
+                    //ViewBag.Goto = Goto;
+                    string url = this.Request.UrlReferrer.AbsolutePath;
+                    Session["Goto"] = url;
+                }
+                catch (Exception)
+                {
+                    Session["Goto"] = "/";
+                }
+                return View();
+            }
+            return RedirectToAction("Index");
+        }
+        public ActionResult Test()
+        {
+            //ViewBag.Goto = Goto;
             return View();
         }
 
         [HttpPost]
-        public ActionResult Login(User login, string Goto)
+        public ActionResult Login(User login)
         {
             ModelState.Remove("Firstname");
             ModelState.Remove("Lastname");
@@ -62,15 +80,18 @@ namespace AirlinesReservationSystem.Controllers
                 if (user != null)
                 {
                     Session["user"] = user.UserID;
-                    if (Goto != null && Goto == "payment")
+                    if (Session["GotoPayment"] != null)
                     {
-                        return RedirectToAction("Payment");
+                        return Redirect(Session["GotoPayment"].ToString());
+                    }
+                    if (Session["Goto"] != null)
+                    {
+                        return Redirect(Session["Goto"].ToString());
                     }
                     return RedirectToAction("Index"); //TODO redirect to previous page instead of home
                 }
                 ModelState.AddModelError("", "Invalid login information");
             }
-            ViewBag.Goto = Goto;
             return View();
         }
 
@@ -206,7 +227,8 @@ namespace AirlinesReservationSystem.Controllers
                 ViewBag.PeopleNum = PeopleNum;
                 return View();
             }
-            return RedirectToAction("Login", new { Goto = "payment" });
+            Session["GotoPayment"] = string.Format("/ars/payment?FNo={0}&ReFNo={1}&PeopleNum={2}", FNo, ReFNo, PeopleNum);
+            return RedirectToAction("Login");
         }
 
         [HttpPost]
@@ -264,19 +286,24 @@ namespace AirlinesReservationSystem.Controllers
             }
             objP.Passengers = objPaList;
             objP.UserID = Session["user"].ToString();
+
             // Send to DAO to process data
-            string s = PaymentDAO.ProcessPayment(objP);
+            string s = "";
+            if (string.IsNullOrEmpty(frmPayment["IsBlock"]))
+            {
+                s = PaymentDAO.ProcessPayment(objP, false);
+            }
+            else
+            {
+                s = PaymentDAO.ProcessPayment(objP, true);
+            }
 
             return Content(s);
         }
 
         public ActionResult PaymentResult(Int64 id)
         {
-            if (Session["user"] != null)
-            {
-                return View(PaymentDAO.GetOrder(id));
-            }
-            return RedirectToAction("Login");
+            return View(PaymentDAO.GetOrder(id));
         }
 
         public ActionResult GetAirports()

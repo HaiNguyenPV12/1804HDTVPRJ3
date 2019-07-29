@@ -13,7 +13,10 @@ namespace AirlinesReservationSystem.Models.ars
 
         public static Order GetOrder(Int64 id) => db.Order.FirstOrDefault(o => o.OrderID == id);
 
-        public static string ProcessPayment(Payment payment)
+        public static IEnumerable<Ticket> GetTicketList(Int64 id) => db.Ticket.Where(t => t.OrderID == id);
+
+
+        public static string ProcessPayment(Payment payment, bool IsBlocked)
         {
             string s = "";
             try
@@ -27,7 +30,15 @@ namespace AirlinesReservationSystem.Models.ars
                 Order order = new Order();
                 order.OrderID = OrderID;
                 order.OrderDate = now;
-                order.Status = 1;
+                if (IsBlocked)
+                {
+                    order.Status = 0;
+                }
+                else
+                {
+                    order.Status = 1;
+                }
+                
                 order.UserID = payment.UserID;
                 order.Total = Total;
 
