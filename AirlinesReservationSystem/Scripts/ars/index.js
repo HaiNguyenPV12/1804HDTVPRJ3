@@ -7,18 +7,18 @@
         else { $('#returnDate').hide(); }
     });
 
-    
+
     $('#formDate').change(function () {
         var departureDate = new Date($('#DepartureTime').val());
         var returnDate = new Date($('#ReturnDepartureTime').val());
         if (departureDate > returnDate && $('#optionRoundTrip').is(':checked')) {
-            $('#errorMessage').append("<span id='dateError'>Return date can't be earlier than departure date.</span>");
+            $('#dateError').show();
             $("#btnSubmit").attr("disabled", true);
         }
         else {
             var errorElement = document.getElementById("dateError");
             if (errorElement !== null) {
-                errorElement.parentNode.removeChild(errorElement);
+                $('#dateError').hide();
                 $("#btnSubmit").attr("disabled", false);
             }
         }
