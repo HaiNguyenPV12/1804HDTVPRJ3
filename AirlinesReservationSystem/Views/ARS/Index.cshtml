@@ -12,6 +12,7 @@
 <div class="row flightSearch">
     <div class="flightSearch-content">
         <span class="text-danger" id="errorMessage">@TempData["errorM"]</span>
+        <span id='dateError' style="display:none" class="text-danger">Return date can't be earlier than departure date.</span>
         <h3>Search for flights</h3>
         @using (Html.BeginForm("Index", "ARS", FormMethod.Post, new { @id = "flightSearchForm" }))
         {
