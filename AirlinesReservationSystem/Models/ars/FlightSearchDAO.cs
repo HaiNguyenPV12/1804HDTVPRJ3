@@ -49,5 +49,22 @@ namespace AirlinesReservationSystem.Models
             var icon = airline.AirlineIcon;
             return icon;
         }
+
+        public static FlightSearch Copy(FlightSearch flightSearchOriginal)
+        {
+            FlightSearch f = new FlightSearch()
+            {
+                Departure = flightSearchOriginal.Departure,
+                Adult = flightSearchOriginal.Adult,
+                Children = flightSearchOriginal.Children,
+                Class = flightSearchOriginal.Class,
+                DepartureTime = flightSearchOriginal.DepartureTime,
+                Destination = flightSearchOriginal.Destination,
+                IsRoundTrip = flightSearchOriginal.IsRoundTrip,
+                ReturnDepartureTime = flightSearchOriginal.ReturnDepartureTime,
+                Senior = flightSearchOriginal.Senior
+            };
+            return f;
+        }
     }
 }
