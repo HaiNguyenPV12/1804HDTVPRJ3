@@ -44,7 +44,7 @@
             <div class="form-group form-inline">
                 @Html.LabelFor(model => model.ServiceDetails, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.ServiceDetails, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
+                    @Html.TextAreaFor(model => model.ServiceDetails, new { @class = "form-control", @style = "width:100%" ,@rows=5})
                 </div>
                 <div class="col-md-2">
                 </div>

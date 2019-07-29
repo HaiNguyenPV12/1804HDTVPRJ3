@@ -176,12 +176,12 @@
             </div>
 
             <div class="text-center mt-2">
-                <button type="button" class="btn btn-success" onclick="validatePayment()">
+                <button type="button" class="btn btn-success" onclick="validatePayment('book')">
                     <h2>Book</h2>
                     <i>Permanently buy this flight</i>
                 </button>
                 <input type="submit" name="name" value="" class="text-hide" />
-                <button type="button" class="btn btn-warning">
+                <button type="button" class="btn btn-warning" onclick="validatePayment('block')">
                     <h2>Block</h2>
                     <i>Preserve first and pay after</i>
                 </button>
@@ -215,16 +215,20 @@
 
     refreshPayment();
 
-    function validatePayment() {
+    function validatePayment(type) {
         if ($('#frmPayment')[0].checkValidity()) {
             var form = $("#frmPayment").serialize();
+            if (type=="block") {
+                form += "&IsBlock=''";
+            }
+
             $.post("/ars/payment", form, function (result) {
                 if (result.substring(0, 2) == "ok") {
                     window.location.href = "/ars/paymentresult?id=" + result.substring(3, result.length);
                 } else {
                     $('#paymentConfirmDiv').html(result);
                 }
-                
+
                 console.log(result);
             });
         } else {

@@ -35,17 +35,21 @@ namespace AirlinesReservationSystem.Controllers
 
         public ActionResult Login()
         {
-            try
+            if (Session["user"] == null)
             {
-                //ViewBag.Goto = Goto;
-                string url = this.Request.UrlReferrer.AbsolutePath;
-                Session["Goto"] = url;
+                try
+                {
+                    //ViewBag.Goto = Goto;
+                    string url = this.Request.UrlReferrer.AbsolutePath;
+                    Session["Goto"] = url;
+                }
+                catch (Exception)
+                {
+                    Session["Goto"] = "/";
+                }
+                return View();
             }
-            catch (Exception)
-            {
-                Session["Goto"] = "/";
-            }
-            return View();
+            return RedirectToAction("Index");
         }
         public ActionResult Test()
         {
@@ -72,6 +76,10 @@ namespace AirlinesReservationSystem.Controllers
                 if (user != null)
                 {
                     Session["user"] = user.UserID;
+                    if (Session["GotoPayment"] != null)
+                    {
+                        return Redirect(Session["GotoPayment"].ToString());
+                    }
                     if (Session["Goto"] != null)
                     {
                         return Redirect(Session["Goto"].ToString());
@@ -209,7 +217,7 @@ namespace AirlinesReservationSystem.Controllers
                 ViewBag.PeopleNum = PeopleNum;
                 return View();
             }
-
+            Session["GotoPayment"] = string.Format("/ars/payment?FNo={0}&ReFNo={1}&PeopleNum={2}", FNo, ReFNo, PeopleNum);
             return RedirectToAction("Login");
         }
 
@@ -268,19 +276,24 @@ namespace AirlinesReservationSystem.Controllers
             }
             objP.Passengers = objPaList;
             objP.UserID = Session["user"].ToString();
+
             // Send to DAO to process data
-            string s = PaymentDAO.ProcessPayment(objP);
+            string s = "";
+            if (string.IsNullOrEmpty(frmPayment["IsBlock"]))
+            {
+                s = PaymentDAO.ProcessPayment(objP, false);
+            }
+            else
+            {
+                s = PaymentDAO.ProcessPayment(objP, true);
+            }
 
             return Content(s);
         }
 
         public ActionResult PaymentResult(Int64 id)
         {
-            if (Session["user"] != null)
-            {
-                return View(PaymentDAO.GetOrder(id));
-            }
-            return RedirectToAction("Login");
+            return View(PaymentDAO.GetOrder(id));
         }
 
         public ActionResult GetAirports()
