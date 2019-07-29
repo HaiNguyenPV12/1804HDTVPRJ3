@@ -6,14 +6,13 @@
     int ticketCount = 1;
 }
 
-<h2>Order: @Model.OrderID @Html.ActionLink("Back to Homepage", "Index", null, new { @class = "btn btn-warning" })</h2>
+<h2>Order: @Model.OrderID @Html.ActionLink("Back to Homepage", "Index", null, new { @class = "btn btn-ars-light" })</h2>
 
 <div>
     <div>
-        Status: 
         @if (Model.Status == 0)
         {
-            if (TicketList.Where(t => t.IsReturn == false).FirstOrDefault().Flight.DepartureTime > System.DateTime.Now.AddDays(-14))
+            if (System.DateTime.Now < TicketList.Where(t => t.IsReturn == false).FirstOrDefault().Flight.DepartureTime.AddDays(-14))
             {
                 <span class="text-warning">Blocking (Need to be paid before 2 weeks before the flight)</span>
             }
@@ -38,7 +37,8 @@
                 <hr />
                 <div>
                     <p>
-                        @(ticketCount++). @t.Flight.Route.Airline.AirlineName<b>#@t.TicketID</b> | Passenger: @t.Firstname.ToUpper() / @t.Lastname.ToUpper() |
+                        @(ticketCount++).
+                        @t.Flight.Route.Airline.AirlineName <b>#@t.TicketID</b>| Passenger: @t.Firstname.ToUpper() / @t.Lastname.ToUpper() |
                         @if (t.Class == "F")
                         {
                             @:First Class
@@ -141,4 +141,24 @@
 
         </div>
     }
+    <br />
+    <div class="text-center">
+        @if (Model.Status == 0)
+        {
+            if (Session["user"] == null)
+            {
+                <a href="/ars/login" value="" class="btn btn-lg btn-warning">Login to pay this order</a>
+            }
+            else
+            {
+                if (Session["user"].ToString() == Model.UserID)
+                {
+                    @Html.ActionLink("Pay this order", "BlockingPayment", new { @id = Model.OrderID }, new { @class = "btn btn-lg btn-success text-center" })
+                }
+
+            }
+        }
+
+
+    </div>
 </div>

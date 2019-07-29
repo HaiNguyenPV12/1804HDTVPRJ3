@@ -15,6 +15,17 @@ namespace AirlinesReservationSystem.Models.ars
 
         public static IEnumerable<Ticket> GetTicketList(Int64 id) => db.Ticket.Where(t => t.OrderID == id);
 
+        public static bool BlockingOrderPaid(long id)
+        {
+            var o = GetOrder(id);
+            if (o != null)
+            {
+                o.Status = 1;
+                db.SaveChanges();
+                return true;
+            }
+            return false;
+        }
 
         public static string ProcessPayment(Payment payment, bool IsBlocked)
         {
@@ -38,7 +49,7 @@ namespace AirlinesReservationSystem.Models.ars
                 {
                     order.Status = 1;
                 }
-                
+
                 order.UserID = payment.UserID;
                 order.Total = Total;
 
