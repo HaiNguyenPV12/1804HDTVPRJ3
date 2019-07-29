@@ -200,6 +200,8 @@
       <DependentUpon>ArsDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\arsadmin\FlightDAO.cs" />
+    <Compile Include="Models\arsadmin\OrderDAO.cs" />
+    <Compile Include="Models\arsadmin\TicketDAO.cs" />
     <Compile Include="Models\ArsDBModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -310,7 +312,6 @@
     <Content Include="Views\ARSAdmin\Order.cshtml" />
     <Content Include="Views\ARSAdmin\OrderDetails.cshtml" />
     <Content Include="Views\ARSAdmin\TicketEdit.cshtml" />
-
     <Content Include="Views\ARSAdmin\FlightEdit.cshtml" />
     <Content Include="Views\ARS\Payment.cshtml" />
     <Content Include="Views\ARS\JqueryUIDemo.cshtml" />
