@@ -2,6 +2,9 @@
 @{
     ViewBag.Title = "Payment";
     int PeopleNum = ViewBag.PeopleNum;
+    int AdultNum = ViewBag.PeopleNum;
+    int ChildNum = ViewBag.PeopleNum;
+
     AirlinesReservationSystem.Models.Flight FInfo = AirlinesReservationSystem.Models.arsadmin.FlightDAO.GetFlight(ViewBag.FNo);
     AirlinesReservationSystem.Models.Flight ReFInfo = null;
     if (!string.IsNullOrEmpty(ViewBag.RFNo))
@@ -88,7 +91,8 @@
                                 <input type="text" name="PassportNo" class="form-control" style="width:100%" placeholder="Passport Number" required maxlength="10" />
                             </div>
                             <div class="col-md-4">
-                                <select name="Class" class="form-control" required style="width:100%" onchange="refreshPayment()">
+                                <input type="text" name="name" value="@" />
+                                @*<select name="Class" class="form-control" required style="width:100%" onchange="refreshPayment()">
                                     @if (FInfo.AvailSeatsE >= PeopleNum)
                                     {
                                         <option value="E">Economy</option>
@@ -101,7 +105,7 @@
                                     {
                                         <option value="F">First Class</option>
                                     }
-                                </select>
+                                </select>*@
                             </div>
                             @if (ReFInfo != null)
                             {
