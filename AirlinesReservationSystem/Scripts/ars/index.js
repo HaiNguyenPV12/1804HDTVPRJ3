@@ -11,7 +11,7 @@
     $('#formDate').change(function () {
         var departureDate = new Date($('#DepartureTime').val());
         var returnDate = new Date($('#ReturnDepartureTime').val());
-        if (departureDate > returnDate) {
+        if (departureDate > returnDate && $('#optionRoundTrip').is(':checked')) {
             $('#errorMessage').append("<span id='dateError'>Return date can't be earlier than departure date.</span>");
             $("#btnSubmit").attr("disabled", true);
         }
