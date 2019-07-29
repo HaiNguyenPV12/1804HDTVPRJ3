@@ -37,10 +37,14 @@ namespace AirlinesReservationSystem.Controllers
             return View(flightSearch);
         }
 
-        public ActionResult Login() => View();
+        public ActionResult Login(string Goto)
+        {
+            ViewBag.Goto = Goto;
+            return View();
+        }
 
         [HttpPost]
-        public ActionResult Login(User login)
+        public ActionResult Login(User login, string Goto)
         {
             ModelState.Remove("Firstname");
             ModelState.Remove("Lastname");
@@ -58,10 +62,15 @@ namespace AirlinesReservationSystem.Controllers
                 if (user != null)
                 {
                     Session["user"] = user.UserID;
+                    if (Goto != null && Goto == "payment")
+                    {
+                        return RedirectToAction("Payment");
+                    }
                     return RedirectToAction("Index"); //TODO redirect to previous page instead of home
                 }
                 ModelState.AddModelError("", "Invalid login information");
             }
+            ViewBag.Goto = Goto;
             return View();
         }
 
@@ -197,7 +206,7 @@ namespace AirlinesReservationSystem.Controllers
                 ViewBag.PeopleNum = PeopleNum;
                 return View();
             }
-            return RedirectToAction("Login");
+            return RedirectToAction("Login", new { Goto = "payment" });
         }
 
         [HttpPost]
