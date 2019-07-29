@@ -20,7 +20,8 @@
 @if (!roundTrip)
 {
     Session["fid1"] = Model.FlightVM.FNo;
-    @Html.ActionLink("Continue to Payment", "Payment", new { FNo = Model.FlightVM.FNo, PeopleNum = totalPassenger }, new { @class = "btn btn-ars-light btn-ars-list" })
+    @Html.ActionLink("Continue to Payment", "Payment", null, new { @class = "btn btn-ars-light btn-ars-list" })
+    @*@Html.ActionLink("Continue to Payment", "Payment", new { FNo = Model.FlightVM.FNo, PeopleNum = totalPassenger }, new { @class = "btn btn-ars-light btn-ars-list" })*@
 }
 else
 {
@@ -32,6 +33,7 @@ else
     else
     {
         Session["fid2"] = Model.FlightVM.FNo;
-        @Html.ActionLink("Continue to Booking", "Payment", new { FNo = Model.FlightVM.FNo, ReFNo = Model.FlightVM.FNo, PeopleNum = totalPassenger }, new { @class = "btn btn-ars-light btn-ars-list" })
+        @Html.ActionLink("Continue to Booking", "Payment", null, new { @class = "btn btn-ars-light btn-ars-list" })
+        @*@Html.ActionLink("Continue to Booking", "Payment", new { FNo = Model.FlightVM.FNo, ReFNo = Model.FlightVM.FNo, PeopleNum = totalPassenger }, new { @class = "btn btn-ars-light btn-ars-list" })*@
     }
 }

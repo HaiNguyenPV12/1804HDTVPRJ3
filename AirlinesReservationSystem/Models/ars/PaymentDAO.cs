@@ -63,17 +63,25 @@ namespace AirlinesReservationSystem.Models.ars
                     Ticket ticket = new Ticket();
                     Int64 TicketID = Int64.Parse(OrderID.ToString() + ticketCount);
                     double price = 0;
-                    price += FInfo.BasePrice + FInfo.Route.Aircraft.ServiceFee;
+                    if (p.Age >= 14)
+                    {
+                        price += FInfo.BasePrice + FInfo.Route.Aircraft.ServiceFee;
+                    }
+                    else
+                    {
+                        price += FInfo.BasePrice * 70 / 100 + FInfo.Route.Aircraft.ServiceFee;
+                    }
+                    
                     foreach (var item in p.Service)
                     {
                         price += ServiceDAO.GetService(item).ServiceFee;
                         db.TicketService.Add(new TicketService { ServiceID = item, TicketID = TicketID });
                     }
-                    if (p.Class == "F")
+                    if (payment.Class == "F")
                     {
                         price += 20;
                     }
-                    else if (p.Class == "B")
+                    else if (payment.Class == "B")
                     {
                         price += 10;
                     }
@@ -81,7 +89,7 @@ namespace AirlinesReservationSystem.Models.ars
                     ticket.OrderID = OrderID;
                     ticket.FNo = FInfo.FNo;
                     ticket.PassportNo = p.PassportNo;
-                    ticket.Class = p.Class;
+                    ticket.Class = payment.Class;
                     ticket.Firstname = p.Firstname;
                     ticket.Lastname = p.Lastname;
                     ticket.Sex = p.Sex;
@@ -102,17 +110,24 @@ namespace AirlinesReservationSystem.Models.ars
                         Ticket ticket = new Ticket();
                         Int64 TicketID = Int64.Parse(OrderID.ToString() + ticketCount);
                         double price = 0;
-                        price += ReFInfo.BasePrice + ReFInfo.Route.Aircraft.ServiceFee;
+                        if (p.Age >= 14)
+                        {
+                            price += ReFInfo.BasePrice + ReFInfo.Route.Aircraft.ServiceFee;
+                        }
+                        else
+                        {
+                            price += ReFInfo.BasePrice * 70 / 100 + ReFInfo.Route.Aircraft.ServiceFee;
+                        }
                         foreach (var item in p.Service)
                         {
                             price += ServiceDAO.GetService(item).ServiceFee;
                             db.TicketService.Add(new TicketService { ServiceID = item, TicketID = TicketID });
                         }
-                        if (p.ReClass == "F")
+                        if (payment.Class == "F")
                         {
                             price += 20;
                         }
-                        else if (p.ReClass == "B")
+                        else if (payment.Class == "B")
                         {
                             price += 10;
                         }
@@ -120,7 +135,7 @@ namespace AirlinesReservationSystem.Models.ars
                         ticket.OrderID = OrderID;
                         ticket.FNo = ReFInfo.FNo;
                         ticket.PassportNo = p.PassportNo;
-                        ticket.Class = p.ReClass;
+                        ticket.Class = payment.Class;
                         ticket.Firstname = p.Firstname;
                         ticket.Lastname = p.Lastname;
                         ticket.Sex = p.Sex;
@@ -135,6 +150,7 @@ namespace AirlinesReservationSystem.Models.ars
 
                 db.SaveChanges();
                 db.Order.FirstOrDefault(o => o.OrderID == OrderID).Total = Total;
+                // Skymile
                 if (order.Status == 1)
                 {
 
@@ -196,17 +212,17 @@ namespace AirlinesReservationSystem.Models.ars
                     s += "++ Airport maintainance fee: " + MaintainFee + "\n";
                     Price += MaintainFee;
 
-                    if (p.Class == "F")
+                    if (payment.Class == "F")
                     {
                         s += "++ First Class's Fee: 20\n";
                         Price += 20;
                     }
-                    else if (p.Class == "B")
+                    else if (payment.Class == "B")
                     {
                         s += "++ Bussiness Class's Fee: 10\n";
                         Price += 10;
                     }
-                    else if (p.Class == "E")
+                    else if (payment.Class == "E")
                     {
                         s += "++ Economy Class's Fee: 0\n";
                     }
@@ -246,17 +262,17 @@ namespace AirlinesReservationSystem.Models.ars
                         s += "++ Airport maintainance fee: " + MaintainFee + "\n";
                         Price += MaintainFee;
 
-                        if (p.ReClass == "F")
+                        if (payment.Class == "F")
                         {
                             s += "++ First Class's Fee: 20\n";
                             Price += 20;
                         }
-                        else if (p.ReClass == "B")
+                        else if (payment.Class == "B")
                         {
                             s += "++ Bussiness Class's Fee: 10\n";
                             Price += 10;
                         }
-                        else if (p.ReClass == "E")
+                        else if (payment.Class == "E")
                         {
                             s += "++ Economy Class's Fee: 0\n";
                         }

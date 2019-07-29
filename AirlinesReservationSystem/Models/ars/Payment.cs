@@ -12,8 +12,8 @@ namespace AirlinesReservationSystem.Models.ars
         public bool Sex { get; set; }
         public int Age { get; set; }
         public string PassportNo { get; set; }
-        public string Class { get; set; }
-        public string ReClass { get; set; }
+        //public string Class { get; set; }
+        //public string ReClass { get; set; }
         public string[] Service { get; set; }
 
     }
@@ -23,9 +23,10 @@ namespace AirlinesReservationSystem.Models.ars
         public List<Passenger> Passengers { get; set; }
         public int PeopleNum { get; set; }
         public int AdultNum { get; set; }
-        public int ChildrenNum { get; set; }
+        public int ChildNum { get; set; }
         public string FNo { get; set; }
         public string ReFNo { get; set; }
         public string UserID { get; set; }
+        public string Class { get; set; }
     }
 }
