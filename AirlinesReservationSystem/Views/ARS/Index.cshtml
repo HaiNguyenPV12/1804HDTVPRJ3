@@ -42,7 +42,7 @@
                     </div>
                     <!--reverse button-->
                     <div class="col-md-2 row mx-auto">
-                        <button type="button" class="btn btn-light mx-auto" tabindex="99" id="btnSwap">swap</button>
+                        @*<button type="button" class="btn btn-light mx-auto" tabindex="99" id="btnSwap">swap</button>*@
                     </div>
                     <div class="col-md-5 row">
                         <label class="col-form-label">To: &nbsp;</label>
@@ -71,12 +71,12 @@
                 </div>
                 <h5 class="row">Travelers:</h5>
                 <div class="form-group row">
-                    <label class="col-form-label">Adults:</label>
+                    <label class="col-form-label mr-md-2">Adults:</label>
                     @Html.TextBoxFor(item => item.Adult, new { @Value = "1", @class = "form-control col-md-1", @min = "0", @type = "number" })
-                    <label class="col-form-label">Children:</label>
-                    <input type="number" name="Children" value="0" class="form-control col-md-1" min="0" />
-                    <label class="col-form-label">Seniors:</label>
-                    <input type="number" name="Senior" value="0" class="form-control col-md-1" min="0" />
+                    <label class="col-form-label ml-md-4 mr-md-2">Children:</label>
+                    @Html.TextBoxFor(item => item.Children, new { @Value = "0", @class = "form-control col-md-1", @min = "0", @type = "number" })
+                    <label class="col-form-label ml-md-4 mr-md-2">Seniors:</label>
+                    @Html.TextBoxFor(item => item.Senior, new { @Value = "0", @class = "form-control col-md-1", @min = "0", @type = "number" })
                 </div>
                 <div class="form-group row">
                     <label class="col-form-label">Preferred Class: &nbsp;</label>
@@ -92,5 +92,14 @@
 
 <script src="~/Scripts/ars/index.js"></script>
 <script>
+    $('#btnSwap').click(function (e) {
+        //e.preventDefault();
+        //var departure = $('#combobox').val();
+        //var destination = $('#combobox1').val();
+        //console.log(departure);
+        //console.log(destination);
+        //$('#combobox').val(destination);
+        //$('#combobox1').val(departure);
 
+    });
 </script>

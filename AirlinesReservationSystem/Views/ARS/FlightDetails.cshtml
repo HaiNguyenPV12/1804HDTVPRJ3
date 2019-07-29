@@ -2,10 +2,11 @@
 
 @{
     ViewBag.Title = "FlightDetails";
-    bool fcs = false, bs = false;
-    if (Model.FlightVM.AvailSeatsF >= 0) { fcs = true; }
-    if (Model.FlightVM.AvailSeatsB >= 0) { bs = true; }
+    bool firstClassSeats = false, BusinessSeats = false;
+    if (Model.FlightVM.AvailSeatsF >= 0) { firstClassSeats = true; }
+    if (Model.FlightVM.AvailSeatsB >= 0) { BusinessSeats = true; }
     var searchParams = (AirlinesReservationSystem.Models.ars.FlightSearch)Session["searchParams"];
+    int totalPassenger = int.Parse(Session["totalPassenger"].ToString());
     bool roundTrip = bool.Parse(searchParams.IsRoundTrip.ToString());
 }
 
@@ -18,7 +19,7 @@
 
 @if (!roundTrip)
 {
-    <a href="#" class="btn btn-ars-dark">Payment</a>
+    @Html.ActionLink("Continue to Booking", "Payment", new { FNo = Model.FlightVM.FNo, PeopleNum = totalPassenger }, new { @class = "btn btn-ars-light btn-ars-list" })
 }
 else
 {
@@ -29,6 +30,6 @@ else
 else
 {
     Session["fid2"] = Model.FlightVM.FNo;
-    <a href="#" class="btn btn-ars-light">continue to payment</a>
+    @Html.ActionLink("Continue to Booking", "Payment", new { FNo = Model.FlightVM.FNo, ReFNo = Model.FlightVM.FNo, PeopleNum = totalPassenger }, new { @class = "btn btn-ars-light btn-ars-list" })
 }
 }

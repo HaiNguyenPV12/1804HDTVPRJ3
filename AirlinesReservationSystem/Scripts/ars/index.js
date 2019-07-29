@@ -6,13 +6,8 @@
         }
         else { $('#returnDate').hide(); }
     });
-    $('#btnSwap').click(function (e) {
-        e.preventDefault();
-        var departure = $('#Departure').val();
-        var destination = $('#Destination').val();
-        $('#Departure').val(destination);
-        $('#Destination').val(departure);
-    });
+
+    
     $('#formDate').change(function () {
         var departureDate = new Date($('#DepartureTime').val());
         var returnDate = new Date($('#ReturnDepartureTime').val());
@@ -22,10 +17,11 @@
         }
         else {
             var errorElement = document.getElementById("dateError");
-            if (errorElement != null) {
+            if (errorElement !== null) {
                 errorElement.parentNode.removeChild(errorElement);
                 $("#btnSubmit").attr("disabled", false);
             }
         }
     });
 });
+
