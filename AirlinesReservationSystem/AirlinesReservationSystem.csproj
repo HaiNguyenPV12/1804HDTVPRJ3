@@ -100,6 +100,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\ars\FlightList.css" />
     <Content Include="Content\ars\index.css" />
     <Content Include="Content\ars\layoutadmin.css" />
     <Content Include="Content\ars\layout.css" />
@@ -113,6 +114,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="Content\typeahead.css" />
     <Content Include="Global.asax" />
+    <Content Include="img\ars\Logo.png" />
     <Content Include="Models\ArsDBModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ArsDBModel.Context.cs</LastGenOutput>
@@ -218,6 +220,7 @@
       <DependentUpon>ArsDBModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\ars\AirportSearch.cs" />
+    <Compile Include="Models\ars\Dropdowns.cs" />
     <Compile Include="Models\ars\FlightResult.cs" />
     <Compile Include="Models\ars\FlightSearch.cs" />
     <Compile Include="Models\ars\FlightSearchDetails.cs" />

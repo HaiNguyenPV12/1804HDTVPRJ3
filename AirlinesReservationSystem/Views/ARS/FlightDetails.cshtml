@@ -5,49 +5,30 @@
     bool fcs = false, bs = false;
     if (Model.FlightVM.AvailSeatsF >= 0) { fcs = true; }
     if (Model.FlightVM.AvailSeatsB >= 0) { bs = true; }
+    var searchParams = (AirlinesReservationSystem.Models.ars.FlightSearch)Session["searchParams"];
+    bool roundTrip = bool.Parse(searchParams.IsRoundTrip.ToString());
 }
 
 <h2>FlightDetails</h2>
 
 <div>
-    <table class="table">
-        <tr>
-            <th>Departure Time</th>
-            <th>Arrival Time</th>
-            <th>Flight Time</th>
-            <th>Departure</th>
-            <th>Destination</th>
-            @if (fcs)
-            {
-                <th>FC Seats</th>
-            }
-            @if (bs)
-            {
-                <th>Business Seats</th>
-            }
-            <th>Economy Seats</th>
-            <th>Price</th>
-            <th></th>
-        </tr>
-        <tr>
-            <td>@Model.FlightVM.DepartureTime</td>
-            <td>@Model.FlightVM.ArrivalTime</td>
-            <td>@Model.FlightVM.FlightTime</td>
-            <td>@Model.RouteVM.Departure</td>
-            <td>@Model.RouteVM.Destination</td>
-            @if (fcs)
-            {
-                <td>@Model.FlightVM.AvailSeatsF</td>
-            }
-            @if (bs)
-            {
-                <td>@Model.FlightVM.AvailSeatsB</td>
-            }
-            <td>@Model.FlightVM.AvailSeatsE</td>
-            <td>@Model.FlightVM.BasePrice</td>
-        </tr>
-    </table>
+    @Model.FlightVM.FNo <br />
+    @Model.FlightVM.Route.Airline.AirlineName
 </div>
-<p>
-    @Html.ActionLink("Back to List", "Index")
-</p>
+
+@if (!roundTrip)
+{
+    <a href="#" class="btn btn-ars-dark">Payment</a>
+}
+else
+{
+    if (Session["fid1"] == null)
+    {
+        {@Html.ActionLink("Select", "FlightListReturn", new { fid = Model.FlightVM.FNo, rid = Model.RouteVM.RNo }, new { @class = "btn btn-ars-light mb-md-1" })}
+}
+else
+{
+    Session["fid2"] = Model.FlightVM.FNo;
+    <a href="#" class="btn btn-ars-light">continue to payment</a>
+}
+}

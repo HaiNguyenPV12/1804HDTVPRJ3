@@ -18,17 +18,21 @@ namespace AirlinesReservationSystem.Controllers
         {
             Session["searchParams"] = flightSearch;
             int totalPassenger = flightSearch.Adult + flightSearch.Children + flightSearch.Senior;
+            int totalAdults = flightSearch.Adult + flightSearch.Senior;
             if (!flightSearch.IsRoundTrip) { ModelState.Remove("ReturnDepartureTime"); }
-            if (ModelState.IsValid && totalPassenger > 0)
+            if (ModelState.IsValid && totalPassenger > 0 && totalAdults > 0)
             {
-                Session["searchParams"] = flightSearch;
+                Session["searchParams0"] = flightSearch;
+                Session["totalPassenger"] = totalPassenger;
                 return RedirectToAction("FlightList", flightSearch);
             }
             else
             {
                 if (totalPassenger <= 0)
                     ModelState.AddModelError("", "Passengers numbers are invalid");
-                ModelState.AddModelError("", "Please enter required values");
+                if (totalAdults < flightSearch.Children && totalAdults <= 0)
+                    ModelState.AddModelError("", "Children must be accompanied by adults");
+                ModelState.AddModelError("", "Please enter required values.");
             }
             return View(flightSearch);
         }
@@ -68,9 +72,11 @@ namespace AirlinesReservationSystem.Controllers
         }
 
 
-        public ActionResult FlightList(FlightSearch flightSearch)
+        public ActionResult FlightList(FlightSearch flightSearch, bool? isReselect)
         {
-            //TODO sub string to get Airport IDs
+            Session["fid1"] = null;
+            if (isReselect == true)
+                flightSearch = (FlightSearch)Session["searchParams"];
             ViewBag.RoundTrip = flightSearch.IsRoundTrip;
             var model = FlightSearchDAO.GetFlightResults(flightSearch);
             Session["searchResultsFirstTrip"] = model;
@@ -81,6 +87,8 @@ namespace AirlinesReservationSystem.Controllers
         {
             try
             {
+                Session["fid1"] = fid;
+                Session["fid2"] = null;
                 FlightResult firstTrip = FlightSearchDAO.GetFlightResult(fid, rid);
                 FlightSearch flightSearch = (FlightSearch)Session["searchParams"];
                 var seatsLeft = firstTrip.FlightVM.AvailSeatsB + firstTrip.FlightVM.AvailSeatsF + firstTrip.FlightVM.AvailSeatsE;
@@ -89,13 +97,15 @@ namespace AirlinesReservationSystem.Controllers
                     TempData["NoSeatsMessage"] = "Sorry, there are no more seats left for flight " + firstTrip.FlightVM.FNo;
                     return RedirectToAction("FlightList", flightSearch);
                 }
+                FlightSearch flightSearchReturn = FlightSearchDAO.Copy(flightSearch);
                 ViewBag.firstTrip = firstTrip;
-                var roundTripEnd = flightSearch.Departure;
-                var roundTripStart = flightSearch.Destination;
-                flightSearch.Departure = roundTripStart;
-                flightSearch.Destination = roundTripEnd;
-                flightSearch.DepartureTime = flightSearch.ReturnDepartureTime;
-                var model = FlightSearchDAO.GetFlightResults(flightSearch);
+                var roundTripEnd = flightSearchReturn.Departure;
+                var roundTripStart = flightSearchReturn.Destination;
+                flightSearchReturn.Departure = roundTripStart;
+                flightSearchReturn.Destination = roundTripEnd;
+                flightSearchReturn.DepartureTime = flightSearch.ReturnDepartureTime;
+                var model = FlightSearchDAO.GetFlightResults(flightSearchReturn);
+                Session["searchParams"] = flightSearch;
                 return View(model);
             }
             catch (Exception)

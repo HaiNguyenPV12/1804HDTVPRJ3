@@ -1,0 +1,17 @@
+﻿.airline-icon {
+    max-height: 2vh;
+    max-width: 15vh;
+}
+
+.flightList-card:hover {
+    background-color: rgba(0, 0, 0,0.1);
+    transition-duration: 200ms;
+}
+
+.flightList-card-selected {
+    background-color: rgba(255, 0, 0,0.1);
+}
+
+.btn-ars-list {
+    min-width: 5rem !important;
+}

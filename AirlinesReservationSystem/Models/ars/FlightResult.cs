@@ -9,5 +9,6 @@ namespace AirlinesReservationSystem.Models.ars
     {
         public Flight FlightVM { get; set; }
         public Route RouteVM { get; set; }
+        public Airline AirlineVM { get; set; }
     }
 }
