@@ -44,7 +44,7 @@ namespace AirlinesReservationSystem.Controllers
                 try
                 {
                     //ViewBag.Goto = Goto;
-                    string url = this.Request.UrlReferrer.AbsolutePath;
+                    string url = this.Request.UrlReferrer.ToString();
                     Session["Goto"] = url;
                 }
                 catch (Exception)
@@ -82,7 +82,9 @@ namespace AirlinesReservationSystem.Controllers
                     Session["user"] = user.UserID;
                     if (Session["GotoPayment"] != null)
                     {
-                        return Redirect(Session["GotoPayment"].ToString());
+                        string Goto = Session["GotoPayment"].ToString();
+                        Session["GotoPayment"] = null;
+                        return Redirect(Goto);
                     }
                     if (Session["Goto"] != null)
                     {
@@ -98,6 +100,7 @@ namespace AirlinesReservationSystem.Controllers
         public ActionResult Logout()
         {
             Session["user"] = null;
+            Session["GotoPayment"] = null;
             return RedirectToAction("Index");
         }
 
@@ -301,9 +304,15 @@ namespace AirlinesReservationSystem.Controllers
             return Content(s);
         }
 
-        public ActionResult PaymentResult(Int64 id)
+        public ActionResult PaymentResult(long id)
         {
             return View(PaymentDAO.GetOrder(id));
+        }
+
+        public ActionResult BlockingPayment(Int64 id)
+        {
+            PaymentDAO.BlockingOrderPaid(id);
+            return RedirectToAction("PaymentResult", new { id = id });
         }
 
         public ActionResult GetAirports()
