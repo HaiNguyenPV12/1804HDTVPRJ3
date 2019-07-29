@@ -4,13 +4,13 @@
     ViewBag.Title = "Order";
 }
 
-<h2>Order</h2>
+<h2>Order List</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
+<table class="table table-bordered table-hover table-sm">
+    <tr class="table-ars">
+        <th>
+            @Html.DisplayNameFor(model => model.OrderID)
+        </th>
         <th>
             @Html.DisplayNameFor(model => model.UserID)
         </th>
@@ -29,6 +29,9 @@
 @foreach (var item in Model) {
     <tr>
         <td>
+            @Html.DisplayFor(modelItem => item.OrderID)
+        </td>
+        <td>
             @Html.DisplayFor(modelItem => item.UserID)
         </td>
         <td>
@@ -38,12 +41,26 @@
             @Html.DisplayFor(modelItem => item.Total)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Status)
+            @if (item.Status == 0)
+            {
+                @: Blocked
+            }
+            else if (item.Status == 1)
+            {
+                @: Booked
+            }
+            else if(item.Status == 2)
+            {
+                @: Canceled
+            }
+            else
+            {
+                @: Booked and reminded
+            }
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.OrderID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.OrderID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.OrderID })
+            @Html.ActionLink("Details", "OrderDetails", new { id=item.OrderID }, new { @class = "btn btn-danger"}) 
+            @Html.ActionLink("Cancelled", "Cancelorder", new { id=item.OrderID }, new { @class = "btn btn-primary"}) 
         </td>
     </tr>
 }

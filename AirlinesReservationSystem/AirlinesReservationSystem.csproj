@@ -202,6 +202,8 @@
       <DependentUpon>ArsDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\arsadmin\FlightDAO.cs" />
+    <Compile Include="Models\arsadmin\OrderDAO.cs" />
+    <Compile Include="Models\arsadmin\TicketDAO.cs" />
     <Compile Include="Models\ArsDBModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -218,6 +220,7 @@
       <DependentUpon>ArsDBModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\ars\AirportSearch.cs" />
+    <Compile Include="Models\ars\Dropdowns.cs" />
     <Compile Include="Models\ars\FlightResult.cs" />
     <Compile Include="Models\ars\FlightSearch.cs" />
     <Compile Include="Models\ars\FlightSearchDetails.cs" />

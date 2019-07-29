@@ -360,11 +360,46 @@ namespace AirlinesReservationSystem.Controllers
 
 
         // ================ ORDER ==================
-        //
-        public ActionResult Order() => IsLoggedIn() ? View(ServiceDAO.GetServiceList()) : (ActionResult)RedirectToAction("Index");
-        public ActionResult OrderDetails(long id) => IsLoggedIn() ? View(ServiceDAO.GetServiceList()) : (ActionResult)RedirectToAction("Index");
+        //ORDER VIEW
+        public ActionResult Order() => IsLoggedIn() ? View(OrderDAO.GetOrderList()) : (ActionResult)RedirectToAction("Index");
+        public ActionResult CancelOrder(long id) => IsLoggedIn() && OrderDAO.CancelledOrder(id) ? (ActionResult)RedirectToAction("Order") : (ActionResult)RedirectToAction("Index");
+        //TICKET VIEW
+        public ActionResult OrderDetails(long id) => IsLoggedIn() ? View(TicketDAO.GetTicketList(id)) : (ActionResult)RedirectToAction("Index");
 
-        public ActionResult TicketEdit(long id) => IsLoggedIn() ? View(ServiceDAO.GetServiceList()) : (ActionResult)RedirectToAction("Index");
+
+        //TICKET EDIT
+        public ActionResult TicketEdit(long id)
+        {
+            if (IsLoggedIn())
+            {
+                var s = TicketDAO.GetTicket(id);
+                if (s != null)
+                {
+                    return View(s);
+                }
+                return RedirectToAction("OrderDetails");
+            }
+            return RedirectToAction("Index");
+        }
+
+        // SERVICE EDIT'S PROCESS
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult TicketEdit(Ticket updateT)
+        {
+            if (ModelState.IsValid)
+            {
+                if (TicketDAO.UpdateTicket(updateT))
+                {
+                    return RedirectToAction("OrderDetails",new { id = updateT.OrderID});
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Error updating this ticket! Please refresh and try again.");
+                }
+            }
+            return View(updateT);
+        }
         // ================ CHECK LOGIN ==================
         public bool IsLoggedIn() => Session["employee"] != null;
 

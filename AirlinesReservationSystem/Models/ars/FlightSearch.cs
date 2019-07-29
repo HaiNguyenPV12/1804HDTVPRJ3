@@ -18,7 +18,7 @@ namespace AirlinesReservationSystem.Models.ars
         public DateTime DepartureTime { get; set; }
 
         public DateTime ReturnDepartureTime { get; set; }
-        
+
         public int Adult { get; set; }
 
         public int Children { get; set; }
@@ -26,5 +26,8 @@ namespace AirlinesReservationSystem.Models.ars
         public int Senior { get; set; }
 
         public bool IsRoundTrip { get; set; }
+
+        [Required]
+        public string Class { get; set; }
     }
 }
