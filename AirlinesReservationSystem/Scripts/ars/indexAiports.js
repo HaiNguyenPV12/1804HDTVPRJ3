@@ -18,6 +18,7 @@
                 .appendTo(this.wrapper)
                 .val(value)
                 .attr("title", "")
+                .attr("name", "autoComplete")
                 .addClass("custom-combobox-input ui-widget ui-widget-content ui-state-default ui-corner-left form-control col-md")
                 .autocomplete({
                     delay: 0,

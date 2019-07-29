@@ -23,5 +23,26 @@
             }
         }
     });
+
+    $('#btnSwap').click(function (e) {
+        e.preventDefault();
+        //get original locations
+        var departure = $("#combobox").val();
+        var destination = $("#combobox1").val();
+        var departureText = $("#combobox option:selected").text();
+        var destinationText = $("#combobox1 option:selected").text();
+        //console.log(departure + " - " + destination);
+
+        //reverse locations
+        $("#combobox").val(destination);
+        $("#combobox1").val(departure);
+
+        //reverse location of input fields (which is different from hidden comboboxes)
+        var departureInput = document.getElementsByName("autoComplete")[0];
+        departureInput.value = destinationText;
+        var destinationInput = document.getElementsByName("autoComplete")[1];
+        destinationInput.value = departureText;
+        //console.log("--> " + $("#combobox").val() + " - " + $("#combobox1").val());
+    });
 });
 
