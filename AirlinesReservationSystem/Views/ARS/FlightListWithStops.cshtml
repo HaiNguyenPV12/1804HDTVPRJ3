@@ -1,30 +1,22 @@
 ﻿@model IEnumerable<AirlinesReservationSystem.Models.ars.FlightResult>
-
 @{
-    ViewBag.Title = "FlightList";
+    ViewBag.Title = "FlightListWithStops";
     bool roundTrip = bool.Parse(ViewBag.RoundTrip.ToString());
     var searchParams = (AirlinesReservationSystem.Models.ars.FlightSearch)Session["searchParams"];
     int totalPassenger = int.Parse(Session["totalPassenger"].ToString());
     string departure = searchParams.Departure;
     string destination = searchParams.Destination;
     var classToSearch = searchParams.Class;
-    int totalPages = ViewBag.Pages;
-    bool multipleStop = true;
 }
+
+<h2>Showing connecting flights to @destination from @departure</h2>
+
 <link href="~/Content/ars/FlightList.css" rel="stylesheet" />
 
-<h2>Showing flights: @departure - @destination</h2>
-
-<!--refine search form-->
-@*error msg if any*@
 <div class="row">
     <span class="text-danger">@TempData["NoSeatsMessage"]</span>
 </div>
-<!--result list-->
-@{
-    var count = Model.Count();
-    var modelIndex = 0;
-}
+
 @foreach (var item in Model)
 {
     if (classToSearch == "E") { if (item.FlightVM.AvailSeatsE < totalPassenger) { continue; } }
@@ -59,45 +51,10 @@
                 }
                 else
                 {
+                    @Html.ActionLink("Select", "FlightListWithStops2", new { fid = item.FlightVM.FNo}, new { @class = "btn btn-ars-light mb-md-1 btn-ars-list" })
                     @Html.ActionLink("Details", "FlightDetails", new { fid = item.FlightVM.FNo, rid = item.RouteVM.RNo }, new { @class = "btn btn-ars-dark btn-ars-list" })
                 }
-
             </div>
         </div>
     </div>
 }
-
-<div class="row">
-    <ul class="pagination mx-auto">
-        @{
-            for (int i = 1; i <= totalPages; i++)
-            {
-                if (i == ViewBag.PageIndex)
-                {
-                    <li class="active page-item">
-                        @Html.ActionLink(i.ToString(), "FlightList", new { page = i }, new { @class = "page-link" })
-                    </li>
-                }
-                else
-                {
-                    <li class="page-item">
-                        @Html.ActionLink(i.ToString(), "FlightList", new { page = i }, new { @class = "page-link" })
-                    </li>
-                }
-            }
-        }
-    </ul>
-</div>
-
-@if (Model.Count() == 0 || multipleStop)
-{
-    <div class="row">
-        <p class="mx-auto">
-            Click
-            @Html.ActionLink("here", "FlightListWithStops", null, new { @class = "btn btn-ars-light" })
-            to find flights to @destination with additional stops <br />
-            <span class="text-danger">(Note that prices will be higher as you're taking multiple flights)</span>
-        </p>
-    </div>
-}
-

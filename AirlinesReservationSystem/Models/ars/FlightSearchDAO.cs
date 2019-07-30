@@ -9,6 +9,8 @@ namespace AirlinesReservationSystem.Models
     public class FlightSearchDAO
     {
         static AirlineDBEntities db = new AirlineDBEntities();
+        private static IEnumerable<FlightResult> secondTripFromStop;
+        public static IEnumerable<FlightResult> SecondTripFromStop { get => secondTripFromStop; set => secondTripFromStop = value; }
 
         public static IEnumerable<Flight> GetFlights() => db.Flight;
 
@@ -21,10 +23,68 @@ namespace AirlinesReservationSystem.Models
             var airlines = GetAirlines();
             var model = from r in routes
                         join f in flights on r.RNo equals f.RNo
-                        join a in airlines on r.RAirline equals a.AirlineID
                         where r.Departure == flightSearch.Departure && r.Destination == flightSearch.Destination && f.DepartureTime.Date == flightSearch.DepartureTime.Date
-                        select new FlightResult { FlightVM = f, RouteVM = r, AirlineVM = a };
+                        select new FlightResult { FlightVM = f, RouteVM = r };
             return model;
+        }
+
+        public static IEnumerable<FlightResult> GetFlightResultsWithStops(FlightSearch flightSearch)
+        {
+            var routes = GetRoutes();
+            var flights = GetFlights();
+            IEnumerable<FlightDistance> distances = GetDistances();
+            IEnumerable<FlightDistance> trips = from d in distances
+                                                where d.Distance <= 1000 && (d.AirportID1 == flightSearch.Destination || d.AirportID2 == flightSearch.Destination)
+                                                select d;
+
+            List<FlightResult> secondFlights = new List<FlightResult>();
+            List<FlightResult> firstFlights = new List<FlightResult>();
+
+            foreach (var item in trips)
+            {
+                //move destinations to 2nd collumn for easier sorting
+                if (item.AirportID1 == flightSearch.Destination)
+                {
+                    var a2 = item.AirportID2;
+                    var a1 = item.AirportID1;
+                    item.AirportID1 = a2;
+                    item.AirportID2 = a1;
+                }
+
+                var secondFlightToAdd = from r in routes
+                                        join f in flights on r.RNo equals f.RNo
+                                        where r.Departure == item.AirportID1 && r.Destination == item.AirportID2 && f.DepartureTime.Date >= flightSearch.DepartureTime.Date
+                                        select new FlightResult { FlightVM = f, RouteVM = r };
+
+                //Add to results for 2nd trip
+                foreach (var f in secondFlightToAdd)
+                {
+                    if (f != null)
+                    {
+                        secondFlights.Add(f);
+                    }
+                }
+            }
+
+            //look for trips to second trips starting point
+            foreach (var item in secondFlights)
+            {
+                var firstFlightToAdd = from r in routes
+                                       join f in flights on r.RNo equals f.RNo
+                                       where r.Departure == flightSearch.Departure && r.Destination == item.RouteVM.Departure && f.DepartureTime.Date == flightSearch.DepartureTime.Date
+                                       select new FlightResult { FlightVM = f, RouteVM = r };
+                foreach (var f in firstFlightToAdd)
+                {
+                    //check if flight already exists
+                    bool containsFlight = firstFlights.Any(i => i.FlightVM.FNo == f.FlightVM.FNo);
+                    if (!containsFlight)
+                    {
+                        firstFlights.Add(f);
+                    }
+                }
+            }
+            secondTripFromStop = secondFlights;
+            return firstFlights;
         }
 
         public static FlightResult GetFlightResult(string fid, int rid)
@@ -38,6 +98,8 @@ namespace AirlinesReservationSystem.Models
             return model;
         }
 
+        public static IEnumerable<FlightDistance> GetDistances() => db.FlightDistance;
+
         public static IEnumerable<Airport> GetAirports() => db.Airport;
 
         public static IEnumerable<Airline> GetAirlines() => db.Airline;
@@ -50,6 +112,7 @@ namespace AirlinesReservationSystem.Models
             return icon;
         }
 
+        //Create new search parameters in memory to manipulate
         public static FlightSearch Copy(FlightSearch flightSearchOriginal)
         {
             FlightSearch f = new FlightSearch()
