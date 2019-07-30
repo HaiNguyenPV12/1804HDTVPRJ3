@@ -9,7 +9,6 @@
     string destination = searchParams.Destination;
     var classToSearch = searchParams.Class;
     int totalPages = ViewBag.Pages;
-    bool multipleStop = true;
 }
 <link href="~/Content/ars/FlightList.css" rel="stylesheet" />
 
@@ -23,7 +22,6 @@
 <!--result list-->
 @{
     var count = Model.Count();
-    var modelIndex = 0;
 }
 @foreach (var item in Model)
 {
@@ -89,7 +87,7 @@
     </ul>
 </div>
 
-@if (Model.Count() == 0 || multipleStop)
+@if (Model.Count() == 0 || ViewBag.PageIndex == totalPages && !roundTrip)
 {
     <div class="row">
         <p class="mx-auto">

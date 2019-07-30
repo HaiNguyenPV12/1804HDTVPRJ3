@@ -21,6 +21,7 @@ namespace AirlinesReservationSystem.Controllers
         [HttpPost]
         public ActionResult Index(FlightSearch flightSearch)
         {
+            if (Session["searchParams"] != null) { Session["searchParams"] = null; }
             Session["searchParams"] = flightSearch;
             int totalPassenger = flightSearch.Adult + flightSearch.Children + flightSearch.Senior;
             int totalAdults = flightSearch.Adult + flightSearch.Senior;
@@ -212,8 +213,8 @@ namespace AirlinesReservationSystem.Controllers
             FlightResult firstTrip = firstTrips.Where(item => item.FlightVM.FNo == fid).FirstOrDefault();
             Session["firstTrip"] = firstTrip;
             var model = from s in secondTrips
-                          where s.FlightVM.DepartureTime >= firstTrip.FlightVM.ArrivalTime
-                          select s;
+                        where s.FlightVM.DepartureTime >= firstTrip.FlightVM.ArrivalTime
+                        select s;
             return View(model);
         }
 
