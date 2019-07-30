@@ -59,7 +59,6 @@
                     {
                         @Html.ActionLink("Select", "Payment", new { FNo = item.FlightVM.FNo }, new { @class = "btn btn-ars-dark btn-ars-list" })
                     }
-
                 </div>
             </div>
         </div>
@@ -99,12 +98,6 @@
                     <li class="page-item">
                         @Html.ActionLink(i.ToString(), "FlightList", new { page = i }, new { @class = "page-link" })
                     </li>
-                    @Html.ActionLink("Select", "FlightListReturn", new { fid = item.FlightVM.FNo, rid = item.RouteVM.RNo }, new { @class = "btn btn-ars-light mb-md-1 btn-ars-list" })
-                    @Html.ActionLink("Details", "FlightDetails", new { fid = item.FlightVM.FNo, rid = item.RouteVM.RNo }, new { @class = "btn btn-ars-dark btn-ars-list" })
-                }
-                else
-                {
-                    @Html.ActionLink("Details", "FlightDetails", new { fid = item.FlightVM.FNo, rid = item.RouteVM.RNo }, new { @class = "btn btn-ars-dark btn-ars-list" })
                 }
             }
         }
@@ -122,25 +115,3 @@
         </p>
     </div>
 }
-
-<div class="row">
-    <ul class="pagination">
-        @{
-            for (int i = 1; i <= totalPages; i++)
-            {
-                if (i == ViewBag.PageIndex)
-                {
-                    <li class="active page-item">
-                        @Html.ActionLink(i.ToString(), "FlightList", new { page = i }, new { @class = "page-link" })
-                    </li>
-                }
-                else
-                {
-                    <li class="page-item">
-                        @Html.ActionLink(i.ToString(), "FlightList", new { page = i }, new { @class = "page-link" })
-                    </li>
-                }
-            }
-        }
-    </ul>
-</div>
