@@ -1,14 +1,15 @@
 ﻿@model IEnumerable<AirlinesReservationSystem.Models.ars.FlightResult>
-
 @{
-    ViewBag.Title = "FlightList";
-    var firstTrip = (AirlinesReservationSystem.Models.ars.FlightResult)ViewBag.firstTrip;
+    ViewBag.Title = "FlightListWithStops2";
+    bool roundTrip = bool.Parse(ViewBag.RoundTrip.ToString());
     var searchParams = (AirlinesReservationSystem.Models.ars.FlightSearch)Session["searchParams"];
     int totalPassenger = int.Parse(Session["totalPassenger"].ToString());
+    string departure = searchParams.Departure;
+    string destination = searchParams.Destination;
     var classToSearch = searchParams.Class;
+    var firstTrip = (AirlinesReservationSystem.Models.ars.FlightResult)Session["firstTrip"];
 }
 <link href="~/Content/ars/FlightList.css" rel="stylesheet" />
-
 <h3>First Trip:</h3>
 <div class="row border rounded shadow-sm mb-md-2 pb-md-2 pt-1 flightList-card flightList-card-selected">
     <div class="col-md-3">
@@ -32,23 +33,24 @@
             <h3>$@firstTrip.FlightVM.BasePrice</h3>
         </div>
         <div class="col-md-8 text-md-left">
-            @Html.ActionLink("Select Another", "FlightList", new { @isReselect = true }, new { @class = "btn btn-ars-dark btn-ars-list" })
+            @Html.ActionLink("Select Another", "FlightListWithStops", new { @isReselect = true }, new { @class = "btn btn-ars-dark btn-ars-list" })
         </div>
     </div>
 </div>
-<!--Result List for returns-->
-<h3>Returning flights:</h3>
+
+<h2>Showing flights to @destination from @firstTrip.FlightVM.Route.Destination</h2>
+
 @foreach (var item in Model)
 {
     if (classToSearch == "E") { if (item.FlightVM.AvailSeatsE < totalPassenger) { continue; } }
-    else if (classToSearch == "B") { if (item.FlightVM.AvailSeatsB < totalPassenger) { continue; } }
-    else if (classToSearch == "F") { if (item.FlightVM.AvailSeatsF < totalPassenger) { continue; } }
+    else if (classToSearch == "B") { if (item.FlightVM.AvailSeatsB < totalPassenger || item.FlightVM.AvailSeatsB == null) { continue; } }
+    else if (classToSearch == "F") { if (item.FlightVM.AvailSeatsF < totalPassenger || item.FlightVM.AvailSeatsF == null) { continue; } }
     <div class="row border rounded shadow-sm mb-md-2 pb-md-2 pt-1 flightList-card">
         <div class="col-md-3">
-            <p>@string.Format("{0:hh:mm tt}", firstTrip.FlightVM.DepartureTime) - @string.Format("{0:hh:mm tt}", firstTrip.FlightVM.ArrivalTime)</p>
+            <p>@string.Format("{0:hh:mm tt}", item.FlightVM.DepartureTime) - @string.Format("{0:hh:mm tt}", item.FlightVM.ArrivalTime)</p>
             <p>
-                <img src="~/img/ars/@firstTrip.FlightVM.Route.Airline.AirlineIcon" alt="@firstTrip.FlightVM.Route.Airline.AirlineName" class="airline-icon" /> <br />
-                @firstTrip.FlightVM.Route.Airline.AirlineName
+                <img src="~/img/ars/@item.FlightVM.Route.Airline.AirlineIcon" alt="@item.FlightVM.Route.Airline.AirlineName" class="airline-icon" /> <br />
+                @item.FlightVM.Route.Airline.AirlineName
             </p>
         </div>
         <div class="col-md-6">
@@ -65,7 +67,14 @@
                 <h3>$@item.FlightVM.BasePrice</h3>
             </div>
             <div class="col-md-8 text-md-left">
-                @Html.ActionLink("Select", "Payment", new { FNo = firstTrip.FlightVM.FNo, ReFNo = item.FlightVM.FNo, PeopleNum = totalPassenger }, new { @class = "btn btn-ars-light btn-ars-list" })
+                @if (roundTrip)
+                {
+                    @Html.ActionLink("Select", "FlightListReturn", new { fid = item.FlightVM.FNo, rid = item.RouteVM.RNo }, new { @class = "btn btn-ars-light mb-md-1 btn-ars-list" })
+                }
+                else
+                {
+                    @Html.ActionLink("Select", "Payment", new { FNo = firstTrip.FlightVM.FNo + "," + item.FlightVM.FNo }, new { @class = "btn btn-ars-light mb-md-1 btn-ars-list" })
+                }
             </div>
         </div>
     </div>

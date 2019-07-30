@@ -20,35 +20,85 @@
     <span class="text-danger">@TempData["NoSeatsMessage"]</span>
 </div>
 <!--result list-->
+@{
+    var count = Model.Count();
+}
 @foreach (var item in Model)
 {
     if (classToSearch == "E") { if (item.FlightVM.AvailSeatsE < totalPassenger) { continue; } }
     else if (classToSearch == "B") { if (item.FlightVM.AvailSeatsB < totalPassenger || item.FlightVM.AvailSeatsB == null) { continue; } }
     else if (classToSearch == "F") { if (item.FlightVM.AvailSeatsF < totalPassenger || item.FlightVM.AvailSeatsF == null) { continue; } }
     <div class="row border rounded shadow-sm mb-md-2 pb-md-2 pt-1 flightList-card">
-        <div class="col-md-3">
-            <p>@string.Format("{0:hh:mm tt}", item.FlightVM.DepartureTime) - @string.Format("{0:hh:mm tt}", item.FlightVM.ArrivalTime)</p>
-            <p>
-                <img src="~/img/ars/@item.AirlineVM.AirlineIcon" alt="@item.AirlineVM.AirlineName" class="airline-icon" /> <br />
-                @item.AirlineVM.AirlineName
-            </p>
-        </div>
-        <div class="col-md-6">
-            <p>
-                @{var flightTime = TimeSpan.FromHours(item.FlightVM.FlightTime);}
-                @flightTime.ToString("hh")h  @flightTime.ToString("mm")m
-            </p>
-            <p>
-                @item.RouteVM.Departure - @item.RouteVM.Destination
-            </p>
-        </div>
-        <div class="col-md-3 row">
-            <div class="col-md-4 text-md-right">
-                <h3>$@item.FlightVM.BasePrice</h3>
+        <div class="row col-md-12">
+            <div class="col-md-3">
+                <p>@string.Format("{0:hh:mm tt}", item.FlightVM.DepartureTime) - @string.Format("{0:hh:mm tt}", item.FlightVM.ArrivalTime)</p>
+                <p>
+                    <img src="~/img/ars/@item.FlightVM.Route.Airline.AirlineIcon" alt="@item.FlightVM.Route.Airline.AirlineName" class="airline-icon" /> <br />
+                    @item.FlightVM.Route.Airline.AirlineName
+                </p>
             </div>
-            <div class="col-md-8 text-md-left">
-                @if (roundTrip)
+            <div class="col-md-6">
+                <p>
+                    @{var flightTime = TimeSpan.FromHours(item.FlightVM.FlightTime);}
+                    @flightTime.ToString("hh")h  @flightTime.ToString("mm")m
+                </p>
+                <p>
+                    @item.RouteVM.Departure - @item.RouteVM.Destination
+                </p>
+            </div>
+            <div class="col-md-3 row ml-md-2">
+                <div class="col-md-4 text-md-right">
+                    <h3>$@item.FlightVM.BasePrice</h3>
+                </div>
+                <div class="col-md-8 text-md-right">
+                    @if (roundTrip)
+                    {
+                        @Html.ActionLink("Select", "FlightListReturn", new { fid = item.FlightVM.FNo, rid = item.RouteVM.RNo }, new { @class = "btn btn-ars-light mb-md-1 btn-ars-list" })
+                    }
+                    else
+                    {
+                        @Html.ActionLink("Select", "Payment", new { FNo = item.FlightVM.FNo }, new { @class = "btn btn-ars-dark btn-ars-list" })
+                    }
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <a data-toggle="collapse" href="#div_details_@item.FlightVM.FNo" class="ml-md-2">Flight Details</a>
+                <div id="div_details_@item.FlightVM.FNo" class="collapse hide">
+                    <div class="card-body">
+                        <ul>
+                            <li> Flight Name: @item.FlightVM.FNo</li>
+                            <li>Departure: @item.FlightVM.Route.DepartureAirport.AirportName</li>
+                            <li>Arrival: @item.FlightVM.Route.DestinationAirport.AirportName</li>
+                            <li>Takeoff: @item.FlightVM.DepartureTime</li>
+                            <li>Landing: @item.FlightVM.ArrivalTime</li>
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="row">
+    <ul class="pagination mx-auto">
+        @{
+            for (int i = 1; i <= totalPages; i++)
+            {
+                if (i == ViewBag.PageIndex)
                 {
+                    <li class="active page-item">
+                        @Html.ActionLink(i.ToString(), "FlightList", new { page = i }, new { @class = "page-link" })
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        @Html.ActionLink(i.ToString(), "FlightList", new { page = i }, new { @class = "page-link" })
+                    </li>
                     @Html.ActionLink("Select", "FlightListReturn", new { fid = item.FlightVM.FNo, rid = item.RouteVM.RNo }, new { @class = "btn btn-ars-light mb-md-1 btn-ars-list" })
                     @Html.ActionLink("Details", "FlightDetails", new { fid = item.FlightVM.FNo, rid = item.RouteVM.RNo }, new { @class = "btn btn-ars-dark btn-ars-list" })
                 }
@@ -56,9 +106,20 @@
                 {
                     @Html.ActionLink("Details", "FlightDetails", new { fid = item.FlightVM.FNo, rid = item.RouteVM.RNo }, new { @class = "btn btn-ars-dark btn-ars-list" })
                 }
+            }
+        }
+    </ul>
+</div>
 
-            </div>
-        </div>
+@if (Model.Count() == 0 || ViewBag.PageIndex == totalPages && !roundTrip)
+{
+    <div class="row">
+        <p class="mx-auto">
+            Click
+            @Html.ActionLink("here", "FlightListWithStops", null, new { @class = "btn btn-ars-light" })
+            to find flights to @destination with additional stops <br />
+            <span class="text-danger">(Note that prices will be higher as you're taking multiple flights)</span>
+        </p>
     </div>
 }
 

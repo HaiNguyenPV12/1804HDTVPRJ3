@@ -21,6 +21,7 @@ namespace AirlinesReservationSystem.Controllers
         [HttpPost]
         public ActionResult Index(FlightSearch flightSearch)
         {
+            if (Session["searchParams"] != null) { Session["searchParams"] = null; }
             Session["searchParams"] = flightSearch;
             int totalPassenger = flightSearch.Adult + flightSearch.Children + flightSearch.Senior;
             int totalAdults = flightSearch.Adult + flightSearch.Senior;
@@ -189,6 +190,32 @@ namespace AirlinesReservationSystem.Controllers
                 TempData["errorM"] = "There was an error executing your requests. Please try again";
                 return RedirectToAction("Index");
             }
+        }
+
+        public ActionResult FlightListWithStops()
+        {
+            Session["fid1"] = null;
+            FlightSearch flightSearch = (FlightSearch)Session["searchParams"];
+            ViewBag.RoundTrip = flightSearch.IsRoundTrip;
+            IEnumerable<FlightResult> firstTrips = FlightSearchDAO.GetFlightResultsWithStops(flightSearch);
+            Session["firstTrips"] = firstTrips;
+            return View(firstTrips);
+        }
+
+        public ActionResult FlightListWithStops2(string fid)
+        {
+            FlightSearch flightSearch = (FlightSearch)Session["searchParams"];
+            ViewBag.RoundTrip = flightSearch.IsRoundTrip;
+            if (Session["firstTrips"] == null) { return RedirectToAction("Index"); }
+            IEnumerable<FlightResult> secondTrips = FlightSearchDAO.SecondTripFromStop;
+            Session["fid2"] = null;
+            IEnumerable<FlightResult> firstTrips = (IEnumerable<FlightResult>)Session["firstTrips"];
+            FlightResult firstTrip = firstTrips.Where(item => item.FlightVM.FNo == fid).FirstOrDefault();
+            Session["firstTrip"] = firstTrip;
+            var model = from s in secondTrips
+                        where s.FlightVM.DepartureTime >= firstTrip.FlightVM.ArrivalTime
+                        select s;
+            return View(model);
         }
 
         //Refine search details from results
