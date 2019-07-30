@@ -352,6 +352,8 @@
                 console.log(result);
             });
         } else {
+            var form = $("#frmPayment").serialize();
+            console.log(form);
             $('#frmPayment').find(':submit').click();
         }
     }
