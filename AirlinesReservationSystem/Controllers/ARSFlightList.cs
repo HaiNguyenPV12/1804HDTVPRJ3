@@ -32,5 +32,20 @@ namespace AirlinesReservationSystem.Controllers
             var model = flightResults.OrderBy(item => item.FlightVM.BasePrice).Skip((page - 1) * numFlightsPerPage).Take(numFlightsPerPage);
             return model;
         }
+
+        FlightSearch ReverseFlightSearch(FlightSearch flightSearch)
+        {
+            //create new search parameters in memory that references the original parameters (else changing the depatures will change session's values)
+            FlightSearch flightSearchReversed = FlightSearchDAO.Copy(flightSearch);
+
+            //flip departure and arrival and run search query
+            var roundTripEnd = flightSearchReversed.Departure;
+            var roundTripStart = flightSearchReversed.Destination;
+            flightSearchReversed.Departure = roundTripStart;
+            flightSearchReversed.Destination = roundTripEnd;
+            flightSearchReversed.DepartureTime = flightSearch.ReturnDepartureTime;
+
+            return flightSearchReversed;
+        }
     }
 }

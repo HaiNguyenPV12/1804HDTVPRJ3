@@ -133,6 +133,7 @@ namespace AirlinesReservationSystem.Controllers
         public ActionResult FlightList(FlightSearch flightSearch, bool? isReselect, int? page)
         {
             Session["fid1"] = null;
+            Session["rid1"] = null;
 
             //get original search parameters and rerun search query
             if (isReselect == true || !TryValidateModel(flightSearch))
@@ -151,14 +152,21 @@ namespace AirlinesReservationSystem.Controllers
         }
 
         //Passing 1st trip and run a reverse search with return date
-        public ActionResult FlightListReturn(string fid, int rid)
+        public ActionResult FlightListReturn(string fid, int rid, int? page)
         {
             try
             {
+                var ridParse = int.TryParse(rid.ToString(), out int ridParsed);
+                if (string.IsNullOrEmpty(fid))
+                    fid = (string)Session["fid1"];
+                if (!ridParse)
+                    rid = (int)Session["rid1"];
                 Session["fid1"] = fid;
+                Session["rid1"] = rid;
                 Session["fid2"] = null;
                 FlightResult firstTrip = FlightSearchDAO.GetFlightResult(fid, rid);
                 FlightSearch flightSearch = (FlightSearch)Session["searchParams"];
+                ViewBag.RoundTrip = flightSearch.IsRoundTrip;
                 var seatsLeft = firstTrip.FlightVM.AvailSeatsB + firstTrip.FlightVM.AvailSeatsF + firstTrip.FlightVM.AvailSeatsE;
 
                 //interrupt check for available seats
@@ -168,21 +176,23 @@ namespace AirlinesReservationSystem.Controllers
                     return RedirectToAction("FlightList", flightSearch);
                 }
 
-                //create new search parameters in memory that references the original parameters (else changing the depatures will change session's values)
-                FlightSearch flightSearchReturn = FlightSearchDAO.Copy(flightSearch);
+                //flip search query
+                FlightSearch flightSearchReturn = ReverseFlightSearch(flightSearch);
+
                 ViewBag.firstTrip = firstTrip;
 
-                //flip departure and arrival and run search query
-                var roundTripEnd = flightSearchReturn.Departure;
-                var roundTripStart = flightSearchReturn.Destination;
-                flightSearchReturn.Departure = roundTripStart;
-                flightSearchReturn.Destination = roundTripEnd;
-                flightSearchReturn.DepartureTime = flightSearch.ReturnDepartureTime;
-                var model = FlightSearchDAO.GetFlightResults(flightSearchReturn);
+                ViewBag.Pages = GetPages(flightSearchReturn);
+                if (page == null)
+                {
+                    ViewBag.PageIndex = 1;
+                    return View("FlightList", GetFlightsForPage(1));
+                }
+                ViewBag.PageIndex = page;
 
                 //for debugging, making sure the original params are intact
-                Session["searchParams"] = flightSearch;
-                return View(model);
+                //Session["searchParams"] = flightSearch;
+
+                return View("FlightList", GetFlightsForPage(int.Parse(page.ToString())));
             }
             catch (Exception)
             {
@@ -199,6 +209,11 @@ namespace AirlinesReservationSystem.Controllers
             ViewBag.RoundTrip = flightSearch.IsRoundTrip;
             IEnumerable<FlightResult> firstTrips = FlightSearchDAO.GetFlightResultsWithStops(flightSearch);
             Session["firstTrips"] = firstTrips;
+            if (firstTrips.Count() == 0)
+            {
+                TempData["errorM"] = "Could not find any connecting trips to " + flightSearch.Destination + ", Sorry.";
+                return RedirectToAction("Index");
+            }
             return View(firstTrips);
         }
 
