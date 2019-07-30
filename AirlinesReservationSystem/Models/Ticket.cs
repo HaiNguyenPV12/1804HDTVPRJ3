@@ -11,7 +11,8 @@ namespace AirlinesReservationSystem.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Ticket
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -19,17 +20,40 @@ namespace AirlinesReservationSystem.Models
         {
             this.TicketService = new HashSet<TicketService>();
         }
-    
+        
         public long TicketID { get; set; }
+
+       
         public long OrderID { get; set; }
+
+        
+        [StringLength(10)]
         public string FNo { get; set; }
+
+       
+        [StringLength(10, ErrorMessage ="Passport invalid")]
         public string PassportNo { get; set; }
+       
+        [StringLength(1)]
         public string Class { get; set; }
+      
+        [StringLength(50)]
         public string Firstname { get; set; }
+
+       
+        [StringLength(50)]
         public string Lastname { get; set; }
+      
         public bool Sex { get; set; }
+
+       
+        [Range(0,200, ErrorMessage ="Age must be positive number")]
         public int Age { get; set; }
+
         public bool IsReturn { get; set; }
+
+        
+        [Range(0,500000, ErrorMessage = "Price must be positive number")]
         public double Price { get; set; }
     
         public virtual Flight Flight { get; set; }
