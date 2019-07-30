@@ -189,6 +189,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\ARSAdminController.cs" />
     <Compile Include="Controllers\ARSController.cs" />
+    <Compile Include="Controllers\ARSFlightList.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -320,6 +321,8 @@
     <Content Include="Views\ARS\JqueryUIDemo.cshtml" />
     <Content Include="Views\ARS\PaymentResult.cshtml" />
     <Content Include="Views\ARS\Test.cshtml" />
+    <Content Include="Views\ARS\FlightListWithStops.cshtml" />
+    <Content Include="Views\ARS\FlightListWithStops2.cshtml" />
     <Content Include="Views\ARS\PaymentSearch.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
