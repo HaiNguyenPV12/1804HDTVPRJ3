@@ -88,10 +88,10 @@ namespace AirlinesReservationSystem.Controllers
             }
             return View();
         }
-        // EMPLOYEE EDIT'S VIEW
+        // ROUTE EDIT'S VIEW
         public ActionResult RouteEdit(int id) => IsLoggedIn() && RouteDAO.GetRoute(id) != null ? View(RouteDAO.GetRoute(id)) : (ActionResult)RedirectToAction("Index");
 
-        // EMPLOYEE EDIT'S PROCESS
+        // ROUTE EDIT'S PROCESS
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult RouteEdit(Route updateR)
@@ -128,31 +128,104 @@ namespace AirlinesReservationSystem.Controllers
         }
         // EMPLOYEE ADD'S PROCESS
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult EmployeeAdd(List<Employee> newEs)
+        public ActionResult EmployeeAdd(FormCollection frmEmployeeAdd)
         {
-            ModelState.Remove("IsActive");
-            ModelState.Remove("Role");
-            foreach (var e in newEs)
+            string s = "";
+            try
             {
-                if (ModelState.IsValid)
+                List<Employee> EmpList = new List<Employee>();
+                Employee objE = new Employee();
+                int i = 0;
+                while (frmEmployeeAdd["EmpID[" + i + "]"] != null)
                 {
-                    e.IsActive = true;
-                    e.Role = 1;
-                    if (EmployeeDAO.AddEmployee(e))
+                    objE = new Employee
                     {
-                        if (e == newEs.Last())
-                            return Content("Success");
-                    }
-                    else
+                        EmpID = frmEmployeeAdd["EmpID[" + i + "]"],
+                        Password = frmEmployeeAdd["Password[" + i + "]"],
+                        Firstname = frmEmployeeAdd["Firstname[" + i + "]"],
+                        Lastname = frmEmployeeAdd["Lastname[" + i + "]"],
+                        Address = frmEmployeeAdd["Address[" + i + "]"],
+                        Phone = frmEmployeeAdd["Phone[" + i + "]"],
+                        Email = frmEmployeeAdd["Email[" + i + "]"],
+                        Sex = Convert.ToBoolean(frmEmployeeAdd["Sex[" + i + "]"]),
+                        DoB = DateTime.Parse(frmEmployeeAdd["DoB[" + i + "]"]),
+                        IsActive = true,
+                        Role = 1
+                    };
+                    EmpList.Add(objE);
+                    i++;
+
+                }
+                //EmpList.ForEach(e =>
+                //{
+                //    s += "ID: " + e.EmpID + ", Name: " + e.Firstname + " " + e.Lastname + "\n";
+                //    s += "Password: " + e.Password + "\n";
+                //    s += "Address: " + e.Address + "\n";
+                //    s += "Phone: " + e.Phone + "\n";
+                //    s += "Email: " + e.Email + "\n";
+                //    s += "Sex: " + e.Sex + "\n";
+                //    s += "Birthday: " + e.DoB + "\n";
+                //});
+                // Check duplicate
+                foreach (var item in EmpList)
+                {
+                    if (EmpList.Where(e => e.EmpID == item.EmpID).Count() > 1)
                     {
-                        ModelState.AddModelError("", "Cannot add " + e.EmpID);
+                        s += "Error: ID duplicated! Please check and try again.\n";
                         break;
                     }
                 }
+                //var e = EmpList.GroupBy(group => group.EmpID).Where(group => group.Count() > 1);
+                //if (e != null)
+                //{
+                //    s += "Error: ID duplicated! Please check and try again.\n";
+                //}
+
+                // Check exist
+                foreach (var item in EmpList)
+                {
+                    if (EmployeeDAO.GetEmployee(item.EmpID) != null)
+                    {
+                        s += "Error: ID \"" + item.EmpID + "\" exists.";
+                    }
+                }
+
+                // Start adding
+                if (s == "")
+                {
+                    string result = EmployeeDAO.AddEmployee(EmpList);
+                    s += result;
+                }
+            }
+            catch (Exception e)
+            {
+                s += e.Message + e.StackTrace;
             }
 
-            return View();
+
+            return Content(s);
+            //ModelState.Remove("IsActive");
+            //ModelState.Remove("Role");
+            //foreach (var e in newEs)
+            //{
+            //    if (ModelState.IsValid)
+            //    {
+            //        e.IsActive = true;
+            //        e.Role = 1;
+            //        if (EmployeeDAO.AddEmployee(e))
+            //        {
+            //            if (e == newEs.Last())
+            //                return Content("Success");
+            //        }
+            //        else
+            //        {
+            //            ModelState.AddModelError("", "Cannot add " + e.EmpID);
+            //            break;
+            //        }
+            //    }
+            //}
+
+            //return View();
         }
 
         // EMPLOYEE EDIT'S VIEW
@@ -286,7 +359,7 @@ namespace AirlinesReservationSystem.Controllers
         // FLIGHT DELETE's PROCESS
         public ActionResult FlightDelete(string id) => IsLoggedIn() && FlightDAO.DeleteFlight(id) ? Content("OK") : Content("Error");
 
-        // ROUTE ADD'S VIEW
+        // FLIFHT ADD'S VIEW
         public ActionResult FlightAdd()
         {
             if (IsLoggedIn())
@@ -297,7 +370,7 @@ namespace AirlinesReservationSystem.Controllers
             return RedirectToAction("Index");
         }
 
-        // ROUTE ADD'S PROCESS
+        // FLIGHT ADD'S PROCESS
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult FlightAdd(Flight newF)
@@ -321,7 +394,7 @@ namespace AirlinesReservationSystem.Controllers
             ViewBag.RouteData = RouteDAO.GetRouteList();
             return View();
         }
-        // EMPLOYEE EDIT'S VIEW
+        // FLIGHT EDIT'S VIEW
         public ActionResult FlightEdit(string id)
         {
             if (IsLoggedIn())
@@ -331,12 +404,12 @@ namespace AirlinesReservationSystem.Controllers
                 {
                     ViewBag.RouteData = RouteDAO.GetRouteList();
                     return View(f);
-                }   
+                }
             }
             return RedirectToAction("Index");
         }
 
-        // EMPLOYEE EDIT'S PROCESS
+        // FLIGHT EDIT'S PROCESS
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult FlightEdit(Flight updateF)
@@ -391,7 +464,7 @@ namespace AirlinesReservationSystem.Controllers
             {
                 if (TicketDAO.UpdateTicket(updateT))
                 {
-                    return RedirectToAction("OrderDetails",new { id = updateT.OrderID});
+                    return RedirectToAction("OrderDetails", new { id = updateT.OrderID });
                 }
                 else
                 {
