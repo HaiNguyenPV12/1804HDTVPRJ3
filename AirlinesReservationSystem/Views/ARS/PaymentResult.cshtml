@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "PaymentResult";
-    IEnumerable<AirlinesReservationSystem.Models.Ticket> TicketList = ViewBag.TicketList;
+    IEnumerable<AirlinesReservationSystem.Models.Ticket> TicketList = AirlinesReservationSystem.Models.ars.PaymentDAO.GetTicketList(Model.OrderID);
     int ticketCount = 1;
 }
 <div class="">
@@ -22,7 +22,8 @@
                 <b>Status:</b>
                 @if (Model.Status == 0)
                 {
-                    if (System.DateTime.Now < TicketList.Where(t => t.IsReturn == false).FirstOrDefault().Flight.DepartureTime.AddDays(-14))
+                    var DepartureTime = AirlinesReservationSystem.Models.arsadmin.TicketDAO.GetTicket(TicketList.Where(t => t.IsReturn == false).FirstOrDefault().TicketID).Flight.DepartureTime;
+                    if (System.DateTime.Now < DepartureTime.AddDays(-14))
                     {
                         <span class="text-warning">Blocking (Need to be paid before 2 weeks before the flight)</span>
                     }
@@ -66,8 +67,9 @@
             <h4>Departure</h4>
         </div>
         <div class="card-body">
-            @foreach (var t in TicketList.Where(t => t.IsReturn == false))
+            @foreach (var ticket in TicketList.Where(t => t.IsReturn == false))
             {
+                var t = AirlinesReservationSystem.Models.arsadmin.TicketDAO.GetTicket(ticket.TicketID);
                 <hr />
                 <div>
                     <p>
@@ -124,8 +126,9 @@
                 <h4>Return</h4>
             </div>
             <div class="card-body">
-                @foreach (var t in TicketList.Where(t => t.IsReturn == true))
+                @foreach (var ticket in TicketList.Where(t => t.IsReturn == true))
                 {
+                    var t = AirlinesReservationSystem.Models.arsadmin.TicketDAO.GetTicket(ticket.TicketID);
                     <hr />
                     <div>
                         <p>
