@@ -47,12 +47,10 @@
                 @if (roundTrip)
                 {
                     @Html.ActionLink("Select", "FlightListReturn", new { fid = item.FlightVM.FNo, rid = item.RouteVM.RNo }, new { @class = "btn btn-ars-light mb-md-1 btn-ars-list" })
-                    @Html.ActionLink("Details", "FlightDetails", new { fid = item.FlightVM.FNo, rid = item.RouteVM.RNo }, new { @class = "btn btn-ars-dark btn-ars-list" })
                 }
                 else
                 {
                     @Html.ActionLink("Select", "FlightListWithStops2", new { fid = item.FlightVM.FNo}, new { @class = "btn btn-ars-light mb-md-1 btn-ars-list" })
-                    @Html.ActionLink("Details", "FlightDetails", new { fid = item.FlightVM.FNo, rid = item.RouteVM.RNo }, new { @class = "btn btn-ars-dark btn-ars-list" })
                 }
             </div>
         </div>
