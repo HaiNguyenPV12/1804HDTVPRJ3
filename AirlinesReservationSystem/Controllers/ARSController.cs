@@ -294,7 +294,7 @@ namespace AirlinesReservationSystem.Controllers
                         ViewBag.ReFNo = Session["fid2"].ToString();
                     }
                     ViewBag.PeopleNum = searchParam.Adult + searchParam.Children + searchParam.Senior;
-                    ViewBag.AdultNum = searchParam.Adult;
+                    ViewBag.AdultNum = searchParam.Adult + searchParam.Senior;
                     ViewBag.ChildNum = searchParam.Children;
                     ViewBag.Class = searchParam.Class;
                     return View();
@@ -377,6 +377,7 @@ namespace AirlinesReservationSystem.Controllers
                 var p = PaymentDAO.GetOrder(long.Parse(id.ToString()));
                 if (p != null)
                 {
+                    ViewBag.Order = p;
                     ViewBag.TicketList = PaymentDAO.GetTicketList(p.OrderID);
                     return View(p);
                 }
