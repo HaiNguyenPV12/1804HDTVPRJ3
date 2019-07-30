@@ -8,7 +8,7 @@ using System.Web.Mvc;
 
 namespace AirlinesReservationSystem.Controllers
 {
-    public class ARSController : Controller
+    public partial class ARSController : Controller
     {
         // GET: Home
         public ActionResult Index()
@@ -134,36 +134,19 @@ namespace AirlinesReservationSystem.Controllers
             Session["fid1"] = null;
 
             //get original search parameters and rerun search query
-            if (isReselect == true)
+            if (isReselect == true || !TryValidateModel(flightSearch))
                 flightSearch = (FlightSearch)Session["searchParams"];
-
             ViewBag.RoundTrip = flightSearch.IsRoundTrip;
             ViewBag.Pages = GetPages(flightSearch);
-            var model = FlightSearchDAO.GetFlightResults(flightSearch);
-            Session["searchResultsFirstTrip"] = model;
-            return View(model);
-        }
-
-        IEnumerable<FlightResult> flightResults;
-
-        IEnumerable<FlightResult> GetFlightList(FlightSearch flightSearch) => FlightSearchDAO.GetFlightResults(flightSearch);
-
-        int GetPages(FlightSearch flightSearch)
-        {
-            flightResults = GetFlightList(flightSearch);
-            int pages;
-            int flights = flightResults.Count();
-            int pagesM = flights % 3;
-            if (pagesM > 0) { pages = (flights / 3) + 1; }
-            else { pages = flights / 3; }
-            return pages;
-        }
-
-        IEnumerable<FlightResult> GetFlightsForPage(int page)
-        {
-            if (page <= 0) page = 1;
-            var model = flightResults.OrderByDescending(item => item.FlightVM.BasePrice).Skip((page - 1) * 3).Take(3);
-            return model;
+            //var model = FlightSearchDAO.GetFlightResults(flightSearch);
+            Session["searchResultsFirstTrip"] = flightResults;
+            if (page == null)
+            {
+                ViewBag.PageIndex = 1;
+                return View(GetFlightsForPage(1));
+            }
+            ViewBag.PageIndex = page;
+            return View(GetFlightsForPage(int.Parse(page.ToString())));
         }
 
         //Passing 1st trip and run a reverse search with return date
