@@ -330,6 +330,7 @@ namespace AirlinesReservationSystem.Controllers
             return RedirectToAction("Index");
         }
 
+        // PAYMENT's PROCESS
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Payment(FormCollection frmPayment)
@@ -360,7 +361,6 @@ namespace AirlinesReservationSystem.Controllers
             }
             string[] Age = frmPayment["Age"].Split(',');
 
-            //string[][] Service = new string[objP.PeopleNum][];
             for (int i = 0; i < objP.PeopleNum; i++)
             {
                 Passenger objPa = new Passenger();
@@ -397,6 +397,8 @@ namespace AirlinesReservationSystem.Controllers
             return Content(s);
         }
 
+        //---------------- PAYMENT RESULT ------------------
+        // PAYMENT RESULT's VIEW
         public ActionResult PaymentResult(long? id)
         {
             if (id != null)
@@ -404,19 +406,44 @@ namespace AirlinesReservationSystem.Controllers
                 var p = PaymentDAO.GetOrder(long.Parse(id.ToString()));
                 if (p != null)
                 {
+                    if (Session["user"] == null)
+                    {
+                        Session["GotoPayment"] = "/ars/paymentresult?id=" + id;
+                        return RedirectToAction("Login");
+                    }
+
                     ViewBag.Order = p;
                     ViewBag.TicketList = PaymentDAO.GetTicketList(p.OrderID);
                     return View(p);
                 }
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("PaymentSearch");
+        }
+        // BOOKING DETAIL's VIEW
+        public ActionResult PaymentSearch()
+        {
+            if (Session["user"] != null)
+            {
+                return View();
+            }
+            Session["GotoPayment"] = "/ars/paymentsearch";
+            return RedirectToAction("Login");
         }
 
+        //---------------- ORDER PROCESS ------------------
+        // PAY THE BLOCKED ORDER
         public ActionResult BlockingPayment(Int64 id)
         {
             PaymentDAO.BlockingOrderPaid(id);
             return RedirectToAction("PaymentResult", new { id = id });
         }
+        // CANCELED THE PAID ORDER
+        public ActionResult CancelPayment(long id)
+        {
+            PaymentDAO.CancelOrder(id);
+            return RedirectToAction("PaymentResult", new { id = id });
+        }
+
 
         public ActionResult GetAirports()
         {

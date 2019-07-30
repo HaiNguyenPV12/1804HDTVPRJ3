@@ -20,6 +20,7 @@ namespace AirlinesReservationSystem.Models.ars
         {
             if (GetUser(newU.UserID) == null)
             {
+                newU.Skymiles = 0;
                 db.User.Add(newU);
                 db.SaveChanges();
                 return true;

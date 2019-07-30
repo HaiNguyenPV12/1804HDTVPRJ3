@@ -10,129 +10,71 @@
         Order: @Model.OrderID @Html.ActionLink("Back to Homepage", "Index", null, new { @class = "btn btn-ars-light" })
     </h2>
 </div>
-
-
-<div>
-    <div class="card">
-        <div class="card-header">
-            <h4>Basic info</h4>
-        </div>
-        <div class="card-body">
-            <div class="">
-                <b>Status:</b>
-                @if (Model.Status == 0)
-                {
-                    var DepartureTime = AirlinesReservationSystem.Models.arsadmin.TicketDAO.GetTicket(TicketList.Where(t => t.IsReturn == false).FirstOrDefault().TicketID).Flight.DepartureTime;
-                    if (System.DateTime.Now < DepartureTime.AddDays(-14))
+@if (Session["user"] != null && Session["user"].ToString() == Model.UserID)
+{
+    <div>
+        <div class="card">
+            <div class="card-header">
+                <h4>Basic info</h4>
+            </div>
+            <div class="card-body">
+                <div class="">
+                    <b>Status:</b>
+                    @if (Model.Status == 0)
                     {
-                        <span class="text-warning">Blocking (Need to be paid before 2 weeks before the flight)</span>
-                    }
-                    else
-                    {
-                        <span class="text-danger">Blocked but Canceled (Need to be paid before 2 weeks before the flight)</span>
-                    }
-
-                }
-                else if (Model.Status == 1)
-                {
-                    <span class="text-success">Booked</span>
-                }
-                else if (Model.Status == 2)
-                {
-                    <span class="text-danger">Canceled</span>
-                }
-            </div>
-            <div>
-                <b>Total:</b> @Model.Total$
-            </div>
-            <div>
-                @if (Model.Status == 1)
-                {
-                    <b>Booked Date:</b>
-                }
-                else if (Model.Status == 0)
-                {
-                    <b>Blocked Date:</b>
-                }
-                @Model.OrderDate
-            </div>
-            <div>
-                <b>Booking User:</b> @Model.UserID
-            </div>
-        </div>
-    </div>
-    <br />
-    <div class="card">
-        <div class="card-header">
-            <h4>Departure</h4>
-        </div>
-        <div class="card-body">
-            @foreach (var ticket in TicketList.Where(t => t.IsReturn == false))
-            {
-                var t = AirlinesReservationSystem.Models.arsadmin.TicketDAO.GetTicket(ticket.TicketID);
-                <hr />
-                <div>
-                    <p>
-                        @(ticketCount++).
-                        @t.Flight.Route.Airline.AirlineName <b>#@t.TicketID</b>| Passenger: @t.Firstname.ToUpper() / @t.Lastname.ToUpper() |
-                        @if (t.Class == "F")
+                        var DepartureTime = AirlinesReservationSystem.Models.arsadmin.TicketDAO.GetTicket(TicketList.Where(t => t.IsReturn == false).FirstOrDefault().TicketID).Flight.DepartureTime;
+                        if (System.DateTime.Now < DepartureTime.AddDays(-14))
                         {
-                            @:First Class
-                        }
-                        else if (t.Class == "B")
-                        {
-                            @:Bussiness Class
+                            <span class="text-warning">Blocking (Need to be paid before 2 weeks before the flight)</span>
                         }
                         else
                         {
-                            @:Economy Class
+                            <span class="text-danger">Blocked but Canceled (Need to be paid before 2 weeks before the flight)</span>
                         }
 
-                    </p>
-                    <div class="row">
-                        <h4 class="col-md-5 text-center">
-                            @t.Flight.Route.DepartureAirport.CityName (@t.Flight.Route.DepartureAirport.AirportID)
-                        </h4>
-                        <h4 class="col-md-2 text-center">
-                            &rArr;
-                        </h4>
-                        <h4 class="col-md-5 text-center">
-                            @t.Flight.Route.DestinationAirport.CityName (@t.Flight.Route.DestinationAirport.AirportID)
-                        </h4>
-                        <p class="col-md-5 text-muted text-center">
-                            @t.Flight.DepartureTime
-                        </p>
-                        <p class="col-md-2 text-muted text-center">
-                            Duration: @System.TimeSpan.FromHours(t.Flight.FlightTime).ToString(@"hh") h
-                            @if (int.Parse(System.TimeSpan.FromHours(t.Flight.FlightTime).ToString(@"mm")) > 0)
-                            {
-                                System.TimeSpan.FromHours(t.Flight.FlightTime).ToString(@"mm");@:m
-                            }
-                        </p>
-                        <p class="col-md-5 text-muted text-center">
-                            @t.Flight.ArrivalTime
-                        </p>
-                    </div>
+                    }
+                    else if (Model.Status == 1)
+                    {
+                        <span class="text-success">Booked</span>
+                    }
+                    else if (Model.Status == 2)
+                    {
+                        <span class="text-danger">Canceled</span>
+                    }
                 </div>
-                <hr />
-            }
+                <div>
+                    <b>Total:</b> @Model.Total$
+                </div>
+                <div>
+                    @if (Model.Status == 1)
+                    {
+                        <b>Booked Date:</b>
+                    }
+                    else if (Model.Status == 0)
+                    {
+                        <b>Blocked Date:</b>
+                    }
+                    @Model.OrderDate
+                </div>
+                <div>
+                    <b>Booking User:</b> @Model.UserID
+                </div>
+            </div>
         </div>
-    </div>
-    <br />
-    @if (TicketList.Where(t => t.IsReturn).Count() > 0)
-    {
+        <br />
         <div class="card">
             <div class="card-header">
-                <h4>Return</h4>
+                <h4>Departure</h4>
             </div>
             <div class="card-body">
-                @foreach (var ticket in TicketList.Where(t => t.IsReturn == true))
+                @foreach (var ticket in TicketList.Where(t => t.IsReturn == false))
                 {
                     var t = AirlinesReservationSystem.Models.arsadmin.TicketDAO.GetTicket(ticket.TicketID);
                     <hr />
                     <div>
                         <p>
-                            @(ticketCount++). @t.Flight.Route.Airline.AirlineName<b>#@t.TicketID</b> | Passenger: @t.Firstname.ToUpper() / @t.Lastname.ToUpper() |
+                            @(ticketCount++).
+                            @t.Flight.Route.Airline.AirlineName <b>#@t.TicketID</b>| Passenger: @t.Firstname.ToUpper() / @t.Lastname.ToUpper() |
                             @if (t.Class == "F")
                             {
                                 @:First Class
@@ -175,41 +117,142 @@
                     <hr />
                 }
             </div>
+        </div>
+        <br />
+        @if (TicketList.Where(t => t.IsReturn).Count() > 0)
+        {
+            <div class="card">
+                <div class="card-header">
+                    <h4>Return</h4>
+                </div>
+                <div class="card-body">
+                    @foreach (var ticket in TicketList.Where(t => t.IsReturn == true))
+                    {
+                        var t = AirlinesReservationSystem.Models.arsadmin.TicketDAO.GetTicket(ticket.TicketID);
+                        <hr />
+                        <div>
+                            <p>
+                                @(ticketCount++). @t.Flight.Route.Airline.AirlineName<b>#@t.TicketID</b> | Passenger: @t.Firstname.ToUpper() / @t.Lastname.ToUpper() |
+                                @if (t.Class == "F")
+                                {
+                                    @:First Class
+                                }
+                                else if (t.Class == "B")
+                                {
+                                    @:Bussiness Class
+                                }
+                                else
+                                {
+                                    @:Economy Class
+                                }
+
+                            </p>
+                            <div class="row">
+                                <h4 class="col-md-5 text-center">
+                                    @t.Flight.Route.DepartureAirport.CityName (@t.Flight.Route.DepartureAirport.AirportID)
+                                </h4>
+                                <h4 class="col-md-2 text-center">
+                                    &rArr;
+                                </h4>
+                                <h4 class="col-md-5 text-center">
+                                    @t.Flight.Route.DestinationAirport.CityName (@t.Flight.Route.DestinationAirport.AirportID)
+                                </h4>
+                                <p class="col-md-5 text-muted text-center">
+                                    @t.Flight.DepartureTime
+                                </p>
+                                <p class="col-md-2 text-muted text-center">
+                                    Duration: @System.TimeSpan.FromHours(t.Flight.FlightTime).ToString(@"hh") h
+                                    @if (int.Parse(System.TimeSpan.FromHours(t.Flight.FlightTime).ToString(@"mm")) > 0)
+                                    {
+                                        System.TimeSpan.FromHours(t.Flight.FlightTime).ToString(@"mm");@:m
+                                    }
+                                </p>
+                                <p class="col-md-5 text-muted text-center">
+                                    @t.Flight.ArrivalTime
+                                </p>
+                            </div>
+                        </div>
+                        <hr />
+                    }
+                </div>
+
+            </div>
+        }
+        <br />
+        <div class="text-center">
+            @if (Model.Status == 0)
+            {
+                if (Session["user"] == null)
+                {
+                    <a href="/ars/login" value="" class="btn btn-lg btn-warning">Login to pay this order</a>
+                }
+                else
+                {
+                    if (Session["user"].ToString() == Model.UserID)
+                    {
+                        @Html.ActionLink("Pay this order", "BlockingPayment", new { @id = Model.OrderID }, new { @class = "btn btn-lg btn-success text-center" })
+                    }
+
+                }
+            }
+            else if (Model.Status == 1)
+            {
+                if (Session["user"] == null)
+                {
+                    <a href="/ars/login" value="" class="btn btn-lg btn-warning">Login to cancel this order</a>
+                }
+                else
+                {
+                    if (Session["user"].ToString() == Model.UserID)
+                    {
+                        <input type="button" class="btn btn-lg btn-danger" value="Cancel this order" data-toggle="modal" data-target="#modal" onclick="confirmCancelOrder(@Model.OrderID)" />
+                    }
+                }
+            }
+
 
         </div>
-    }
-    <br />
-    <div class="text-center">
-        @if (Model.Status == 0)
-        {
-            if (Session["user"] == null)
-            {
-                <a href="/ars/login" value="" class="btn btn-lg btn-warning">Login to pay this order</a>
-            }
-            else
-            {
-                if (Session["user"].ToString() == Model.UserID)
-                {
-                    @Html.ActionLink("Pay this order", "BlockingPayment", new { @id = Model.OrderID }, new { @class = "btn btn-lg btn-success text-center" })
-                }
-
-            }
-        }
-        else if (Model.Status == 1)
-        {
-            if (Session["user"] == null)
-            {
-                <a href="/ars/login" value="" class="btn btn-lg btn-warning">Login to cancel this order</a>
-            }
-            else
-            {
-                if (Session["user"].ToString() == Model.UserID)
-                {
-                    <input type="button" class="btn btn-lg btn-danger" value="Cancel this order" />
-                }
-            }
-        }
-
-
     </div>
-</div>
+
+    <div class="modal fade" id="modal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header bg-ars">
+                    <h4 class="modal-title" id="modalTitle">Delete confirm</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body" id="modalBody">
+
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal" id="btnConfirm">Confirm</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <h4 class="">You cannot view this order.</h4>
+}
+
+
+
+<script>
+    function confirmCancelOrder(id) {
+        $("#modalBody").html("<h3 class='text-danger'>Are you sure to cancel order: \"#" + id + "\"?</h3>");
+        $("#btnConfirm").on("click", function () { cancelOrder(id); });
+    }
+
+    function cancelOrder(id) {
+        window.location.href = "/ars/CancelPayment?id=" + id;
+    }
+</script>

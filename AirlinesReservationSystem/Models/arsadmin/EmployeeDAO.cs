@@ -16,15 +16,21 @@ namespace AirlinesReservationSystem.Models.arsadmin
 
         public static Employee CheckLogin(string EmpID, string Password) => db.Employee.Where(e => e.EmpID.Trim() == EmpID && e.Password == Password).FirstOrDefault();
 
-        public static bool AddEmployee(Employee newE)
+        public static string AddEmployee(List<Employee> newE)
         {
-            if (GetEmployee(newE.EmpID) == null)
+            try
             {
-                db.Employee.Add(newE);
+                foreach (Employee item in newE)
+                {
+                    db.Employee.Add(item);
+                }
                 db.SaveChanges();
-                return true;
+                return "";
             }
-            return false;
+            catch (Exception e)
+            {
+                return e.Message;
+            }
         }
 
         public static bool DeleteEmployee(string id)

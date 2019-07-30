@@ -323,6 +323,7 @@
     <Content Include="Views\ARS\Test.cshtml" />
     <Content Include="Views\ARS\FlightListWithStops.cshtml" />
     <Content Include="Views\ARS\FlightListWithStops2.cshtml" />
+    <Content Include="Views\ARS\PaymentSearch.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -20,14 +20,90 @@ namespace AirlinesReservationSystem.Models.ars
             var o = GetOrder(id);
             if (o != null)
             {
+                // Change status
                 o.Status = 1;
+
+                // Calculate flight distance (flightdistance x total people)
+                var TicketList = TicketDAO.GetTicketList(o.OrderID);
+                int totalCount = TicketList.Count();
+                var TInfo = TicketList.Where(t => t.IsReturn == false).FirstOrDefault();
+                var objD = db.FlightDistance.Where(fd => fd.AirportID1 == TInfo.Flight.Route.Departure && fd.AirportID2 == TInfo.Flight.Route.Destination).FirstOrDefault();
+                if (objD == null)
+                {
+                    objD = db.FlightDistance.Where(fd => fd.AirportID1 == TInfo.Flight.Route.Destination && fd.AirportID2 == TInfo.Flight.Route.Departure).FirstOrDefault();
+                }
+                int totalDistance = objD.Distance * totalCount;
+                // Add total distance to skymiles in User
+                UsersDAO.GetUser(o.UserID).Skymiles += totalDistance;
+
                 db.SaveChanges();
                 return true;
             }
             return false;
         }
 
+        public static bool CancelOrder(long id)
+        {
+            var o = GetOrder(id);
+            if (o != null)
+            {
+                // Change status
+                o.Status = 2;
 
+                // Calculate flight distance (flightdistance x total people)
+                var TicketList = TicketDAO.GetTicketList(o.OrderID);
+                int totalCount = TicketList.Count();
+                int totalInFlightCount = TicketList.Where(t => t.IsReturn == false).Count();
+                var TInfo = TicketList.Where(t => t.IsReturn == false).FirstOrDefault();
+                var ReTInfo = TicketList.Where(t => t.IsReturn == true).FirstOrDefault();
+                var objD = db.FlightDistance.Where(fd => fd.AirportID1 == TInfo.Flight.Route.Departure && fd.AirportID2 == TInfo.Flight.Route.Destination).FirstOrDefault();
+                if (objD == null)
+                {
+                    objD = db.FlightDistance.Where(fd => fd.AirportID1 == TInfo.Flight.Route.Destination && fd.AirportID2 == TInfo.Flight.Route.Departure).FirstOrDefault();
+                }
+                int totalDistance = objD.Distance * totalCount;
+                // Subtract total distance from skymiles
+                var u = UsersDAO.GetUser(o.UserID);
+                u.Skymiles = u.Skymiles - totalDistance;
+
+                // Add to AvailSeat to the Flights
+                Flight FInfo = FlightDAO.GetFlight(TInfo.FNo);
+                Flight ReFInfo = null;
+                if (ReTInfo != null)
+                {
+                    ReFInfo = FlightDAO.GetFlight(ReTInfo.FNo);
+                }
+                if (TInfo.Class == "F")
+                {
+                    FInfo.AvailSeatsF += totalInFlightCount;
+                    if (ReFInfo != null)
+                    {
+                        ReFInfo.AvailSeatsF += totalInFlightCount;
+                    }
+                }
+                else if (TInfo.Class == "B")
+                {
+                    FInfo.AvailSeatsB += totalInFlightCount;
+                    if (ReFInfo != null)
+                    {
+                        ReFInfo.AvailSeatsB += totalInFlightCount;
+                    }
+                }
+                else
+                {
+                    FInfo.AvailSeatsE += totalInFlightCount;
+                    if (ReFInfo != null)
+                    {
+                        ReFInfo.AvailSeatsE += totalInFlightCount;
+                    }
+                }
+
+                // Save changes
+                db.SaveChanges();
+                return true;
+            }
+            return false;
+        }
 
         public static string ProcessPayment(Payment payment, bool IsBlocked)
         {
@@ -178,19 +254,47 @@ namespace AirlinesReservationSystem.Models.ars
 
                 db.SaveChanges();
                 db.Order.FirstOrDefault(o => o.OrderID == OrderID).Total = Total;
+
+                // Seat Calculation
+                if (payment.Class == "F")
+                {
+                    FInfo.AvailSeatsF = FInfo.AvailSeatsF - payment.Passengers.Count();
+                    if (ReFInfo != null)
+                    {
+                        ReFInfo.AvailSeatsF = ReFInfo.AvailSeatsF - payment.Passengers.Count();
+                    }
+                }
+                else if (payment.Class == "B")
+                {
+                    FInfo.AvailSeatsB = FInfo.AvailSeatsB - payment.Passengers.Count();
+                    if (ReFInfo != null)
+                    {
+                        ReFInfo.AvailSeatsB = ReFInfo.AvailSeatsB - payment.Passengers.Count();
+                    }
+                }
+                else
+                {
+                    FInfo.AvailSeatsE = FInfo.AvailSeatsE - payment.Passengers.Count();
+                    if (ReFInfo != null)
+                    {
+                        ReFInfo.AvailSeatsE = ReFInfo.AvailSeatsE - payment.Passengers.Count();
+                    }
+                }
+
                 // Skymile
                 if (order.Status == 1)
                 {
                     int dis1 = 0;
                     var objD1 = db.FlightDistance.Where(fd => fd.AirportID1 == FInfo.Route.Departure && fd.AirportID2 == FInfo.Route.Destination).FirstOrDefault();
-                    if (objD1==null)
+                    if (objD1 == null)
                     {
                         objD1 = db.FlightDistance.Where(fd => fd.AirportID1 == FInfo.Route.Destination && fd.AirportID2 == FInfo.Route.Departure).FirstOrDefault();
                     }
-                    dis1 = objD1.Distance*payment.Passengers.Count();
+                    dis1 = objD1.Distance * payment.Passengers.Count();
 
                     UsersDAO.GetUser(order.UserID).Skymiles += dis1;
                 }
+
                 db.SaveChanges();
 
                 return "ok:" + OrderID;
