@@ -320,6 +320,7 @@
     <Content Include="Views\ARS\JqueryUIDemo.cshtml" />
     <Content Include="Views\ARS\PaymentResult.cshtml" />
     <Content Include="Views\ARS\Test.cshtml" />
+    <Content Include="Views\ARS\PaymentSearch.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

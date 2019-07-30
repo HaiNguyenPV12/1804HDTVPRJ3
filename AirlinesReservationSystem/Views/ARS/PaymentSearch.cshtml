@@ -1,0 +1,24 @@
+﻿
+@{
+    ViewBag.Title = "PaymentSearch";
+}
+
+<h2>Payment Search</h2>
+
+<form>
+    <div class="form-group form-inline">
+        <label class = "control-label col-md-2">Enter Order ID: </label>
+        <div class="col-md-5">
+            <input type="text" id="OrderID" name="OrderID" placeholder="Enter Order ID to search..." class="form-control" style = "width:100%"/>
+        </div>
+        <div class="col-md-2">
+            <input type="button" name="name" value="Search" class="btn btn-ars-light" onclick="searchPayment()"/>
+        </div>
+    </div>
+</form>
+<script>
+    function searchPayment() {
+        var id = $("#OrderID").val().trim();
+        window.location.href = "/ars/PaymentResult?id=" + id;
+    }
+</script>
