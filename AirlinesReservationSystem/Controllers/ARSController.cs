@@ -342,6 +342,7 @@ namespace AirlinesReservationSystem.Controllers
                     return View();
                 }
             }
+            TempData["errorM"] = "There was an error executing your requests. Please try again";
             return RedirectToAction("Index");
         }
 

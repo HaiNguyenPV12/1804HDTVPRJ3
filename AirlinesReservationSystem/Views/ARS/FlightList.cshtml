@@ -44,6 +44,39 @@ else
             @Html.ActionLink("Select Another", "FlightList", new { @isReselect = true }, new { @class = "btn btn-ars-dark btn-ars-list" })
         </div>
     </div>
+    <!--Flight Details-->
+    <a data-toggle="collapse" href="#div_details_@firstTrip.FlightVM.FNo" class="row col-md-12 pl-md-4">Flight Details</a>
+    <div id="div_details_@firstTrip.FlightVM.FNo" class="collapse hide row col-md-12">
+        <div class="card-body">
+            <ul class="list-group">
+                <li class="list-group-item list-group-item-action">
+                    <b>Flight Name:</b>
+                    @firstTrip.FlightVM.FNo
+                </li>
+                <li class="list-group-item list-group-item-action">
+                    <b>Plane:</b>
+                    @firstTrip.FlightVM.Route.Aircraft.AircraftName
+                </li>
+                <li class="list-group-item list-group-item-action">
+                    <b>Departure:</b>
+                    @firstTrip.FlightVM.Route.DepartureAirport.AirportName
+                </li>
+                <li class="list-group-item list-group-item-action">
+                    <b>Arrival:</b>
+                    @firstTrip.FlightVM.Route.DestinationAirport.AirportName
+                </li>
+                <li class="list-group-item list-group-item-action">
+                    <b>Takeoff:</b>
+                    @firstTrip.FlightVM.DepartureTime
+                </li>
+                <li class="list-group-item list-group-item-action">
+                    <b>Landing:</b>
+                    @firstTrip.FlightVM.ArrivalTime
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!--End of Flight Details-->
 </div>
 <h2 class="my-md-2 py-md-2">Showing flights: @destination - @departure</h2>
 }
