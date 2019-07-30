@@ -66,7 +66,7 @@ namespace AirlinesReservationSystem.Models
                 }
             }
 
-            //look for trips to second trips starting point
+            //look for trips to second trip's starting point
             foreach (var item in secondFlights)
             {
                 var firstFlightToAdd = from r in routes
