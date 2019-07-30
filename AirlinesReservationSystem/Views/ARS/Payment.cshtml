@@ -433,6 +433,8 @@
         }
         result += "</dt>";
         result += "<dd class='col-6 text-right'>@FInfo.Route.DepartureAirport.AirportID => @FInfo.Route.DestinationAirport.AirportID </dd>";
+        result += "<dt class=''></dt>";
+        result += "<dd class='col-12 text-right'>@FInfo.DepartureTime <br>=> @FInfo.ArrivalTime</dd>";
         result += "</dl>";
 
         result += "<dl class='row'>";
@@ -474,6 +476,8 @@
             @:result += "<dl class='row' style='background-color:#bababa'>";
             @:result += "<dt class='col-6'>Return Flight</dt>";
             @:result += "<dd class='col-6 text-right'>@ReFInfo.Route.DepartureAirport.AirportID => @ReFInfo.Route.DestinationAirport.AirportID </dd>";
+            @:result += "<dt class=''></dt>";
+            @:result += "<dd class='col-12 text-right'>@ReFInfo.DepartureTime <br>=> @ReFInfo.ArrivalTime</dd>";
             @:result += "</dl>";
 
             @:result += "<dl class='row'>";
