@@ -8,7 +8,7 @@ using System.Web.Mvc;
 
 namespace AirlinesReservationSystem.Controllers
 {
-    public class ARSController : Controller
+    public partial class ARSController : Controller
     {
         // GET: Home
         public ActionResult Index()
@@ -48,13 +48,13 @@ namespace AirlinesReservationSystem.Controllers
             {
                 try
                 {
-                    //ViewBag.Goto = Goto;
+                    //Get previous url to redirect after login
                     string url = this.Request.UrlReferrer.ToString();
                     Session["Goto"] = url;
                 }
                 catch (Exception)
                 {
-                    Session["Goto"] = "/";
+                    Session["Goto"] = "/"; //returns to home if nothing was found
                 }
                 return View();
             }
@@ -115,18 +115,38 @@ namespace AirlinesReservationSystem.Controllers
 
 
         //Passing search parameters into view
-        public ActionResult FlightList(FlightSearch flightSearch, bool? isReselect)
+        //public ActionResult FlightList(FlightSearch flightSearch, bool? isReselect)
+        //{
+        //    Session["fid1"] = null;
+
+        //    //get original search parameters and rerun search query
+        //    if (isReselect == true)
+        //        flightSearch = (FlightSearch)Session["searchParams"];
+
+        //    ViewBag.RoundTrip = flightSearch.IsRoundTrip;
+        //    var model = FlightSearchDAO.GetFlightResults(flightSearch);
+        //    Session["searchResultsFirstTrip"] = model;
+        //    return View(model);
+        //}
+
+        public ActionResult FlightList(FlightSearch flightSearch, bool? isReselect, int? page)
         {
             Session["fid1"] = null;
 
             //get original search parameters and rerun search query
-            if (isReselect == true)
+            if (isReselect == true || !TryValidateModel(flightSearch))
                 flightSearch = (FlightSearch)Session["searchParams"];
-
             ViewBag.RoundTrip = flightSearch.IsRoundTrip;
-            var model = FlightSearchDAO.GetFlightResults(flightSearch);
-            Session["searchResultsFirstTrip"] = model;
-            return View(model);
+            ViewBag.Pages = GetPages(flightSearch);
+            //var model = FlightSearchDAO.GetFlightResults(flightSearch);
+            Session["searchResultsFirstTrip"] = flightResults;
+            if (page == null)
+            {
+                ViewBag.PageIndex = 1;
+                return View(GetFlightsForPage(1));
+            }
+            ViewBag.PageIndex = page;
+            return View(GetFlightsForPage(int.Parse(page.ToString())));
         }
 
         //Passing 1st trip and run a reverse search with return date
