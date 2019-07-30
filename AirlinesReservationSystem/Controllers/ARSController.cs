@@ -48,13 +48,13 @@ namespace AirlinesReservationSystem.Controllers
             {
                 try
                 {
-                    //ViewBag.Goto = Goto;
+                    //Get previous url to redirect after login
                     string url = this.Request.UrlReferrer.ToString();
                     Session["Goto"] = url;
                 }
                 catch (Exception)
                 {
-                    Session["Goto"] = "/";
+                    Session["Goto"] = "/"; //returns to home if nothing was found
                 }
                 return View();
             }
@@ -115,7 +115,21 @@ namespace AirlinesReservationSystem.Controllers
 
 
         //Passing search parameters into view
-        public ActionResult FlightList(FlightSearch flightSearch, bool? isReselect)
+        //public ActionResult FlightList(FlightSearch flightSearch, bool? isReselect)
+        //{
+        //    Session["fid1"] = null;
+
+        //    //get original search parameters and rerun search query
+        //    if (isReselect == true)
+        //        flightSearch = (FlightSearch)Session["searchParams"];
+
+        //    ViewBag.RoundTrip = flightSearch.IsRoundTrip;
+        //    var model = FlightSearchDAO.GetFlightResults(flightSearch);
+        //    Session["searchResultsFirstTrip"] = model;
+        //    return View(model);
+        //}
+
+        public ActionResult FlightList(FlightSearch flightSearch, bool? isReselect, int? page)
         {
             Session["fid1"] = null;
 
@@ -124,9 +138,32 @@ namespace AirlinesReservationSystem.Controllers
                 flightSearch = (FlightSearch)Session["searchParams"];
 
             ViewBag.RoundTrip = flightSearch.IsRoundTrip;
+            ViewBag.Pages = GetPages(flightSearch);
             var model = FlightSearchDAO.GetFlightResults(flightSearch);
             Session["searchResultsFirstTrip"] = model;
             return View(model);
+        }
+
+        IEnumerable<FlightResult> flightResults;
+
+        IEnumerable<FlightResult> GetFlightList(FlightSearch flightSearch) => FlightSearchDAO.GetFlightResults(flightSearch);
+
+        int GetPages(FlightSearch flightSearch)
+        {
+            flightResults = GetFlightList(flightSearch);
+            int pages;
+            int flights = flightResults.Count();
+            int pagesM = flights % 3;
+            if (pagesM > 0) { pages = (flights / 3) + 1; }
+            else { pages = flights / 3; }
+            return pages;
+        }
+
+        IEnumerable<FlightResult> GetFlightsForPage(int page)
+        {
+            if (page <= 0) page = 1;
+            var model = flightResults.OrderByDescending(item => item.FlightVM.BasePrice).Skip((page - 1) * 3).Take(3);
+            return model;
         }
 
         //Passing 1st trip and run a reverse search with return date
