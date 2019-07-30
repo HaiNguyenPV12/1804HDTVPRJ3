@@ -377,8 +377,16 @@
         // init variable
         $("#paymentDiv").html("");
         var result = "";
+        var daysToDeparture = parseInt(@((FInfo.DepartureTime - System.DateTime.Now).TotalDays));
         var adultTotal = @(FInfo.BasePrice * AdultNum);
         var childTotal = @(FInfo.BasePrice * ChildNum * 70/100);
+        console.log(adultTotal);
+        if (daysToDeparture <= 14) {
+            adultTotal +=  @(FInfo.BasePrice * AdultNum)* 0.02 * (14 - daysToDeparture);
+            console.log((14 - daysToDeparture));
+            childTotal += @(FInfo.BasePrice * ChildNum * 70/100)* 0.02 * (14-daysToDeparture);
+        }
+
         var serviceTotal = @(FInfo.Route.Aircraft.ServiceFee * PeopleNum);
         var classTotal = 0;
         var reAdultTotal = 0;
@@ -458,22 +466,6 @@
         result += "<dd class='col-5 text-right'>" + seatFee*@PeopleNum + "$</dd>";
         classTotal += (+seatFee * @PeopleNum);
         result += "</dl>";
-        //$("select[name='Class']").each(function () {
-        //    var classVal = $(this).val();
-        //    if (classVal == "F") {
-        //        result += "<dt class='col-7 text-right'>First Class's fee</dt>";
-        //        result += "<dd class='col-5 text-right'>20$</dd>";
-        //        classTotal += 20;
-        //    } else if (classVal == "B") {
-        //        result += "<dt class='col-7 text-right'>Bussiness Class's fee</dt>";
-        //        result += "<dd class='col-5 text-right'>10$</dd>";
-        //        classTotal += 10;
-        //    } else if (classVal == "E") {
-        //        result += "<dt class='col-7 text-right'>Economy Class's fee</dt>";
-        //        result += "<dd class='col-5 text-right'>0$</dd>";
-        //    }
-        //});
-
 
 
         // --Return Flight

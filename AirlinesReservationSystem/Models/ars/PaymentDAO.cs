@@ -27,6 +27,8 @@ namespace AirlinesReservationSystem.Models.ars
             return false;
         }
 
+
+
         public static string ProcessPayment(Payment payment, bool IsBlocked)
         {
             string s = "";
@@ -71,7 +73,19 @@ namespace AirlinesReservationSystem.Models.ars
                     {
                         price += FInfo.BasePrice * 70 / 100 + FInfo.Route.Aircraft.ServiceFee;
                     }
-                    
+                    int daysToDeparture = Convert.ToInt16((FInfo.DepartureTime - DateTime.Now).TotalDays);
+                    if (daysToDeparture <= 14)
+                    {
+                        if (p.Age >= 14)
+                        {
+                            price += FInfo.BasePrice * 0.02 * (14 - daysToDeparture);
+                        }
+                        else
+                        {
+                            price += FInfo.BasePrice * 70 / 100 * 0.02 * (14 - daysToDeparture);
+                        }
+                    }
+
                     foreach (var item in p.Service)
                     {
                         price += ServiceDAO.GetService(item).ServiceFee;
@@ -118,6 +132,20 @@ namespace AirlinesReservationSystem.Models.ars
                         {
                             price += ReFInfo.BasePrice * 70 / 100 + ReFInfo.Route.Aircraft.ServiceFee;
                         }
+
+                        int daysToDeparture = Convert.ToInt16((ReFInfo.DepartureTime - DateTime.Now).TotalDays);
+                        if (daysToDeparture <= 14)
+                        {
+                            if (p.Age >= 14)
+                            {
+                                price += ReFInfo.BasePrice * 0.02 * (14 - daysToDeparture);
+                            }
+                            else
+                            {
+                                price += ReFInfo.BasePrice * 70 / 100 * 0.02 * (14 - daysToDeparture);
+                            }
+                        }
+
                         foreach (var item in p.Service)
                         {
                             price += ServiceDAO.GetService(item).ServiceFee;
@@ -153,7 +181,15 @@ namespace AirlinesReservationSystem.Models.ars
                 // Skymile
                 if (order.Status == 1)
                 {
+                    int dis1 = 0;
+                    var objD1 = db.FlightDistance.Where(fd => fd.AirportID1 == FInfo.Route.Departure && fd.AirportID2 == FInfo.Route.Destination).FirstOrDefault();
+                    if (objD1==null)
+                    {
+                        objD1 = db.FlightDistance.Where(fd => fd.AirportID1 == FInfo.Route.Destination && fd.AirportID2 == FInfo.Route.Departure).FirstOrDefault();
+                    }
+                    dis1 = objD1.Distance*payment.Passengers.Count();
 
+                    UsersDAO.GetUser(order.UserID).Skymiles += dis1;
                 }
                 db.SaveChanges();
 
