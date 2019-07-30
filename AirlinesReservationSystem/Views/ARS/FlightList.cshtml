@@ -3,6 +3,8 @@
 @{
     ViewBag.Title = "FlightList";
     bool roundTrip = bool.Parse(ViewBag.RoundTrip.ToString());
+    AirlinesReservationSystem.Models.ars.FlightResult firstTrip = null;
+    if (ViewBag.firstTrip != null) { firstTrip = (AirlinesReservationSystem.Models.ars.FlightResult)ViewBag.firstTrip; }
     var searchParams = (AirlinesReservationSystem.Models.ars.FlightSearch)Session["searchParams"];
     int totalPassenger = int.Parse(Session["totalPassenger"].ToString());
     string departure = searchParams.Departure;
@@ -12,7 +14,72 @@
 }
 <link href="~/Content/ars/FlightList.css" rel="stylesheet" />
 
-<h2>Showing flights: @departure - @destination</h2>
+@if (firstTrip == null)
+{<h2>Showing flights: @departure - @destination</h2>}
+else
+{
+<h3>First Trip:</h3>
+<div class="row border rounded shadow-sm mb-md-2 pb-md-2 pt-1 flightList-card flightList-card-selected">
+    <div class="col-md-3">
+        <p>@string.Format("{0:hh:mm tt}", firstTrip.FlightVM.DepartureTime) - @string.Format("{0:hh:mm tt}", firstTrip.FlightVM.ArrivalTime)</p>
+        <p>
+            <img src="~/img/ars/@firstTrip.FlightVM.Route.Airline.AirlineIcon" alt="@firstTrip.FlightVM.Route.Airline.AirlineName" class="airline-icon" /> <br />
+            @firstTrip.FlightVM.Route.Airline.AirlineName
+        </p>
+    </div>
+    <div class="col-md-6">
+        <p>
+            @{var firstFlightTime = TimeSpan.FromHours(firstTrip.FlightVM.FlightTime);}
+            @firstFlightTime.ToString("hh")h  @firstFlightTime.ToString("mm")m
+        </p>
+        <p>
+            @firstTrip.RouteVM.Departure - @firstTrip.RouteVM.Destination
+        </p>
+    </div>
+    <div class="col-md-3 row">
+        <div class="col-md-4 text-md-right">
+            <h3>$@firstTrip.FlightVM.BasePrice</h3>
+        </div>
+        <div class="col-md-8 text-md-left">
+            @Html.ActionLink("Select Another", "FlightList", new { @isReselect = true }, new { @class = "btn btn-ars-dark btn-ars-list" })
+        </div>
+    </div>
+    <!--Flight Details-->
+    <a data-toggle="collapse" href="#div_details_@firstTrip.FlightVM.FNo" class="row col-md-12 pl-md-4">Flight Details</a>
+    <div id="div_details_@firstTrip.FlightVM.FNo" class="collapse hide row col-md-12">
+        <div class="card-body">
+            <ul class="list-group">
+                <li class="list-group-item list-group-item-action">
+                    <b>Flight Name:</b>
+                    @firstTrip.FlightVM.FNo
+                </li>
+                <li class="list-group-item list-group-item-action">
+                    <b>Plane:</b>
+                    @firstTrip.FlightVM.Route.Aircraft.AircraftName
+                </li>
+                <li class="list-group-item list-group-item-action">
+                    <b>Departure:</b>
+                    @firstTrip.FlightVM.Route.DepartureAirport.AirportName
+                </li>
+                <li class="list-group-item list-group-item-action">
+                    <b>Arrival:</b>
+                    @firstTrip.FlightVM.Route.DestinationAirport.AirportName
+                </li>
+                <li class="list-group-item list-group-item-action">
+                    <b>Takeoff:</b>
+                    @firstTrip.FlightVM.DepartureTime
+                </li>
+                <li class="list-group-item list-group-item-action">
+                    <b>Landing:</b>
+                    @firstTrip.FlightVM.ArrivalTime
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!--End of Flight Details-->
+</div>
+<h2 class="my-md-2 py-md-2">Showing flights: @destination - @departure</h2>
+}
 
 <!--refine search form-->
 @*error msg if any*@
@@ -51,9 +118,13 @@
                     <h3>$@item.FlightVM.BasePrice</h3>
                 </div>
                 <div class="col-md-8 text-md-right">
-                    @if (roundTrip)
+                    @if (roundTrip && Session["fid1"] == null)
                     {
                         @Html.ActionLink("Select", "FlightListReturn", new { fid = item.FlightVM.FNo, rid = item.RouteVM.RNo }, new { @class = "btn btn-ars-light mb-md-1 btn-ars-list" })
+                    }
+                    else if (roundTrip && Session["fid1"] != null)
+                    {
+                        @Html.ActionLink("Select", "Payment", new { FNo = firstTrip.FlightVM.FNo, ReFNo = item.FlightVM.FNo, PeopleNum = totalPassenger }, new { @class = "btn btn-ars-light btn-ars-list", @id = "hey it's me" })
                     }
                     else
                     {
@@ -62,23 +133,39 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <a data-toggle="collapse" href="#div_details_@item.FlightVM.FNo" class="ml-md-2">Flight Details</a>
-                <div id="div_details_@item.FlightVM.FNo" class="collapse hide">
-                    <div class="card-body">
-                        <ul>
-                            <li> Flight Name: @item.FlightVM.FNo</li>
-                            <li>Departure: @item.FlightVM.Route.DepartureAirport.AirportName</li>
-                            <li>Arrival: @item.FlightVM.Route.DestinationAirport.AirportName</li>
-                            <li>Takeoff: @item.FlightVM.DepartureTime</li>
-                            <li>Landing: @item.FlightVM.ArrivalTime</li>
-                        </ul>
-
-                    </div>
-                </div>
+        <!--Flight Details-->
+        <a data-toggle="collapse" href="#div_details_@item.FlightVM.FNo" class="row col-md-12 pl-md-4">Flight Details</a>
+        <div id="div_details_@item.FlightVM.FNo" class="collapse hide row col-md-12">
+            <div class="card-body">
+                <ul class="list-group">
+                    <li class="list-group-item list-group-item-action">
+                        <b>Flight Name:</b>
+                        @item.FlightVM.FNo
+                    </li>
+                    <li class="list-group-item list-group-item-action">
+                        <b>Plane:</b>
+                        @item.FlightVM.Route.Aircraft.AircraftName
+                    </li>
+                    <li class="list-group-item list-group-item-action">
+                        <b>Departure:</b>
+                        @item.FlightVM.Route.DepartureAirport.AirportName
+                    </li>
+                    <li class="list-group-item list-group-item-action">
+                        <b>Arrival:</b>
+                        @item.FlightVM.Route.DestinationAirport.AirportName
+                    </li>
+                    <li class="list-group-item list-group-item-action">
+                        <b>Takeoff:</b>
+                        @item.FlightVM.DepartureTime
+                    </li>
+                    <li class="list-group-item list-group-item-action">
+                        <b>Landing:</b>
+                        @item.FlightVM.ArrivalTime
+                    </li>
+                </ul>
             </div>
         </div>
+        <!--End of Flight Details-->
     </div>
 }
 
@@ -90,13 +177,24 @@
                 if (i == ViewBag.PageIndex)
                 {
                     <li class="active page-item">
-                        @Html.ActionLink(i.ToString(), "FlightList", new { page = i }, new { @class = "page-link" })
+                        @if (roundTrip && Session["fid1"] != null)
+                        {
+                            @Html.ActionLink(i.ToString(), "FlightListReturn", new { page = i, fid = firstTrip.FlightVM.FNo, rid = firstTrip.FlightVM.RNo }, new { @class = "page-link" })
+                        }
+                        else
+                        {@Html.ActionLink(i.ToString(), "FlightList", new { page = i }, new { @class = "page-link" })}
                     </li>
                 }
                 else
                 {
                     <li class="page-item">
-                        @Html.ActionLink(i.ToString(), "FlightList", new { page = i }, new { @class = "page-link" })
+                        @if (roundTrip && Session["fid1"] != null)
+                        {
+                            @Html.ActionLink(i.ToString(), "FlightListReturn", new { page = i, fid = firstTrip.FlightVM.FNo, rid = firstTrip.FlightVM.RNo }, new { @class = "page-link" })
+                        }
+                        else
+                        {
+                            @Html.ActionLink(i.ToString(), "FlightList", new { page = i }, new { @class = "page-link" })}
                     </li>
                 }
             }
