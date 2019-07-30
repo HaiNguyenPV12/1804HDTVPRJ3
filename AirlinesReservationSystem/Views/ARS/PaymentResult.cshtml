@@ -2,31 +2,65 @@
 
 @{
     ViewBag.Title = "PaymentResult";
-    var TicketList = AirlinesReservationSystem.Models.ars.PaymentDAO.GetTicketList(Model.OrderID);
+    IEnumerable<AirlinesReservationSystem.Models.Ticket> TicketList = ViewBag.TicketList;
     int ticketCount = 1;
 }
+<div class="">
+    <h2>
+        Order: @Model.OrderID @Html.ActionLink("Back to Homepage", "Index", null, new { @class = "btn btn-ars-light" })
+    </h2>
+</div>
 
-<h2>Order: @Model.OrderID @Html.ActionLink("Back to Homepage", "Index", null, new { @class = "btn btn-ars-light" })</h2>
 
 <div>
-    <div>
-        @if (Model.Status == 0)
-        {
-            if (System.DateTime.Now < TicketList.Where(t => t.IsReturn == false).FirstOrDefault().Flight.DepartureTime.AddDays(-14))
-            {
-                <span class="text-warning">Blocking (Need to be paid before 2 weeks before the flight)</span>
-            }
-            else
-            {
-                <span class="text-danger">Blocked but Canceled (Need to be paid before 2 weeks before the flight)</span>
-            }
+    <div class="card">
+        <div class="card-header">
+            <h4>Basic info</h4>
+        </div>
+        <div class="card-body">
+            <div class="">
+                <b>Status:</b>
+                @if (Model.Status == 0)
+                {
+                    if (System.DateTime.Now < TicketList.Where(t => t.IsReturn == false).FirstOrDefault().Flight.DepartureTime.AddDays(-14))
+                    {
+                        <span class="text-warning">Blocking (Need to be paid before 2 weeks before the flight)</span>
+                    }
+                    else
+                    {
+                        <span class="text-danger">Blocked but Canceled (Need to be paid before 2 weeks before the flight)</span>
+                    }
 
-        }
-        else if (Model.Status == 1)
-        {
-            <span class="text-success">Booked</span>
-        }
+                }
+                else if (Model.Status == 1)
+                {
+                    <span class="text-success">Booked</span>
+                }
+                else if (Model.Status == 2)
+                {
+                    <span class="text-danger">Canceled</span>
+                }
+            </div>
+            <div>
+                <b>Total:</b> @Model.Total$
+            </div>
+            <div>
+                @if (Model.Status == 1)
+                {
+                    <b>Booked Date:</b>
+                }
+                else if (Model.Status == 0)
+                {
+                    <b>Blocked Date:</b>
+                }
+                @Model.OrderDate
+            </div>
+            <div>
+                <b>Booking User:</b> @Model.UserID
+            </div>
+        </div>
     </div>
+    <br />
     <div class="card">
         <div class="card-header">
             <h4>Departure</h4>
@@ -156,6 +190,20 @@
                     @Html.ActionLink("Pay this order", "BlockingPayment", new { @id = Model.OrderID }, new { @class = "btn btn-lg btn-success text-center" })
                 }
 
+            }
+        }
+        else if (Model.Status == 1)
+        {
+            if (Session["user"] == null)
+            {
+                <a href="/ars/login" value="" class="btn btn-lg btn-warning">Login to cancel this order</a>
+            }
+            else
+            {
+                if (Session["user"].ToString() == Model.UserID)
+                {
+                    <input type="button" class="btn btn-lg btn-danger" value="Cancel this order" />
+                }
             }
         }
 

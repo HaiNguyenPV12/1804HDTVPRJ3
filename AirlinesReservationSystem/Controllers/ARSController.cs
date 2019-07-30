@@ -11,7 +11,12 @@ namespace AirlinesReservationSystem.Controllers
     public class ARSController : Controller
     {
         // GET: Home
-        public ActionResult Index() => View();
+        public ActionResult Index()
+        {
+            if (Session["fid1"] != null) Session["fid1"] = null;
+            if (Session["fid2"] != null) Session["fid2"] = null;
+            return View();
+        }
 
         [HttpPost]
         public ActionResult Index(FlightSearch flightSearch)
@@ -251,17 +256,31 @@ namespace AirlinesReservationSystem.Controllers
 
         //---------------- PAYMENT ------------------
         // PAYMENT's VIEW
-        public ActionResult Payment(string FNo, string ReFNo, int PeopleNum)
+        public ActionResult Payment()
         {
-            if (Session["user"] != null)
+            if (Session["searchParams"] != null)
             {
-                ViewBag.FNo = FNo;
-                ViewBag.RFNo = ReFNo;
-                ViewBag.PeopleNum = PeopleNum;
-                return View();
+                var searchParam = (FlightSearch)Session["searchParams"];
+                if (Session["fid1"] != null)
+                {
+                    if (Session["user"] == null)
+                    {
+                        Session["GotoPayment"] = string.Format("/ars/payment");
+                        return RedirectToAction("Login");
+                    }
+                    ViewBag.FNo = Session["fid1"].ToString();
+                    if (Session["fid2"] != null)
+                    {
+                        ViewBag.ReFNo = Session["fid2"].ToString();
+                    }
+                    ViewBag.PeopleNum = searchParam.Adult + searchParam.Children + searchParam.Senior;
+                    ViewBag.AdultNum = searchParam.Adult;
+                    ViewBag.ChildNum = searchParam.Children;
+                    ViewBag.Class = searchParam.Class;
+                    return View();
+                }
             }
-            Session["GotoPayment"] = string.Format("/ars/payment?FNo={0}&ReFNo={1}&PeopleNum={2}", FNo, ReFNo, PeopleNum);
-            return RedirectToAction("Login");
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
@@ -274,11 +293,13 @@ namespace AirlinesReservationSystem.Controllers
             objP.FNo = frmPayment["FNo"];
             objP.ReFNo = frmPayment["ReFNo"];
             objP.PeopleNum = int.Parse(frmPayment["PeopleNum"]);
+            objP.AdultNum = int.Parse(frmPayment["AdultNum"]);
+            objP.ChildNum = int.Parse(frmPayment["ChildNum"]);
+            objP.Class = frmPayment["Class"];
             string[] Firstname = frmPayment["Firstname"].Split(',');
             string[] Lastname = frmPayment["Lastname"].Split(',');
             string[] SexStr = frmPayment["Sex"].Split(',');
             string[] PassportNo = frmPayment["PassportNo"].Split(',');
-            string[] Class = frmPayment["Class"].Split(',');
             string[] ReClass = null;
             if (frmPayment["ReClass"] != null)
             {
@@ -301,11 +322,6 @@ namespace AirlinesReservationSystem.Controllers
                 objPa.Sex = Sex[i];
                 objPa.Age = int.Parse(Age[i]);
                 objPa.PassportNo = PassportNo[i];
-                objPa.Class = Class[i];
-                if (frmPayment["ReClass"] != null)
-                {
-                    objPa.ReClass = ReClass[i];
-                }
                 if (frmPayment["Service" + (i + 1)] != null)
                 {
                     objPa.Service = frmPayment["Service" + (i + 1)].Split(',');
@@ -334,9 +350,18 @@ namespace AirlinesReservationSystem.Controllers
             return Content(s);
         }
 
-        public ActionResult PaymentResult(long id)
+        public ActionResult PaymentResult(long? id)
         {
-            return View(PaymentDAO.GetOrder(id));
+            if (id != null)
+            {
+                var p = PaymentDAO.GetOrder(long.Parse(id.ToString()));
+                if (p != null)
+                {
+                    ViewBag.TicketList = PaymentDAO.GetTicketList(p.OrderID);
+                    return View(p);
+                }
+            }
+            return RedirectToAction("Index");
         }
 
         public ActionResult BlockingPayment(Int64 id)
