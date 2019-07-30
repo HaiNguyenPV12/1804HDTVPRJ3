@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARS Admin - @ViewBag.Title</title>
+    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/ars/layout.css" type="text/css" rel="stylesheet" />
+    <link href="~/Content/ars/layoutadmin.css" type="text/css" rel="stylesheet" />
+    <script src="~/Scripts/modernizr-2.8.3.js"></script>
+    <script src="~/Scripts/umd/popper.min.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+
+
+</head>
+<body>
+    <!--start of navbar-->
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
+        <div class="container">
+            <a href="~/bank" class="navbar-brand">Bank</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    @*<li class="nav-item">
+                            <a href="#" class="nav-link">Admin Something</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle waves-effect waves-light" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+                            <div class="dropdown-menu dropdown-info" aria-labelledby="navbarDropdownMenuLink">
+                                <a class="dropdown-item waves-effect waves-light" href="#">Action Admin</a>
+                                <a class="dropdown-item waves-effect waves-light" href="#">Another action Admin</a>
+                                <a class="dropdown-item waves-effect waves-light" href="#">Something else here admin</a>
+                            </div>
+                        </li>*@
+                </ul>
+                <div class="navbar-nav">
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="container body-content">
+        <p></p>
+        @RenderBody()
+    </div>
+    <footer class="bg-ars-light">
+        <div class="container">
+            <p>&copy; @DateTime.Now.Year - HDTV</p>
+        </div>
+    </footer>
+
+
+</body>
+</html>
+
