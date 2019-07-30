@@ -2,12 +2,14 @@
     Layout = null;
     int index = int.Parse(ViewBag.AddIndex.ToString());
 }
-<hr />
+<hr style="background-color:#d7d7d7;height:2px"/>
+<div class="text-center"><h5>Employee @(index + 1)</h5></div>
+<hr style="background-color:#d7d7d7;height:2px" />
 <div>
     <div class="form-group form-inline" style="">
         <label class="control-label col-md-2" style="text-align:right" for="EmpID@(index)">Employee ID</label>
         <div class="col-md-10">
-            <input type="text" id="EmpID@(index)" name="EmpID[@(index)]" value="" class = "form-control" style = "width:100%" maxlength="50" required/>
+            <input type="text" id="EmpID@(index)" name="EmpID[@(index)]" value="" class="form-control" style="width:100%" maxlength="50" required />
         </div>
     </div>
 
@@ -39,7 +41,7 @@
     <div class="form-group form-inline">
         <label class="control-label col-md-2" style="text-align:right" for="Phone@(index)">Phone</label>
         <div class="col-md-10">
-            <input type="text" name="Phone[@(index)]" id="Phone@(index)" value="" class="form-control" style="width:100%" pattern="\d{10,12}" required  title="Phone must be from 10 to 12 digits"/>
+            <input type="text" name="Phone[@(index)]" id="Phone@(index)" value="" class="form-control" style="width:100%" pattern="\d{10,12}" required title="Phone must be from 10 to 12 digits" />
         </div>
     </div>
 
@@ -58,15 +60,15 @@
                 <option value=false>Female</option>
             </select>
             @*<div class="form-check-inline">
-                <label class="form-check-label">
-                    <input type="radio" name="Sex" value=1 checked/> Male
-                </label>
-            </div>
-            <div class="form-check-inline">
-                <label class="form-check-label">
-                    <input type="radio" name="Sex" value=0 /> Female
-                </label>
-            </div>*@
+                    <label class="form-check-label">
+                        <input type="radio" name="Sex" value=1 checked/> Male
+                    </label>
+                </div>
+                <div class="form-check-inline">
+                    <label class="form-check-label">
+                        <input type="radio" name="Sex" value=0 /> Female
+                    </label>
+                </div>*@
         </div>
     </div>
 
@@ -84,4 +86,4 @@
             </div>
         </div>*@
 </div>
-<hr />
+<hr style="background-color:#d7d7d7" />

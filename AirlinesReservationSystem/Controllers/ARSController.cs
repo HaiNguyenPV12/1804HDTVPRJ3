@@ -268,7 +268,11 @@ namespace AirlinesReservationSystem.Controllers
                         Session["GotoPayment"] = string.Format("/ars/payment");
                         return RedirectToAction("Login");
                     }
+                    List<string> FNos = new List<string>();
+                    FNos.AddRange(Session["fid1"].ToString().Split(','));
                     ViewBag.FNo = Session["fid1"].ToString();
+                    ViewBag.FNos = FNos;
+
                     if (Session["fid2"] != null)
                     {
                         ViewBag.ReFNo = Session["fid2"].ToString();

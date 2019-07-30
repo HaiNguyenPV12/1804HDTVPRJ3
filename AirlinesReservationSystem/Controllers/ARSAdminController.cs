@@ -156,16 +156,7 @@ namespace AirlinesReservationSystem.Controllers
                     i++;
 
                 }
-                //EmpList.ForEach(e =>
-                //{
-                //    s += "ID: " + e.EmpID + ", Name: " + e.Firstname + " " + e.Lastname + "\n";
-                //    s += "Password: " + e.Password + "\n";
-                //    s += "Address: " + e.Address + "\n";
-                //    s += "Phone: " + e.Phone + "\n";
-                //    s += "Email: " + e.Email + "\n";
-                //    s += "Sex: " + e.Sex + "\n";
-                //    s += "Birthday: " + e.DoB + "\n";
-                //});
+
                 // Check duplicate
                 foreach (var item in EmpList)
                 {
@@ -175,11 +166,6 @@ namespace AirlinesReservationSystem.Controllers
                         break;
                     }
                 }
-                //var e = EmpList.GroupBy(group => group.EmpID).Where(group => group.Count() > 1);
-                //if (e != null)
-                //{
-                //    s += "Error: ID duplicated! Please check and try again.\n";
-                //}
 
                 // Check exist
                 foreach (var item in EmpList)
@@ -202,30 +188,7 @@ namespace AirlinesReservationSystem.Controllers
                 s += e.Message + e.StackTrace;
             }
 
-
             return Content(s);
-            //ModelState.Remove("IsActive");
-            //ModelState.Remove("Role");
-            //foreach (var e in newEs)
-            //{
-            //    if (ModelState.IsValid)
-            //    {
-            //        e.IsActive = true;
-            //        e.Role = 1;
-            //        if (EmployeeDAO.AddEmployee(e))
-            //        {
-            //            if (e == newEs.Last())
-            //                return Content("Success");
-            //        }
-            //        else
-            //        {
-            //            ModelState.AddModelError("", "Cannot add " + e.EmpID);
-            //            break;
-            //        }
-            //    }
-            //}
-
-            //return View();
         }
 
         // EMPLOYEE EDIT'S VIEW
