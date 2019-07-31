@@ -227,6 +227,7 @@
     </Compile>
     <Compile Include="Models\ars\AirportSearch.cs" />
     <Compile Include="Models\ars\Dropdowns.cs" />
+    <Compile Include="Models\ars\FlightCalendarDAO.cs" />
     <Compile Include="Models\ars\FlightResult.cs" />
     <Compile Include="Models\ars\FlightSearch.cs" />
     <Compile Include="Models\ars\FlightSearchDetails.cs" />
@@ -336,6 +337,7 @@
     <Content Include="Views\Bank\AddCard.cshtml" />
     <Content Include="Views\Bank\EditCard.cshtml" />
     <Content Include="Views\ARSAdmin\RouteAddTemplate.cshtml" />
+    <Content Include="Views\ARS\FlightCalendar.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

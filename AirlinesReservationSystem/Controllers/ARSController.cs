@@ -394,7 +394,7 @@ namespace AirlinesReservationSystem.Controllers
                 objPa.Sex = Convert.ToBoolean(int.Parse(frmPayment["Sex" + i]));
                 objPa.Age = int.Parse(frmPayment["Age" + i]);
                 objPa.PassportNo = frmPayment["PassportNo" + i];
-                if (frmPayment["Service" + i ] != null)
+                if (frmPayment["Service" + i] != null)
                 {
                     objPa.Service = frmPayment["Service" + i].Split(',');
                 }
@@ -479,6 +479,23 @@ namespace AirlinesReservationSystem.Controllers
                 airports.Add(string.Format("{0} ({1})", item.CityName, item.AirportID));
             }
             return Json(airports.ToArray(), JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult FlightCalendar(string Departure, string Destination, DateTime? date)
+        {
+            var objD1 = FlightCalendarDAO.GetAirport(Departure);
+            var objD2 = FlightCalendarDAO.GetAirport(Destination);
+            ViewBag.ErrorM = "";
+            if (objD1 == null)
+            {
+                ViewBag.ErrorM += "Departure missing ";
+            }
+            if (objD2 == null)
+            {
+                ViewBag.ErrorM += "Destination missing ";
+            }
+            ViewBag.Date = date;
+            return View();
         }
     }
 }
