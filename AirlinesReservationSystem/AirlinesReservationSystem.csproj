@@ -190,6 +190,7 @@
     <Compile Include="Controllers\ARSAdminController.cs" />
     <Compile Include="Controllers\ARSController.cs" />
     <Compile Include="Controllers\ARSFlightList.cs" />
+    <Compile Include="Controllers\BankController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -202,6 +203,10 @@
     <Compile Include="Models\Airport.cs">
       <DependentUpon>ArsDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\arsadmin\AircraftDAO.cs" />
+    <Compile Include="Models\arsadmin\AirlineDAO.cs" />
+    <Compile Include="Models\arsadmin\AirportDAO.cs" />
+    <Compile Include="Models\arsadmin\Dropdowns.cs" />
     <Compile Include="Models\arsadmin\FlightDAO.cs" />
     <Compile Include="Models\arsadmin\OrderDAO.cs" />
     <Compile Include="Models\arsadmin\TicketDAO.cs" />
@@ -229,6 +234,7 @@
     <Compile Include="Models\ars\PaymentDAO.cs" />
     <Compile Include="Models\ars\TicketServiceDAO.cs" />
     <Compile Include="Models\ars\UsersDAO.cs" />
+    <Compile Include="Models\bank\BankDAO.cs" />
     <Compile Include="Models\Country.cs">
       <DependentUpon>ArsDBModel.tt</DependentUpon>
     </Compile>
@@ -324,6 +330,12 @@
     <Content Include="Views\ARS\FlightListWithStops.cshtml" />
     <Content Include="Views\ARS\FlightListWithStops2.cshtml" />
     <Content Include="Views\ARS\PaymentSearch.cshtml" />
+    <Content Include="Views\Bank\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\_BankLayout.cshtml" />
+    <Content Include="Views\Bank\Index.cshtml" />
+    <Content Include="Views\Bank\AddCard.cshtml" />
+    <Content Include="Views\Bank\EditCard.cshtml" />
+    <Content Include="Views\ARSAdmin\RouteAddTemplate.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

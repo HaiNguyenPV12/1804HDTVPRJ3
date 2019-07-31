@@ -18,6 +18,7 @@
 {<h2>Showing flights: @departure - @destination</h2>}
 else
 {
+<!--Start of Selected Flight-->
 <h3>First Trip:</h3>
 <div class="row border rounded shadow-sm mb-md-2 pb-md-2 pt-1 flightList-card flightList-card-selected">
     <div class="col-md-3">
@@ -44,7 +45,7 @@ else
             @Html.ActionLink("Select Another", "FlightList", new { @isReselect = true }, new { @class = "btn btn-ars-dark btn-ars-list" })
         </div>
     </div>
-    <!--Flight Details-->
+    <!--Start of Flight Details-->
     <a data-toggle="collapse" href="#div_details_@firstTrip.FlightVM.FNo" class="row col-md-12 pl-md-4">Flight Details</a>
     <div id="div_details_@firstTrip.FlightVM.FNo" class="collapse hide row col-md-12">
         <div class="card-body">
@@ -78,6 +79,8 @@ else
     </div>
     <!--End of Flight Details-->
 </div>
+<!--End of Selected Flight-->
+
 <h2 class="my-md-2 py-md-2">Showing flights: @destination - @departure</h2>
 }
 
@@ -133,7 +136,7 @@ else
                 </div>
             </div>
         </div>
-        <!--Flight Details-->
+        <!--Start of Flight Details-->
         <a data-toggle="collapse" href="#div_details_@item.FlightVM.FNo" class="row col-md-12 pl-md-4">Flight Details</a>
         <div id="div_details_@item.FlightVM.FNo" class="collapse hide row col-md-12">
             <div class="card-body">
@@ -206,8 +209,7 @@ else
 {
     <div class="row">
         <p class="mx-auto">
-            Click
-            @Html.ActionLink("here", "FlightListWithStops", null, new { @class = "btn btn-ars-light" })
+            @Html.ActionLink("Click", "FlightListWithStops", null, new { @class = "btn btn-ars-light" })
             to find flights to @destination with additional stops <br />
             <span class="text-danger">(Note that prices will be higher as you're taking multiple flights)</span>
         </p>

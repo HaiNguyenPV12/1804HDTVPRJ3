@@ -24,7 +24,8 @@ namespace AirlinesReservationSystem.Models.ars
         public int PeopleNum { get; set; }
         public int AdultNum { get; set; }
         public int ChildNum { get; set; }
-        public string FNo { get; set; }
+        public string FNo1 { get; set; }
+        public string FNo2 { get; set; }
         public string ReFNo { get; set; }
         public string UserID { get; set; }
         public string Class { get; set; }

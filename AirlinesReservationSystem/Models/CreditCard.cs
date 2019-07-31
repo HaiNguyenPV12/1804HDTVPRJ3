@@ -11,12 +11,28 @@ namespace AirlinesReservationSystem.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+
     public partial class CreditCard
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Required]
+        [Display(Name = "Credit card number")]
+        [StringLength(12, MinimumLength = 12)]
         public string CCNo { get; set; }
+
+        [Required]
+        [Display(Name = "Card security number")]
+        [StringLength(3, MinimumLength = 3)]
         public string CVV { get; set; }
+
+        [Required]
+        [Display(Name = "Card holder name")]
         public string OwnerName { get; set; }
+
+        [Required]
         public double Balance { get; set; }
     }
 }

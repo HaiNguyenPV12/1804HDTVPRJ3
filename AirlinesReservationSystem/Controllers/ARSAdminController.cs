@@ -69,25 +69,39 @@ namespace AirlinesReservationSystem.Controllers
         // ROUTE ADD'S VIEW
         public ActionResult RouteAdd() => IsLoggedIn() ? View() : (ActionResult)RedirectToAction("Index");
 
+        //ROUTE ADD TEMPLATE
+        public ActionResult RouteAddTemplate(int index)
+        {
+            ViewBag.Index = index;
+            return View();
+        }
+
         // ROUTE ADD'S PROCESS
+        //    string addResult = RouteDAO.AddRoute(newRoutes);
+        //    if (addResult == "ok")
+        //    {
+        //        return RedirectToAction("Route");
+        //    }
+        //    else
+        //    {
+        //        ModelState.AddModelError("", addResult);
+        //    }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult RouteAdd(Route newR)
+        public ActionResult RouteAdd(List<Route> newRoutes)
         {
             if (ModelState.IsValid)
             {
-                string addResult = RouteDAO.AddRoute(newR);
-                if (addResult == "ok")
+                foreach (var item in newRoutes)
                 {
-                    return RedirectToAction("Route");
+                    RouteDAO.AddRoute(item);
                 }
-                else
-                {
-                    ModelState.AddModelError("", addResult);
-                }
+                return RedirectToAction("Route");
             }
             return View();
         }
+
+
         // ROUTE EDIT'S VIEW
         public ActionResult RouteEdit(int id) => IsLoggedIn() && RouteDAO.GetRoute(id) != null ? View(RouteDAO.GetRoute(id)) : (ActionResult)RedirectToAction("Index");
 
@@ -156,16 +170,7 @@ namespace AirlinesReservationSystem.Controllers
                     i++;
 
                 }
-                //EmpList.ForEach(e =>
-                //{
-                //    s += "ID: " + e.EmpID + ", Name: " + e.Firstname + " " + e.Lastname + "\n";
-                //    s += "Password: " + e.Password + "\n";
-                //    s += "Address: " + e.Address + "\n";
-                //    s += "Phone: " + e.Phone + "\n";
-                //    s += "Email: " + e.Email + "\n";
-                //    s += "Sex: " + e.Sex + "\n";
-                //    s += "Birthday: " + e.DoB + "\n";
-                //});
+
                 // Check duplicate
                 foreach (var item in EmpList)
                 {
@@ -175,11 +180,6 @@ namespace AirlinesReservationSystem.Controllers
                         break;
                     }
                 }
-                //var e = EmpList.GroupBy(group => group.EmpID).Where(group => group.Count() > 1);
-                //if (e != null)
-                //{
-                //    s += "Error: ID duplicated! Please check and try again.\n";
-                //}
 
                 // Check exist
                 foreach (var item in EmpList)
@@ -202,30 +202,7 @@ namespace AirlinesReservationSystem.Controllers
                 s += e.Message + e.StackTrace;
             }
 
-
             return Content(s);
-            //ModelState.Remove("IsActive");
-            //ModelState.Remove("Role");
-            //foreach (var e in newEs)
-            //{
-            //    if (ModelState.IsValid)
-            //    {
-            //        e.IsActive = true;
-            //        e.Role = 1;
-            //        if (EmployeeDAO.AddEmployee(e))
-            //        {
-            //            if (e == newEs.Last())
-            //                return Content("Success");
-            //        }
-            //        else
-            //        {
-            //            ModelState.AddModelError("", "Cannot add " + e.EmpID);
-            //            break;
-            //        }
-            //    }
-            //}
-
-            //return View();
         }
 
         // EMPLOYEE EDIT'S VIEW

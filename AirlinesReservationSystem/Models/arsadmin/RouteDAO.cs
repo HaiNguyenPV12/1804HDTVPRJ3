@@ -36,61 +36,72 @@ namespace AirlinesReservationSystem.Models.arsadmin
             return false;
         }
 
-        public static string AddRoute(Route newR)
+        public static bool AddRoute(Route newR)
         {
             try
             {
-                string s = "";
-                if (db.Airline.FirstOrDefault(al => al.AirlineID == newR.RAirline) == null)
-                {
-                    s += "Airline";
-                }
-                if (db.Aircraft.FirstOrDefault(ac => ac.AircraftID == newR.RAircraft) == null)
-                {
-                    if (s != "")
-                        s += ", ";
-
-                    s += "Aircraft";
-                }
-                //if (db.Airport.FirstOrDefault(ap1 => ap1.AirportID == newR.Departure) == null)
-                //{
-                //    if (s != "")
-                //        s += ", ";
-
-                //    s += "Departure";
-                //}
-                //if (db.Airport.FirstOrDefault(ap2 => ap2.AirportID == newR.Destination) == null)
-                //{
-                //    if (s != "")
-                //        s += ", ";
-
-                //    s += "Destination";
-                //}
-                if (db.FlightDistance.Where(fd => fd.AirportID1 == newR.Departure && fd.AirportID2 == newR.Destination).FirstOrDefault() == null)
-                {
-                    if (db.FlightDistance.Where(fd => fd.AirportID2 == newR.Departure && fd.AirportID1 == newR.Destination).FirstOrDefault() == null)
-                    {
-                        if (s != "")
-                            s += ", ";
-                        s += "Departure and Destination";
-                    }
-                }
-
-
-                if (s != "")
-                {
-                    throw new Exception("Please choose valid " + s + ".");
-                }
-
                 db.Route.Add(newR);
                 db.SaveChanges();
-                return "ok";
+                return true;
             }
-            catch (Exception e)
-            {
-                return e.Message;
-            }
+            catch (Exception) { return false; }
         }
+
+        //public static string AddRoute(Route newR)
+        //{
+        //    try
+        //    {
+        //        string s = "";
+        //        if (db.Airline.FirstOrDefault(al => al.AirlineID == newR.RAirline) == null)
+        //        {
+        //            s += "Airline";
+        //        }
+        //        if (db.Aircraft.FirstOrDefault(ac => ac.AircraftID == newR.RAircraft) == null)
+        //        {
+        //            if (s != "")
+        //                s += ", ";
+
+        //            s += "Aircraft";
+        //        }
+        //        //if (db.Airport.FirstOrDefault(ap1 => ap1.AirportID == newR.Departure) == null)
+        //        //{
+        //        //    if (s != "")
+        //        //        s += ", ";
+
+        //        //    s += "Departure";
+        //        //}
+        //        //if (db.Airport.FirstOrDefault(ap2 => ap2.AirportID == newR.Destination) == null)
+        //        //{
+        //        //    if (s != "")
+        //        //        s += ", ";
+
+        //        //    s += "Destination";
+        //        //}
+        //        if (db.FlightDistance.Where(fd => fd.AirportID1 == newR.Departure && fd.AirportID2 == newR.Destination).FirstOrDefault() == null)
+        //        {
+        //            if (db.FlightDistance.Where(fd => fd.AirportID2 == newR.Departure && fd.AirportID1 == newR.Destination).FirstOrDefault() == null)
+        //            {
+        //                if (s != "")
+        //                    s += ", ";
+        //                s += "Departure and Destination";
+        //            }
+        //        }
+
+
+        //        if (s != "")
+        //        {
+        //            throw new Exception("Please choose valid " + s + ".");
+        //        }
+
+        //        db.Route.Add(newR);
+        //        db.SaveChanges();
+        //        return "ok";
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return e.Message;
+        //    }
+        //}
 
         public static string UpdateRoute(Route updateR)
         {
