@@ -8,9 +8,9 @@ namespace AirlinesReservationSystem.Models.arsadmin
 {
     public class Dropdowns
     {
-        static IEnumerable<Airline> airlineDB = AirlineDAO.GetAirlineList();
-        static IEnumerable<Aircraft> aircraftDB = AircraftDAO.GetAircraftList();
-        static IEnumerable<Airport> airportDB = AirportDAO.GetAirlineList();
+        public static IEnumerable<Airline> airlineDB = AirlineDAO.GetAirlineList();
+        public static IEnumerable<Aircraft> aircraftDB = AircraftDAO.GetAircraftList();
+        public static IEnumerable<Airport> airportDB = AirportDAO.GetAirlineList();
         public static IEnumerable<SelectListItem> Airlines()
         {
             var list = new List<SelectListItem>();
