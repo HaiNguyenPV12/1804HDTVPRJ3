@@ -79,7 +79,7 @@
 
 <script>
     function confirmDeleteRoute(id) {
-        $("#modalBody").html("<h3 class='text-danger'>Are you sure to delete route \"" + id + "\"?</h3>");
+        $("#modalBody").html("<h3 class='text-danger'>Are you sure you want to delete route \"" + id + "\"?</h3>");
         $("#btnConfirm").on("click", function () { deleteRoute(id); });
     }
     function deleteRoute(id) {
