@@ -44,7 +44,7 @@ namespace AirlinesReservationSystem.Models.arsadmin
                 db.SaveChanges();
                 return true;
             }
-            catch (Exception) { return false; }
+            catch (Exception e) { string s = e.Message; return false; }
         }
 
         //public static string AddRoute(Route newR)

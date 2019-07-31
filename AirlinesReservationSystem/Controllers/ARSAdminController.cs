@@ -90,13 +90,44 @@ namespace AirlinesReservationSystem.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult RouteAdd(List<Route> newRoutes)
         {
-            if (ModelState.IsValid)
+            bool invalid = false, invalid2 = false;
+            List<Route> routeToSkip = new List<Route>();
+            int total = newRoutes.Count;
+            List<string> added = new List<string>();
+            foreach (var item in newRoutes)
             {
+                if (item.Departure == item.Destination)
+                {
+                    ModelState.AddModelError("", string.Format("Error at: {0} with plane {1}. Arrival must be different than Departure", item.RAirline, item.RAircraft));
+                    invalid2 = true;
+                    routeToSkip.Add(item);
+                }
+            }
+            if (ModelState.IsValid || invalid == false)
+            {
+                bool skip = false;
                 foreach (var item in newRoutes)
                 {
-                    RouteDAO.AddRoute(item);
+                    foreach (var itemToSkip in routeToSkip)
+                    {
+                        if (item.Equals(itemToSkip)) { skip = true; }
+                    }
+                    if (skip) { skip = false; continue; }
+                    if (!RouteDAO.AddRoute(item))
+                    {
+                        ModelState.AddModelError("", string.Format("Could not add {0} with plane {1} going from {2} to {3}", item.RAirline, item.RAircraft, item.Departure, item.Destination));
+                        invalid = true;
+                        total--;
+                    }
+                    added.Add(string.Format("{0}({1}) : {2} - {3}", item.RAirline, item.RAircraft, item.Departure, item.Destination));
                 }
-                return RedirectToAction("Route");
+                if (!invalid && !invalid2)
+                    return RedirectToAction("Route");
+                ModelState.AddModelError("", "Routes Added: ");
+                foreach (var item in added)
+                {
+                    ModelState.AddModelError("", item);
+                }
             }
             return View();
         }
