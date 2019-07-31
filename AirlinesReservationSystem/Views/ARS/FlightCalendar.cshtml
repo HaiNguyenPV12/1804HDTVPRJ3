@@ -1,0 +1,44 @@
+﻿
+@{
+    ViewBag.Title = "FlightCalendar";
+    System.DateTime Date = System.DateTime.Now;
+    if (ViewBag.Date != null)
+    {
+        Date = ViewBag.Date;
+    }
+
+}
+
+<h2>FlightCalendar</h2>
+
+<span class="text-danger">@ViewBag.ErrorM</span>
+<div id="calendar">
+
+</div>
+
+<script>
+    getCalendar(@Date.Day,@Date.Month, @Date.Year);
+    function getCalendar(day, month, year) {
+        var dateTotal = new Date(year, month, 0).getDate();
+        var s = "";
+        s += "<table>";
+        s += "<tr><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th><th>Saturday</th><th>Sunday</th></tr>";
+        var firstDay = new Date(year, month - 1, 1).getDay();
+        console.log(firstDay);
+        var dayCount = 0;
+        s += "<tr>";
+        for (var i = 0; i < firstDay; i++) {
+            if (dayCount < 6) {
+                dayCount = 0;
+            }
+            s += "<td></td>";
+            dayCount++;
+        }
+        for (var i = 0; i < dateTotal; i++) {
+            s += "<td>" + (i + 1) + "</td>";
+        }
+        s += "</tr>";
+        s += "</table>";
+        $("#calendar").html(s);
+    }
+</script>

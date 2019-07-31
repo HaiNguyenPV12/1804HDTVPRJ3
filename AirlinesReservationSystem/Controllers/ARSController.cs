@@ -207,7 +207,7 @@ namespace AirlinesReservationSystem.Controllers
             Session["fid1"] = null;
             FlightSearch flightSearch = (FlightSearch)Session["searchParams"];
             ViewBag.RoundTrip = flightSearch.IsRoundTrip;
-            IEnumerable<FlightResult> firstTrips = FlightSearchDAO.GetFlightResultsWithStops(flightSearch);
+            IEnumerable<FlightResult> firstTrips = FlightSearchDAO.GetFlightResultsWithStops(flightSearch).OrderBy(item=>item.FlightVM.BasePrice);
             Session["firstTrips"] = firstTrips;
             if (firstTrips.Count() == 0)
             {
@@ -229,6 +229,7 @@ namespace AirlinesReservationSystem.Controllers
             Session["firstTrip"] = firstTrip;
             var model = from s in secondTrips
                         where s.FlightVM.DepartureTime >= firstTrip.FlightVM.ArrivalTime
+                        orderby s.FlightVM.BasePrice
                         select s;
             return View(model);
         }
@@ -394,9 +395,9 @@ namespace AirlinesReservationSystem.Controllers
                 objPa.Sex = Convert.ToBoolean(int.Parse(frmPayment["Sex" + i]));
                 objPa.Age = int.Parse(frmPayment["Age" + i]);
                 objPa.PassportNo = frmPayment["PassportNo" + i];
-                if (frmPayment["Service" + (i + 1)] != null)
+                if (frmPayment["Service" + i] != null)
                 {
-                    objPa.Service = frmPayment["Service" + (i + 1)].Split(',');
+                    objPa.Service = frmPayment["Service" + i].Split(',');
                 }
                 else
                 {
@@ -479,6 +480,23 @@ namespace AirlinesReservationSystem.Controllers
                 airports.Add(string.Format("{0} ({1})", item.CityName, item.AirportID));
             }
             return Json(airports.ToArray(), JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult FlightCalendar(string Departure, string Destination, DateTime? date)
+        {
+            var objD1 = FlightCalendarDAO.GetAirport(Departure);
+            var objD2 = FlightCalendarDAO.GetAirport(Destination);
+            ViewBag.ErrorM = "";
+            if (objD1 == null)
+            {
+                ViewBag.ErrorM += "Departure missing ";
+            }
+            if (objD2 == null)
+            {
+                ViewBag.ErrorM += "Destination missing ";
+            }
+            ViewBag.Date = date;
+            return View();
         }
     }
 }

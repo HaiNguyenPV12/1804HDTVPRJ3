@@ -190,13 +190,14 @@
             {
                 if (Session["user"] == null)
                 {
-                    <a href="/ars/login" value="" class="btn btn-lg btn-warning">Login to pay this order</a>
+                    <a href="/ars/login" value="" class="btn btn-lg btn-warning">Login to pay or cancel this order</a>
                 }
                 else
                 {
                     if (Session["user"].ToString() == Model.UserID)
                     {
                         @Html.ActionLink("Pay this order", "BlockingPayment", new { @id = Model.OrderID }, new { @class = "btn btn-lg btn-success text-center" })
+                        <input type="button" class="btn btn-lg btn-danger" value="Cancel this order" data-toggle="modal" data-target="#modal" onclick="confirmCancelOrder(@Model.OrderID)" />
                     }
 
                 }
@@ -226,7 +227,7 @@
 
                 <!-- Modal Header -->
                 <div class="modal-header bg-ars">
-                    <h4 class="modal-title" id="modalTitle">Delete confirm</h4>
+                    <h4 class="modal-title" id="modalTitle">Cancel confirm</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
 
