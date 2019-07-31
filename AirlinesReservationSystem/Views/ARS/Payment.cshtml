@@ -1,13 +1,17 @@
 ﻿
 @{
     ViewBag.Title = "Payment";
-    int PeopleNum = ViewBag.PeopleNum;
+
+    // Initialize variables
     int AdultNum = ViewBag.AdultNum;
     int ChildNum = ViewBag.ChildNum;
+    int PeopleNum = AdultNum + ChildNum;
     string SeatClass = ViewBag.Class;
     string SeatName = "";
-    int count = 1;
-    int FNoCount = 0;
+    double F1Fee = 0;
+    double F2Fee = 0;
+    double ReFFee = 0;
+
     if (SeatClass == "F")
     {
         SeatName = "First Class";
@@ -20,16 +24,36 @@
     {
         SeatName = "Economy Class";
     }
+
+    int count = 0;
+    int FNoCount = 0;
+
+
+    // Initialize Flight objects
+    // FInfo = Oneway/First trip/First stop's Flight object
+    // FInfo2 = Second stop's Flight object
+    // ReFInfo = Return trip's Flight object
     List<string> FNos = ViewBag.FNos;
-    AirlinesReservationSystem.Models.Flight FInfo = AirlinesReservationSystem.Models.arsadmin.FlightDAO.GetFlight(ViewBag.FNo);
+    AirlinesReservationSystem.Models.Flight FInfo1 = AirlinesReservationSystem.Models.arsadmin.FlightDAO.GetFlight(FNos[0]);
+    F1Fee = AirlinesReservationSystem.Models.ars.PaymentDAO.GetFlightServiceFee(FInfo1.RNo);
+
+    AirlinesReservationSystem.Models.Flight FInfo2 = null;
+    if (FNos.Count() > 1)
+    {
+        FInfo2 = AirlinesReservationSystem.Models.arsadmin.FlightDAO.GetFlight(FNos[1]);
+        F2Fee = AirlinesReservationSystem.Models.ars.PaymentDAO.GetFlightServiceFee(FInfo2.RNo);
+    }
     AirlinesReservationSystem.Models.Flight ReFInfo = null;
     if (!string.IsNullOrEmpty(ViewBag.ReFNo))
     {
         ReFInfo = AirlinesReservationSystem.Models.arsadmin.FlightDAO.GetFlight(ViewBag.ReFNo);
+        ReFFee = AirlinesReservationSystem.Models.ars.PaymentDAO.GetFlightServiceFee(ReFInfo.RNo);
     }
 
+    // Get logged in user's information
     var user = AirlinesReservationSystem.Models.ars.UsersDAO.GetUser(Session["user"].ToString());
-    var serviceList = AirlinesReservationSystem.Models.arsadmin.ServiceDAO.GetServiceList();
+    // Get current serving services list
+    var serviceList = AirlinesReservationSystem.Models.arsadmin.ServiceDAO.GetServiceList().Where(s => s.IsServing == true);
 }
 
 <h2>Payment</h2>
@@ -37,20 +61,32 @@
 <div class="row container-fluid" id="paymentMainDiv">
     @* ----- MAIN ----- *@
     <div class="col-8">
+        @* ----- START FORM ----- *@
         <form id="frmPayment" name="frmPayment">
             @Html.AntiForgeryToken()
-            @* ----- INITIALIZE VARIABLE ----- *@
+
+            @* ----- INITIALIZE VARIABLEs ----- *@
             <input type="hidden" id="PeopleNum" name="PeopleNum" value="@PeopleNum" />
             <input type="hidden" name="AdultNum" value="@AdultNum" />
             <input type="hidden" name="ChildNum" value="@ChildNum" />
-            <input type="hidden" name="FNo" id="FNo" value="@FInfo.FNo" />
-            <input type="hidden" id="FPrice" value="@FInfo.BasePrice" />
-            <input type="hidden" name="Class" value="@SeatClass" />
+            @* ----- INITIALIZE ONEWAY/FIRST TRIP/FIRST STOP ----- *@
+            <input type="hidden" name="FNo[1]" value="@FInfo1.FNo" />
+            <input type="hidden" id="FPrice[1]" value="@FInfo1.BasePrice" />
+            @* ----- INITIALIZE SECOND STOP ----- *@
+            @if (FInfo2 != null)
+            {
+                <input type="hidden" name="FNo[2]" value="@FInfo2.FNo" />
+                <input type="hidden" id="FPrice[2]" value="@FInfo2.BasePrice" />
+            }
+            @* ----- INITIALIZE RETURN TRIP ----- *@
             @if (ReFInfo != null)
             {
                 <input type="hidden" name="ReFNo" id="ReFNo" value="@ReFInfo.FNo" />
                 <input type="hidden" id="ReFPrice" value="@ReFInfo.BasePrice" />
             }
+            <input type="hidden" name="Class" value="@SeatClass" />
+            @* ----- INITIALIZE END ----- *@
+
             <div class="card">
                 <div class="card-header">
                     <h4>Passenger Information</h4>
@@ -75,20 +111,20 @@
                                     Age
                                 </h6>
                                 <div class="col-md-4">
-                                    <input type="text" name="Firstname" class="form-control" style="width:100%" placeholder="Adult @i's Firstname" required maxlength="50" />
+                                    <input type="text" name="Firstname@(count)" class="form-control" style="width:100%" placeholder="Adult @i's Firstname" required maxlength="50" />
                                 </div>
                                 <div class="col-md-4">
-                                    <input type="text" name="Lastname" class="form-control" style="width:100%" placeholder="Adult @i's Lastname" required maxlength="50" />
+                                    <input type="text" name="Lastname@(count)" class="form-control" style="width:100%" placeholder="Adult @i's Lastname" required maxlength="50" />
                                 </div>
                                 <div class="col-md-2">
-                                    <select name="Sex" class="form-control" required>
+                                    <select name="Sex@(count)" class="form-control" required>
                                         <option value="">Gender</option>
                                         <option value="1">Male</option>
                                         <option value="0">Female</option>
                                     </select>
                                 </div>
                                 <div class="col-md-2">
-                                    <input type="number" name="Age" class="form-control" style="width:100%" min="14" max="100" required />
+                                    <input type="number" name="Age@(count)" class="form-control" style="width:100%" min="14" max="100" required />
                                 </div>
                             </div>
                             <div class="form-group form-inline">
@@ -98,46 +134,14 @@
                                 <h6 class="col-md-4">
                                     Seat Class
                                 </h6>
-                                @if (ReFInfo != null)
-                                {
-                                    <h6 class="col-md-4">
-                                        Return Seat Class
-                                    </h6>
-                                }
-                                else
-                                {
-                                    <div class="col-md-4"></div>
-                                }
+                                <div class="col-md-4"></div>
                                 <div class="col-md-4">
-                                    <input type="text" name="PassportNo" class="form-control" style="width:100%" placeholder="Passport Number" required maxlength="10" onkeyup="refreshPassport()" />
+                                    <input type="text" name="PassportNo@(count)" class="form-control" style="width:100%" placeholder="Passport Number" required maxlength="10" onkeyup="refreshPassport()" />
                                 </div>
                                 <div class="col-md-4">
                                     <input type="text" value="@SeatName" readonly class="form-control" style="width:100%" />
-                                    @*<select name="Class" class="form-control" required style="width:100%" onchange="refreshPayment()">
-                                            @if (FInfo.AvailSeatsE >= PeopleNum)
-                                            {
-                                                <option value="E">Economy</option>
-                                            }
-                                            @if (FInfo.AvailSeatsB >= PeopleNum)
-                                            {
-                                                <option value="B">Bussiness</option>
-                                            }
-                                            @if (FInfo.AvailSeatsF >= PeopleNum)
-                                            {
-                                                <option value="F">First Class</option>
-                                            }
-                                        </select>*@
                                 </div>
-                                @if (ReFInfo != null)
-                                {
-                                    <div class="col-md-4">
-                                        <input type="text" value="@SeatName" readonly class="form-control" style="width:100%" />
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="col-md-4"></div>
-                                }
+
                             </div>
                             <div class="card ml-3 mb-3">
                                 <div class="card-header">
@@ -163,6 +167,7 @@
                             count++;
                         }
                     </div>
+
                     <div id="childSection">
                         @* ----- CHILDREN INFO ----- *@
                         @for (int i = 1; i <= ChildNum; i++)
@@ -182,20 +187,20 @@
                                     Age
                                 </h6>
                                 <div class="col-md-4">
-                                    <input type="text" name="Firstname" class="form-control" style="width:100%" placeholder="Children @i's Firstname" required maxlength="50" />
+                                    <input type="text" name="Firstname@(count)" class="form-control" style="width:100%" placeholder="Children @i's Firstname" required maxlength="50" />
                                 </div>
                                 <div class="col-md-4">
-                                    <input type="text" name="Lastname" class="form-control" style="width:100%" placeholder="Children @i's Lastname" required maxlength="50" />
+                                    <input type="text" name="Lastname@(count)" class="form-control" style="width:100%" placeholder="Children @i's Lastname" required maxlength="50" />
                                 </div>
                                 <div class="col-md-2">
-                                    <select name="Sex" class="form-control" required>
+                                    <select name="Sex@(count)" class="form-control" required>
                                         <option value="">Gender</option>
                                         <option value="1">Male</option>
                                         <option value="0">Female</option>
                                     </select>
                                 </div>
                                 <div class="col-md-2">
-                                    <input type="number" name="Age" class="form-control" style="width:100%" min="2" max="13" required />
+                                    <input type="number" name="Age@(count)" class="form-control" style="width:100%" min="2" max="13" required />
                                 </div>
                             </div>
                             <div class="form-group form-inline">
@@ -205,33 +210,15 @@
                                 <h6 class="col-md-4">
                                     Seat Class
                                 </h6>
-                                @if (ReFInfo != null)
-                                {
-                                    <h6 class="col-md-4">
-                                        Return Seat Class
-                                    </h6>
-                                }
-                                else
-                                {
-                                    <div class="col-md-4"></div>
-                                }
+                                <div class="col-md-4"></div>
+
                                 <div class="col-md-4">
                                     @*<input type="text" name="PassportNo" class="form-control" style="width:100%" placeholder="Passport Number" required maxlength="10" />*@
-                                    <select class="form-control" style="width:100%" required name="PassportNo"></select>
+                                    <select class="form-control" style="width:100%" required name="PassportNo@(count)"></select>
                                 </div>
                                 <div class="col-md-4">
                                     <input type="text" value="@SeatName" readonly class="form-control" style="width:100%" />
                                 </div>
-                                @if (ReFInfo != null)
-                                {
-                                    <div class="col-md-4">
-                                        <input type="text" value="@SeatName" readonly class="form-control" style="width:100%" />
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="col-md-4"></div>
-                                }
                             </div>
                             <div class="card ml-3 mb-3">
                                 <div class="card-header">
@@ -291,7 +278,7 @@
                     <i>Permanently buy this flight</i>
                 </button>
                 <input type="submit" name="name" value="" class="text-hide" />
-                @if (FInfo.DepartureTime.AddDays(-14) >= System.DateTime.Now)
+                @if (FInfo1.DepartureTime.AddDays(-14) >= System.DateTime.Now)
                 {
                     <button type="button" class="btn btn-warning" onclick="validatePayment('block')">
                         <h2>Block</h2>
@@ -302,7 +289,7 @@
                 {
                     <button type="button" class="btn btn-secondary">
                         <h2>Cannot Block this flight</h2>
-                        <i>Cannot block if in 2 weeks before the Departure time</i>
+                        <i>Cannot block because today's in 2 weeks before the Departure time</i>
                     </button>
                 }
 
@@ -324,9 +311,12 @@
 
     </div>
 </div>
+
 <div class="row container-fluid" id="paymentConfirmDiv">
 
 </div>
+
+
 <script>
     var fprice = $("#FPrice").val();
     var refprice = null;
@@ -335,8 +325,10 @@
     }
 
     refreshPayment();
+
     refreshPassport();
 
+    // Function for Blocking and Booking buttons
     function validatePayment(type) {
         if ($('#frmPayment')[0].checkValidity()) {
             var form = $("#frmPayment").serialize();
@@ -360,10 +352,12 @@
         }
     }
 
+    // Function for refreshing passport number
+    // If children exists, it's passport list will refresh as you type in adult's passport
     function refreshPassport() {
         if (@ChildNum > 0) {
             var insertStr = "";
-            $("#adultSection input[name='PassportNo']").each(function () {
+            $("#adultSection input[name^='PassportNo']").each(function () {
                 if ($(this).val().trim()!="") {
                     insertStr += "<option value='" + $(this).val() + "'>" + $(this).val() + "</option>";
                 }
@@ -371,38 +365,74 @@
             if (insertStr.trim() == "") {
                 insertStr = "<option value=''>Enter adult's passport first</option>";
             }
-            $("#childSection select[name='PassportNo']").each(function () {
+            $("#childSection select[name^='PassportNo']").each(function () {
                 $(this).html(insertStr);
             });
         }
     }
 
+
+    // Function for showing payment details
+    // It also refresh payment details as you make changes to services
     function refreshPayment() {
-        // init variable
-        $("#paymentDiv").html("");
-        var result = "";
-        var daysToDeparture = parseInt(@((FInfo.DepartureTime - System.DateTime.Now).TotalDays));
-        var adultTotal = @(FInfo.BasePrice * AdultNum);
-        var childTotal = @(FInfo.BasePrice * ChildNum * 70/100);
-        console.log(adultTotal);
-        if (daysToDeparture <= 14) {
-            adultTotal +=  @(FInfo.BasePrice * AdultNum)* 0.02 * (14 - daysToDeparture);
-            console.log((14 - daysToDeparture));
-            childTotal += @(FInfo.BasePrice * ChildNum * 70/100)* 0.02 * (14-daysToDeparture);
+        // init variables
+        //$("#paymentDiv").html("");
+        var f2Exists = false;
+        var reFExists = false;
+        // Initilize variables for oneway / first trip / first stop
+        var daysToDeparture1 = @((FInfo1.DepartureTime - System.DateTime.Now).TotalDays);
+        var adultTotalPrice1 = @(FInfo1.BasePrice * AdultNum);
+        var childTotalPrice1 = @(FInfo1.BasePrice * ChildNum * 70/100);
+        var serviceTotalPrice1 = @(F1Fee * PeopleNum);
+            // Add price as order date close to departure day (within 14 days)
+            if (daysToDeparture1 <= 14) {
+                adultTotalPrice1 += adultTotalPrice1 * 0.02 * (14 - daysToDeparture1);
+                childTotalPrice1 += childTotalPrice1 * 0.02 * (14 - daysToDeparture1);
+            }
+
+        // Initilize variables for second stop
+        var daysToDeparture2 = 0;
+        var adultTotalPrice2 = 0;
+        var childTotalPrice2 = 0;
+        var serviceTotalPrice2 = 0;
+        @if (FInfo2!=null)
+        {
+            <text>
+            f2Exists = true;
+            daysToDeparture2 = @((FInfo2.DepartureTime - System.DateTime.Now).TotalDays);
+            adultTotalPrice2 = @(FInfo2.BasePrice * AdultNum);
+            childTotalPrice2 = @(FInfo2.BasePrice * ChildNum * 70/100);
+            serviceTotalPrice2 = @(F2Fee * PeopleNum);
+                if (daysToDeparture2 <= 14) {
+                    adultTotalPrice2 += adultTotalPrice2 * 0.02 * (14 - daysToDeparture2);
+                    childTotalPrice2 += childTotalPrice2 * 0.02 * (14 - daysToDeparture2);
+                }
+            </text>
         }
 
-        var serviceTotal = @(FInfo.Route.Aircraft.ServiceFee * PeopleNum);
-        var classTotal = 0;
-        var reAdultTotal = 0;
-        var reChildTotal = 0;
-        var reServiceTotal = 0;
-
+        // Initilize variables for return trip
+        var daysToReDeparture = 0;
+        var reAdultTotalPrice = 0;
+        var reChildTotalPrice = 0;
+        var reServiceTotalPrice = 0;
         @if (ReFInfo!=null)
         {
-            @:reAdultTotal = @(ReFInfo.BasePrice * AdultNum);
-            @:reChildTotal = @(ReFInfo.BasePrice * ChildNum * 70/100);
-            @:reServiceTotal = @(ReFInfo.Route.Aircraft.ServiceFee * PeopleNum);
+            <text>
+            reFExists = true;
+            daysToReDeparture = @((ReFInfo.DepartureTime - System.DateTime.Now).TotalDays);
+            reAdultTotalPrice = @(ReFInfo.BasePrice * AdultNum);
+            reChildTotalPrice = @(ReFInfo.BasePrice * ChildNum * 70/100);
+            reServiceTotalPrice = @(ReFFee * PeopleNum);
+                if (daysToReDeparture <= 14) {
+                    reAdultTotalPrice += reAdultTotalPrice * 0.02 * (14 - daysToReDeparture);
+                    reChildTotalPrice += reChildTotalPrice * 0.02 * (14 - daysToReDeparture);
+                }
+            </text>
         }
+
+        // Initialize Seat fee
+        var classTotalFee = 0;
+
         var seatClass = "@SeatClass";
         var seatName = "";
         if (seatClass == "F")
@@ -426,42 +456,54 @@
 
 
         // Start calculate and generate payment detail
+        var result = "";
         var total = +0;
-        // --First Flight
+        // -- Oneway / First Flight / First Stop
         result += "<dl class='row' style='background-color:#bababa'>";
         result += "<dt class='col-6'>";
-        if (refprice == null) {
+        if (f2Exists == false && reFExists == false) {
             result += "Flight:";
-        } else {
-            result += "First Flight:";
+        }
+        if (f2Exists == false && reFExists == true) {
+            result += "Flight:";
+        }
+        if (f2Exists == true && reFExists == false) {
+            result += "First Stop:";
+        }
+        if (f2Exists == true && reFExists == true) {
+            result += "First Flight's 1st Stop:";
         }
         result += "</dt>";
-        result += "<dd class='col-6 text-right'>@FInfo.Route.DepartureAirport.AirportID => @FInfo.Route.DestinationAirport.AirportID </dd>";
+        result += "<dd class='col-6 text-right'>@AirlinesReservationSystem.Models.ars.PaymentDAO.GetFlightDeparture(FInfo1.RNo).AirportID => @AirlinesReservationSystem.Models.ars.PaymentDAO.GetFlightDestination(FInfo1.RNo).AirportID </dd>";
         result += "<dt class=''></dt>";
-        result += "<dd class='col-12 text-right'>@FInfo.DepartureTime <br>=> @FInfo.ArrivalTime</dd>";
+        result += "<dd class='col-12 text-right'>@FInfo1.DepartureTime <br>=> @FInfo1.ArrivalTime</dd>";
         result += "</dl>";
 
         result += "<dl class='row'>";
         result += "<dt class='col-7 text-right'>@AdultNum x adult(s)</dt>";
-        result += "<dd class='col-5 text-right'>" + adultTotal + "$</dd>";
+        result += "<dd class='col-5 text-right'>" + adultTotalPrice1 + "$</dd>";
         @if (ChildNum>0)
         {
             @:result += "<dt class='col-7 text-right'>@ChildNum x child(s)</dt>";
-            @:result += "<dd class='col-5 text-right'>" + childTotal + "$</dd>";
+            @:result += "<dd class='col-5 text-right'>" + childTotalPrice1 + "$</dd>";
         }
-        for (var i = 1; i <= @PeopleNum; i++) {
+        for (var i = 0; i < @PeopleNum; i++) {
             $("#div_service_" + i + " input[name='Service" + i + "']:checked").each(function () {
-                serviceTotal += +$(this).attr('value2');
+                serviceTotalPrice1 += +$(this).attr('value2');
+                @if (FInfo2 != null)
+                {
+                    @:serviceTotalPrice2 += +$(this).attr('value2');
+                }
                 @if (ReFInfo!=null)
                 {
-                    @:reServiceTotal += +$(this).attr('value2');
+                    @:reServiceTotalPrice += +$(this).attr('value2');
                 }
 
             });
         }
-        if (serviceTotal>0) {
+        if (serviceTotalPrice1>0) {
             result += "<dt class='col-7 text-right'>Services's fee</dt>";
-            result += "<dd class='col-5 text-right'>" + serviceTotal + "$</dd>";
+            result += "<dd class='col-5 text-right'>" + serviceTotalPrice1 + "$</dd>";
         }
 
         result += "<dt class='col-7 text-right'>" + seatName + " ";
@@ -470,46 +512,91 @@
         }
         result += "</dt>";
         result += "<dd class='col-5 text-right'>" + seatFee*@PeopleNum + "$</dd>";
-        classTotal += (+seatFee * @PeopleNum);
+        classTotalFee += (+seatFee * @PeopleNum);
         result += "</dl>";
+
+        // --Second Stop
+        @if (FInfo2 != null) {
+            <text>
+            result += "<dl class='row' style='background-color:#bababa'>";
+            result += "<dt class='col-6'>";
+            if (reFExists == false) {
+                result += "Second Stop:";
+            } else {
+                result += "First Flight's 2nd Stop:";
+            }
+
+            result += "</dt>";
+            result += "<dd class='col-6 text-right'>@AirlinesReservationSystem.Models.ars.PaymentDAO.GetFlightDeparture(FInfo2.RNo).AirportID => @AirlinesReservationSystem.Models.ars.PaymentDAO.GetFlightDestination(FInfo2.RNo).AirportID </dd>";
+            result += "<dt class=''></dt>";
+            result += "<dd class='col-12 text-right'>@FInfo2.DepartureTime <br>=> @FInfo2.ArrivalTime</dd>";
+            result += "</dl>";
+
+            result += "<dl class='row'>";
+            result += "<dt class='col-7 text-right'>@AdultNum x adult(s)</dt>";
+            result += "<dd class='col-5 text-right'>" + adultTotalPrice2 + "$</dd>";
+            @if (ChildNum > 0)
+            {
+                @:result += "<dt class='col-7 text-right'>@ChildNum x child(s)</dt>";
+                @:result += "<dd class='col-5 text-right'>" + childTotalPrice2 + "$</dd>";
+            }
+
+            if (serviceTotalPrice2>0) {
+                result += "<dt class='col-7 text-right'>Services's fee</dt>";
+                result += "<dd class='col-5 text-right'>" + serviceTotalPrice2 + "$</dd>";
+            }
+
+            result += "<dt class='col-7 text-right'>" + seatName + " ";
+            if (@PeopleNum > 1) {
+                result += "x @PeopleNum";
+            }
+            result += "</dt>";
+            result += "<dd class='col-5 text-right'>" + seatFee*@PeopleNum + "$</dd>";
+            classTotalFee += (+seatFee * @PeopleNum);
+            result += "</dl>";
+            </text>
+        }
 
 
         // --Return Flight
-        @if (ReFInfo!=null)
-        {
-            @:result += "<dl class='row' style='background-color:#bababa'>";
-            @:result += "<dt class='col-6'>Return Flight</dt>";
-            @:result += "<dd class='col-6 text-right'>@ReFInfo.Route.DepartureAirport.AirportID => @ReFInfo.Route.DestinationAirport.AirportID </dd>";
-            @:result += "<dt class=''></dt>";
-            @:result += "<dd class='col-12 text-right'>@ReFInfo.DepartureTime <br>=> @ReFInfo.ArrivalTime</dd>";
-            @:result += "</dl>";
+        @if (ReFInfo != null) {
+            <text>
+            result += "<dl class='row' style='background-color:#bababa'>";
+            result += "<dt class='col-6'>Return Flight</dt>";
+            result += "<dd class='col-6 text-right'>@AirlinesReservationSystem.Models.ars.PaymentDAO.GetFlightDeparture(ReFInfo.RNo).AirportID => @AirlinesReservationSystem.Models.ars.PaymentDAO.GetFlightDestination(ReFInfo.RNo).AirportID </dd>";
+            result += "<dt class=''></dt>";
+            result += "<dd class='col-12 text-right'>@ReFInfo.DepartureTime <br>=> @ReFInfo.ArrivalTime</dd>";
+            result += "</dl>";
 
-            @:result += "<dl class='row'>";
-            @:result += "<dt class='col-7 text-right'>@AdultNum x adult(s)</dt>";
-            @:result += "<dd class='col-5 text-right'>" + reAdultTotal + "$</dd>";
-            if (ChildNum > 0)
+            result += "<dl class='row'>";
+            result += "<dt class='col-7 text-right'>@AdultNum x adult(s)</dt>";
+            result += "<dd class='col-5 text-right'>" + reAdultTotalPrice + "$</dd>";
+            @if (ChildNum > 0)
             {
                 @:result += "<dt class='col-7 text-right'>@ChildNum x child(s)</dt>";
-                @:result += "<dd class='col-5 text-right'>" + reChildTotal + "$</dd>";
+                @:result += "<dd class='col-5 text-right'>" + reChildTotalPrice + "$</dd>";
             }
-            @:if (reServiceTotal>0) {
-                @:result += "<dt class='col-7 text-right'>Services's fee</dt>";
-                @:result += "<dd class='col-5 text-right'>" + reServiceTotal + "$</dd>";
-            @:}
+            if (reServiceTotalPrice > 0) {
+                result += "<dt class='col-7 text-right'>Services's fee</dt>";
+                result += "<dd class='col-5 text-right'>" + reServiceTotalPrice + "$</dd>";
+            }
 
-            @:result += "<dt class='col-7 text-right'>" + seatName + " ";
-            @:if (@PeopleNum > 1) {
-            @:result += "x @PeopleNum";
-            @:}
-            @:result += "</dt>";
-            @:result += "<dd class='col-5 text-right'>" + seatFee*@PeopleNum + "$</dd>";
-            @:classTotal += (+seatFee * @PeopleNum);
-            @:result += "</dl>";
+            result += "<dt class='col-7 text-right'>" + seatName + " ";
+            if (@PeopleNum > 1) {
+                result += "x @PeopleNum";
+            }
+            result += "</dt>";
+            result += "<dd class='col-5 text-right'>" + seatFee*@PeopleNum + "$</dd>";
+            classTotalFee += (+seatFee * @PeopleNum);
+            result += "</dl>";
+            </text>
         }
-        result += "<hr>";
+
+        // Show total
+        result += "<hr style='background-color:#d7d7d7;height:2px'/>";
         result += "<dl class='row'>";
         result += "<dt class='col-6'>Total</dt>";
-        total = adultTotal + childTotal + serviceTotal + reAdultTotal + reChildTotal + reServiceTotal + classTotal;
+        total = adultTotalPrice1 + childTotalPrice1 + serviceTotalPrice1 + adultTotalPrice2 + childTotalPrice2 + serviceTotalPrice2 + reAdultTotalPrice + reChildTotalPrice + reServiceTotalPrice + classTotalFee;
         result += "<dd class='col-6 text-right'>" + total + "$</dd>";
 
         $("#paymentDiv").html(result);

@@ -318,26 +318,34 @@ namespace AirlinesReservationSystem.Controllers
 
         //---------------- PAYMENT ------------------
         // PAYMENT's VIEW
-        public ActionResult Payment()
+        public ActionResult Payment(string FNo, string ReFNo)
         {
+            // Check if searchParams exists in session (mean user come here from search)
+            // If not exist in session, return to Index with error message
             if (Session["searchParams"] != null)
             {
-                var searchParam = (FlightSearch)Session["searchParams"];
-                if (Session["fid1"] != null)
+                // Check if user is not logged in, redirect to login page
+                // And save current payment url to back again after successfully logged in 
+                if (Session["user"] == null)
                 {
-                    if (Session["user"] == null)
-                    {
-                        Session["GotoPayment"] = string.Format("/ars/payment");
-                        return RedirectToAction("Login");
-                    }
+                    Session["GotoPayment"] = string.Format("/ars/payment?FNo=" + FNo + "&ReFNo=" + ReFNo);
+                    TempData["loginM"] = "Please login to process your payment.";
+                    return RedirectToAction("Login");
+                }
+
+                // Whether it's oneway or round trip, it's always have FNo 
+                // (Oneway or First trip or array of flight with stop)
+                if (!string.IsNullOrEmpty(FNo))
+                {
+                    var searchParam = (FlightSearch)Session["searchParams"];
                     List<string> FNos = new List<string>();
-                    FNos.AddRange(Session["fid1"].ToString().Split(','));
-                    ViewBag.FNo = Session["fid1"].ToString();
+                    FNos.AddRange(FNo.Split(','));
+                    ViewBag.FNo = FNo;
                     ViewBag.FNos = FNos;
 
-                    if (Session["fid2"] != null)
+                    if (!string.IsNullOrEmpty(ReFNo))
                     {
-                        ViewBag.ReFNo = Session["fid2"].ToString();
+                        ViewBag.ReFNo = ReFNo;
                     }
                     ViewBag.PeopleNum = searchParam.Adult + searchParam.Children + searchParam.Senior;
                     ViewBag.AdultNum = searchParam.Adult + searchParam.Senior;
@@ -358,37 +366,34 @@ namespace AirlinesReservationSystem.Controllers
             // Prepare model object
             Payment objP = new Payment();
             List<Passenger> objPaList = new List<Passenger>();
-            objP.FNo = frmPayment["FNo"];
+            objP.FNo1 = frmPayment["FNo[1]"];
+            objP.FNo2 = frmPayment["FNo[2]"];
             objP.ReFNo = frmPayment["ReFNo"];
             objP.PeopleNum = int.Parse(frmPayment["PeopleNum"]);
             objP.AdultNum = int.Parse(frmPayment["AdultNum"]);
             objP.ChildNum = int.Parse(frmPayment["ChildNum"]);
             objP.Class = frmPayment["Class"];
-            string[] Firstname = frmPayment["Firstname"].Split(',');
-            string[] Lastname = frmPayment["Lastname"].Split(',');
-            string[] SexStr = frmPayment["Sex"].Split(',');
-            string[] PassportNo = frmPayment["PassportNo"].Split(',');
-            string[] ReClass = null;
-            if (frmPayment["ReClass"] != null)
-            {
-                ReClass = frmPayment["ReClass"].Split(',');
-            }
-            bool[] Sex = new bool[objP.PeopleNum];
-            int a = 0;
-            foreach (var item in SexStr)
-            {
-                Sex[a++] = Convert.ToBoolean(int.Parse(item));
-            }
-            string[] Age = frmPayment["Age"].Split(',');
+            //string[] Firstname = frmPayment["Firstname"].Split(',');
+            //string[] Lastname = frmPayment["Lastname"].Split(',');
+            //string[] SexStr = frmPayment["Sex"].Split(',');
+            //string[] PassportNo = frmPayment["PassportNo"].Split(',');
+
+            //bool[] Sex = new bool[objP.PeopleNum];
+            //int a = 0;
+            //foreach (var item in SexStr)
+            //{
+            //    Sex[a++] = Convert.ToBoolean(int.Parse(item));
+            //}
+            //string[] Age = frmPayment["Age"].Split(',');
 
             for (int i = 0; i < objP.PeopleNum; i++)
             {
                 Passenger objPa = new Passenger();
-                objPa.Firstname = Firstname[i];
-                objPa.Lastname = Lastname[i];
-                objPa.Sex = Sex[i];
-                objPa.Age = int.Parse(Age[i]);
-                objPa.PassportNo = PassportNo[i];
+                objPa.Firstname = frmPayment["Firstname" + i];
+                objPa.Lastname = frmPayment["Lastname" + i];
+                objPa.Sex = Convert.ToBoolean(int.Parse(frmPayment["Sex" + i]));
+                objPa.Age = int.Parse(frmPayment["Age" + i]);
+                objPa.PassportNo = frmPayment["PassportNo" + i];
                 if (frmPayment["Service" + (i + 1)] != null)
                 {
                     objPa.Service = frmPayment["Service" + (i + 1)].Split(',');

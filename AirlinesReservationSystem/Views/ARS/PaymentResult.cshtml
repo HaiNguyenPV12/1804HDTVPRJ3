@@ -64,7 +64,16 @@
         <br />
         <div class="card">
             <div class="card-header">
-                <h4>Departure</h4>
+                <h4>
+                    @if (TicketList.Where(t => t.IsReturn == true).Count() > 0)
+                    {
+                        @:First Flight
+                    }
+                    else
+                    {
+                        @:Flights
+                    }
+                </h4>
             </div>
             <div class="card-body">
                 @foreach (var ticket in TicketList.Where(t => t.IsReturn == false))
@@ -104,10 +113,7 @@
                             </p>
                             <p class="col-md-2 text-muted text-center">
                                 Duration: @System.TimeSpan.FromHours(t.Flight.FlightTime).ToString(@"hh") h
-                                @if (int.Parse(System.TimeSpan.FromHours(t.Flight.FlightTime).ToString(@"mm")) > 0)
-                                {
-                                    System.TimeSpan.FromHours(t.Flight.FlightTime).ToString(@"mm");@:m
-                                }
+                                @System.TimeSpan.FromHours(t.Flight.FlightTime).ToString(@"mm") m
                             </p>
                             <p class="col-md-5 text-muted text-center">
                                 @t.Flight.ArrivalTime
@@ -123,7 +129,7 @@
         {
             <div class="card">
                 <div class="card-header">
-                    <h4>Return</h4>
+                    <h4>Return Flight</h4>
                 </div>
                 <div class="card-body">
                     @foreach (var ticket in TicketList.Where(t => t.IsReturn == true))
