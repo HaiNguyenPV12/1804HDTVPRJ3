@@ -203,6 +203,10 @@
     <Compile Include="Models\Airport.cs">
       <DependentUpon>ArsDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\arsadmin\AircraftDAO.cs" />
+    <Compile Include="Models\arsadmin\AirlineDAO.cs" />
+    <Compile Include="Models\arsadmin\AirportDAO.cs" />
+    <Compile Include="Models\arsadmin\Dropdowns.cs" />
     <Compile Include="Models\arsadmin\FlightDAO.cs" />
     <Compile Include="Models\arsadmin\OrderDAO.cs" />
     <Compile Include="Models\arsadmin\TicketDAO.cs" />
@@ -331,6 +335,7 @@
     <Content Include="Views\Bank\Index.cshtml" />
     <Content Include="Views\Bank\AddCard.cshtml" />
     <Content Include="Views\Bank\EditCard.cshtml" />
+    <Content Include="Views\ARSAdmin\RouteAddTemplate.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
