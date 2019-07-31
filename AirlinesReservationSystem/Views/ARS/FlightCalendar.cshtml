@@ -28,7 +28,11 @@
         var dayCount = 0;
         s += "<tr>";
         for (var i = 0; i < firstDay; i++) {
-
+            if (dayCount < 6) {
+                dayCount = 0;
+            }
+            s += "<td></td>";
+            dayCount++;
         }
         for (var i = 0; i < dateTotal; i++) {
             s += "<td>" + (i + 1) + "</td>";
