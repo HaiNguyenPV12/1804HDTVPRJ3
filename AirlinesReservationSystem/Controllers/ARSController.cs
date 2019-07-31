@@ -207,7 +207,7 @@ namespace AirlinesReservationSystem.Controllers
             Session["fid1"] = null;
             FlightSearch flightSearch = (FlightSearch)Session["searchParams"];
             ViewBag.RoundTrip = flightSearch.IsRoundTrip;
-            IEnumerable<FlightResult> firstTrips = FlightSearchDAO.GetFlightResultsWithStops(flightSearch);
+            IEnumerable<FlightResult> firstTrips = FlightSearchDAO.GetFlightResultsWithStops(flightSearch).OrderBy(item=>item.FlightVM.BasePrice);
             Session["firstTrips"] = firstTrips;
             if (firstTrips.Count() == 0)
             {
@@ -229,6 +229,7 @@ namespace AirlinesReservationSystem.Controllers
             Session["firstTrip"] = firstTrip;
             var model = from s in secondTrips
                         where s.FlightVM.DepartureTime >= firstTrip.FlightVM.ArrivalTime
+                        orderby s.FlightVM.BasePrice
                         select s;
             return View(model);
         }
