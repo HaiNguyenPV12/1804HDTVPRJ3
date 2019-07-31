@@ -2,6 +2,9 @@
 
 @{
     ViewBag.Title = "Route";
+    var airlineDB = AirlinesReservationSystem.Models.arsadmin.Dropdowns.airlineDB;
+    var aircraftDB = AirlinesReservationSystem.Models.arsadmin.Dropdowns.aircraftDB;
+    var airportDB = AirlinesReservationSystem.Models.arsadmin.Dropdowns.airportDB;
 }
 
 <h2>Route <a href="/arsadmin/routeadd" class="btn btn-success">Add new Route</a></h2>
@@ -25,22 +28,28 @@
 
     @foreach (var item in Model)
     {
+        string AirlineName = airlineDB.Where(itemR => itemR.AirlineID == item.RAirline).FirstOrDefault().AirlineName;
+        string AircraftName = aircraftDB.Where(itemR => itemR.AircraftID == item.RAircraft).FirstOrDefault().AircraftName;
+        var DepartureObj = airportDB.Where(itemR => itemR.AirportID == item.Departure).FirstOrDefault();
+        var ArrivalObj = airportDB.Where(itemR => itemR.AirportID == item.Destination).FirstOrDefault();
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Airline.AirlineName)<br />
-                <i class="text-muted">@Html.DisplayFor(modelItem => item.Airline.AirlineID)</i>
+                @*@Html.DisplayFor(modelItem => item.Airline.AirlineName)<br />*@
+                @AirlineName <br />
+                <i class="text-muted">@Html.DisplayFor(modelItem => item.RAirline)</i>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Aircraft.AircraftName)<br />
-                <i class="text-muted">@Html.DisplayFor(modelItem => item.Aircraft.AircraftID)</i>
+                @AircraftName <br />
+                <i class="text-muted">@Html.DisplayFor(modelItem => item.RAircraft)</i>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DepartureAirport.CityName)<br />
-                <i class="text-muted">@Html.DisplayFor(modelItem => item.DepartureAirport.AirportName)</i>
+                @DepartureObj.CityName <br />
+                @*<i class="text-muted">@Html.DisplayFor(modelItem => item.DepartureAirport.AirportName)</i>*@
+                <i class="text-muted">@DepartureObj.AirportName</i>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DestinationAirport.CityName)<br />
-                <i class="text-muted">@Html.DisplayFor(modelItem => item.DestinationAirport.AirportName)</i>
+                @ArrivalObj.CityName <br />
+                <i class="text-muted">@ArrivalObj.AirportName</i>
             </td>
             <td>
                 @Html.ActionLink("Edit", "RouteEdit", new { id = item.RNo }, new { @class = "btn btn-warning" })
@@ -79,7 +88,7 @@
 
 <script>
     function confirmDeleteRoute(id) {
-        $("#modalBody").html("<h3 class='text-danger'>Are you sure to delete route \"" + id + "\"?</h3>");
+        $("#modalBody").html("<h3 class='text-danger'>Are you sure you want to delete route \"" + id + "\"?</h3>");
         $("#btnConfirm").on("click", function () { deleteRoute(id); });
     }
     function deleteRoute(id) {

@@ -21,6 +21,7 @@ namespace AirlinesReservationSystem.Controllers
         [HttpPost]
         public ActionResult Index(FlightSearch flightSearch)
         {
+            if (Session["searchParams"] != null) { Session["searchParams"] = null; }
             Session["searchParams"] = flightSearch;
             int totalPassenger = flightSearch.Adult + flightSearch.Children + flightSearch.Senior;
             int totalAdults = flightSearch.Adult + flightSearch.Senior;
@@ -132,6 +133,7 @@ namespace AirlinesReservationSystem.Controllers
         public ActionResult FlightList(FlightSearch flightSearch, bool? isReselect, int? page)
         {
             Session["fid1"] = null;
+            Session["rid1"] = null;
 
             //get original search parameters and rerun search query
             if (isReselect == true || !TryValidateModel(flightSearch))
@@ -150,14 +152,21 @@ namespace AirlinesReservationSystem.Controllers
         }
 
         //Passing 1st trip and run a reverse search with return date
-        public ActionResult FlightListReturn(string fid, int rid)
+        public ActionResult FlightListReturn(string fid, int rid, int? page)
         {
             try
             {
+                var ridParse = int.TryParse(rid.ToString(), out int ridParsed);
+                if (string.IsNullOrEmpty(fid))
+                    fid = (string)Session["fid1"];
+                if (!ridParse)
+                    rid = (int)Session["rid1"];
                 Session["fid1"] = fid;
+                Session["rid1"] = rid;
                 Session["fid2"] = null;
                 FlightResult firstTrip = FlightSearchDAO.GetFlightResult(fid, rid);
                 FlightSearch flightSearch = (FlightSearch)Session["searchParams"];
+                ViewBag.RoundTrip = flightSearch.IsRoundTrip;
                 var seatsLeft = firstTrip.FlightVM.AvailSeatsB + firstTrip.FlightVM.AvailSeatsF + firstTrip.FlightVM.AvailSeatsE;
 
                 //interrupt check for available seats
@@ -167,21 +176,23 @@ namespace AirlinesReservationSystem.Controllers
                     return RedirectToAction("FlightList", flightSearch);
                 }
 
-                //create new search parameters in memory that references the original parameters (else changing the depatures will change session's values)
-                FlightSearch flightSearchReturn = FlightSearchDAO.Copy(flightSearch);
+                //flip search query
+                FlightSearch flightSearchReturn = ReverseFlightSearch(flightSearch);
+
                 ViewBag.firstTrip = firstTrip;
 
-                //flip departure and arrival and run search query
-                var roundTripEnd = flightSearchReturn.Departure;
-                var roundTripStart = flightSearchReturn.Destination;
-                flightSearchReturn.Departure = roundTripStart;
-                flightSearchReturn.Destination = roundTripEnd;
-                flightSearchReturn.DepartureTime = flightSearch.ReturnDepartureTime;
-                var model = FlightSearchDAO.GetFlightResults(flightSearchReturn);
+                ViewBag.Pages = GetPages(flightSearchReturn);
+                if (page == null)
+                {
+                    ViewBag.PageIndex = 1;
+                    return View("FlightList", GetFlightsForPage(1));
+                }
+                ViewBag.PageIndex = page;
 
                 //for debugging, making sure the original params are intact
-                Session["searchParams"] = flightSearch;
-                return View(model);
+                //Session["searchParams"] = flightSearch;
+
+                return View("FlightList", GetFlightsForPage(int.Parse(page.ToString())));
             }
             catch (Exception)
             {
@@ -189,6 +200,38 @@ namespace AirlinesReservationSystem.Controllers
                 TempData["errorM"] = "There was an error executing your requests. Please try again";
                 return RedirectToAction("Index");
             }
+        }
+
+        public ActionResult FlightListWithStops()
+        {
+            Session["fid1"] = null;
+            FlightSearch flightSearch = (FlightSearch)Session["searchParams"];
+            ViewBag.RoundTrip = flightSearch.IsRoundTrip;
+            IEnumerable<FlightResult> firstTrips = FlightSearchDAO.GetFlightResultsWithStops(flightSearch).OrderBy(item=>item.FlightVM.BasePrice);
+            Session["firstTrips"] = firstTrips;
+            if (firstTrips.Count() == 0)
+            {
+                TempData["errorM"] = "Could not find any connecting trips to " + flightSearch.Destination + ", Sorry.";
+                return RedirectToAction("Index");
+            }
+            return View(firstTrips);
+        }
+
+        public ActionResult FlightListWithStops2(string fid)
+        {
+            FlightSearch flightSearch = (FlightSearch)Session["searchParams"];
+            ViewBag.RoundTrip = flightSearch.IsRoundTrip;
+            if (Session["firstTrips"] == null) { return RedirectToAction("Index"); }
+            IEnumerable<FlightResult> secondTrips = FlightSearchDAO.SecondTripFromStop;
+            Session["fid2"] = null;
+            IEnumerable<FlightResult> firstTrips = (IEnumerable<FlightResult>)Session["firstTrips"];
+            FlightResult firstTrip = firstTrips.Where(item => item.FlightVM.FNo == fid).FirstOrDefault();
+            Session["firstTrip"] = firstTrip;
+            var model = from s in secondTrips
+                        where s.FlightVM.DepartureTime >= firstTrip.FlightVM.ArrivalTime
+                        orderby s.FlightVM.BasePrice
+                        select s;
+            return View(model);
         }
 
         //Refine search details from results
@@ -276,22 +319,34 @@ namespace AirlinesReservationSystem.Controllers
 
         //---------------- PAYMENT ------------------
         // PAYMENT's VIEW
-        public ActionResult Payment()
+        public ActionResult Payment(string FNo, string ReFNo)
         {
+            // Check if searchParams exists in session (mean user come here from search)
+            // If not exist in session, return to Index with error message
             if (Session["searchParams"] != null)
             {
-                var searchParam = (FlightSearch)Session["searchParams"];
-                if (Session["fid1"] != null)
+                // Check if user is not logged in, redirect to login page
+                // And save current payment url to back again after successfully logged in 
+                if (Session["user"] == null)
                 {
-                    if (Session["user"] == null)
+                    Session["GotoPayment"] = string.Format("/ars/payment?FNo=" + FNo + "&ReFNo=" + ReFNo);
+                    TempData["loginM"] = "Please login to process your payment.";
+                    return RedirectToAction("Login");
+                }
+
+                // Whether it's oneway or round trip, it's always have FNo 
+                // (Oneway or First trip or array of flight with stop)
+                if (!string.IsNullOrEmpty(FNo))
+                {
+                    var searchParam = (FlightSearch)Session["searchParams"];
+                    List<string> FNos = new List<string>();
+                    FNos.AddRange(FNo.Split(','));
+                    ViewBag.FNo = FNo;
+                    ViewBag.FNos = FNos;
+
+                    if (!string.IsNullOrEmpty(ReFNo))
                     {
-                        Session["GotoPayment"] = string.Format("/ars/payment");
-                        return RedirectToAction("Login");
-                    }
-                    ViewBag.FNo = Session["fid1"].ToString();
-                    if (Session["fid2"] != null)
-                    {
-                        ViewBag.ReFNo = Session["fid2"].ToString();
+                        ViewBag.ReFNo = ReFNo;
                     }
                     ViewBag.PeopleNum = searchParam.Adult + searchParam.Children + searchParam.Senior;
                     ViewBag.AdultNum = searchParam.Adult + searchParam.Senior;
@@ -300,6 +355,7 @@ namespace AirlinesReservationSystem.Controllers
                     return View();
                 }
             }
+            TempData["errorM"] = "There was an error executing your requests. Please try again";
             return RedirectToAction("Index");
         }
 
@@ -311,40 +367,37 @@ namespace AirlinesReservationSystem.Controllers
             // Prepare model object
             Payment objP = new Payment();
             List<Passenger> objPaList = new List<Passenger>();
-            objP.FNo = frmPayment["FNo"];
+            objP.FNo1 = frmPayment["FNo[1]"];
+            objP.FNo2 = frmPayment["FNo[2]"];
             objP.ReFNo = frmPayment["ReFNo"];
             objP.PeopleNum = int.Parse(frmPayment["PeopleNum"]);
             objP.AdultNum = int.Parse(frmPayment["AdultNum"]);
             objP.ChildNum = int.Parse(frmPayment["ChildNum"]);
             objP.Class = frmPayment["Class"];
-            string[] Firstname = frmPayment["Firstname"].Split(',');
-            string[] Lastname = frmPayment["Lastname"].Split(',');
-            string[] SexStr = frmPayment["Sex"].Split(',');
-            string[] PassportNo = frmPayment["PassportNo"].Split(',');
-            string[] ReClass = null;
-            if (frmPayment["ReClass"] != null)
-            {
-                ReClass = frmPayment["ReClass"].Split(',');
-            }
-            bool[] Sex = new bool[objP.PeopleNum];
-            int a = 0;
-            foreach (var item in SexStr)
-            {
-                Sex[a++] = Convert.ToBoolean(int.Parse(item));
-            }
-            string[] Age = frmPayment["Age"].Split(',');
+            //string[] Firstname = frmPayment["Firstname"].Split(',');
+            //string[] Lastname = frmPayment["Lastname"].Split(',');
+            //string[] SexStr = frmPayment["Sex"].Split(',');
+            //string[] PassportNo = frmPayment["PassportNo"].Split(',');
+
+            //bool[] Sex = new bool[objP.PeopleNum];
+            //int a = 0;
+            //foreach (var item in SexStr)
+            //{
+            //    Sex[a++] = Convert.ToBoolean(int.Parse(item));
+            //}
+            //string[] Age = frmPayment["Age"].Split(',');
 
             for (int i = 0; i < objP.PeopleNum; i++)
             {
                 Passenger objPa = new Passenger();
-                objPa.Firstname = Firstname[i];
-                objPa.Lastname = Lastname[i];
-                objPa.Sex = Sex[i];
-                objPa.Age = int.Parse(Age[i]);
-                objPa.PassportNo = PassportNo[i];
-                if (frmPayment["Service" + (i + 1)] != null)
+                objPa.Firstname = frmPayment["Firstname" + i];
+                objPa.Lastname = frmPayment["Lastname" + i];
+                objPa.Sex = Convert.ToBoolean(int.Parse(frmPayment["Sex" + i]));
+                objPa.Age = int.Parse(frmPayment["Age" + i]);
+                objPa.PassportNo = frmPayment["PassportNo" + i];
+                if (frmPayment["Service" + i] != null)
                 {
-                    objPa.Service = frmPayment["Service" + (i + 1)].Split(',');
+                    objPa.Service = frmPayment["Service" + i].Split(',');
                 }
                 else
                 {
@@ -427,6 +480,23 @@ namespace AirlinesReservationSystem.Controllers
                 airports.Add(string.Format("{0} ({1})", item.CityName, item.AirportID));
             }
             return Json(airports.ToArray(), JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult FlightCalendar(string Departure, string Destination, DateTime? date)
+        {
+            var objD1 = FlightCalendarDAO.GetAirport(Departure);
+            var objD2 = FlightCalendarDAO.GetAirport(Destination);
+            ViewBag.ErrorM = "";
+            if (objD1 == null)
+            {
+                ViewBag.ErrorM += "Departure missing ";
+            }
+            if (objD2 == null)
+            {
+                ViewBag.ErrorM += "Destination missing ";
+            }
+            ViewBag.Date = date;
+            return View();
         }
     }
 }

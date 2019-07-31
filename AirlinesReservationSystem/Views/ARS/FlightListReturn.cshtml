@@ -45,10 +45,10 @@
     else if (classToSearch == "F") { if (item.FlightVM.AvailSeatsF < totalPassenger) { continue; } }
     <div class="row border rounded shadow-sm mb-md-2 pb-md-2 pt-1 flightList-card">
         <div class="col-md-3">
-            <p>@string.Format("{0:hh:mm tt}", item.FlightVM.DepartureTime) - @string.Format("{0:hh:mm tt}", item.FlightVM.ArrivalTime)</p>
+            <p>@string.Format("{0:hh:mm tt}", firstTrip.FlightVM.DepartureTime) - @string.Format("{0:hh:mm tt}", firstTrip.FlightVM.ArrivalTime)</p>
             <p>
-                <img src="~/img/ars/@item.AirlineVM.AirlineIcon" alt="@item.AirlineVM.AirlineName" class="airline-icon" /> <br />
-                @item.AirlineVM.AirlineName
+                <img src="~/img/ars/@firstTrip.FlightVM.Route.Airline.AirlineIcon" alt="@firstTrip.FlightVM.Route.Airline.AirlineName" class="airline-icon" /> <br />
+                @firstTrip.FlightVM.Route.Airline.AirlineName
             </p>
         </div>
         <div class="col-md-6">
@@ -65,8 +65,7 @@
                 <h3>$@item.FlightVM.BasePrice</h3>
             </div>
             <div class="col-md-8 text-md-left">
-                @*@Html.ActionLink("Select", "Payment", new { FNo = firstTrip.FlightVM.FNo, ReFNo = item.FlightVM.FNo, PeopleNum = totalPassenger }, new { @class = "btn btn-ars-light btn-ars-list" })*@
-                @Html.ActionLink("Select", "FlightDetails", new { fid = item.FlightVM.FNo, rid = item.RouteVM.RNo }, new { @class = "btn btn-ars-dark btn-ars-list mt-md-1" }) <br />
+                @Html.ActionLink("Select", "Payment", new { FNo = firstTrip.FlightVM.FNo, ReFNo = item.FlightVM.FNo, PeopleNum = totalPassenger }, new { @class = "btn btn-ars-light btn-ars-list" })
             </div>
         </div>
     </div>

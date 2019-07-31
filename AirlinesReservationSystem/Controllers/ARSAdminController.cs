@@ -69,29 +69,74 @@ namespace AirlinesReservationSystem.Controllers
         // ROUTE ADD'S VIEW
         public ActionResult RouteAdd() => IsLoggedIn() ? View() : (ActionResult)RedirectToAction("Index");
 
+        //ROUTE ADD TEMPLATE
+        public ActionResult RouteAddTemplate(int index)
+        {
+            ViewBag.Index = index;
+            return View();
+        }
+
         // ROUTE ADD'S PROCESS
+        //    string addResult = RouteDAO.AddRoute(newRoutes);
+        //    if (addResult == "ok")
+        //    {
+        //        return RedirectToAction("Route");
+        //    }
+        //    else
+        //    {
+        //        ModelState.AddModelError("", addResult);
+        //    }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult RouteAdd(Route newR)
+        public ActionResult RouteAdd(List<Route> newRoutes)
         {
-            if (ModelState.IsValid)
+            bool invalid = false, invalid2 = false;
+            List<Route> routeToSkip = new List<Route>();
+            int total = newRoutes.Count;
+            List<string> added = new List<string>();
+            foreach (var item in newRoutes)
             {
-                string addResult = RouteDAO.AddRoute(newR);
-                if (addResult == "ok")
+                if (item.Departure == item.Destination)
                 {
-                    return RedirectToAction("Route");
+                    ModelState.AddModelError("", string.Format("Error at: {0} with plane {1}. Arrival must be different than Departure", item.RAirline, item.RAircraft));
+                    invalid2 = true;
+                    routeToSkip.Add(item);
                 }
-                else
+            }
+            if (ModelState.IsValid || invalid == false)
+            {
+                bool skip = false;
+                foreach (var item in newRoutes)
                 {
-                    ModelState.AddModelError("", addResult);
+                    foreach (var itemToSkip in routeToSkip)
+                    {
+                        if (item.Equals(itemToSkip)) { skip = true; }
+                    }
+                    if (skip) { skip = false; continue; }
+                    if (!RouteDAO.AddRoute(item))
+                    {
+                        ModelState.AddModelError("", string.Format("Could not add {0} with plane {1} going from {2} to {3}", item.RAirline, item.RAircraft, item.Departure, item.Destination));
+                        invalid = true;
+                        total--;
+                    }
+                    added.Add(string.Format("{0}({1}) : {2} - {3}", item.RAirline, item.RAircraft, item.Departure, item.Destination));
+                }
+                if (!invalid && !invalid2)
+                    return RedirectToAction("Route");
+                ModelState.AddModelError("", "Routes Added: ");
+                foreach (var item in added)
+                {
+                    ModelState.AddModelError("", item);
                 }
             }
             return View();
         }
-        // EMPLOYEE EDIT'S VIEW
+
+
+        // ROUTE EDIT'S VIEW
         public ActionResult RouteEdit(int id) => IsLoggedIn() && RouteDAO.GetRoute(id) != null ? View(RouteDAO.GetRoute(id)) : (ActionResult)RedirectToAction("Index");
 
-        // EMPLOYEE EDIT'S PROCESS
+        // ROUTE EDIT'S PROCESS
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult RouteEdit(Route updateR)
@@ -128,31 +173,67 @@ namespace AirlinesReservationSystem.Controllers
         }
         // EMPLOYEE ADD'S PROCESS
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult EmployeeAdd(List<Employee> newEs)
+        public ActionResult EmployeeAdd(FormCollection frmEmployeeAdd)
         {
-            ModelState.Remove("IsActive");
-            ModelState.Remove("Role");
-            foreach (var e in newEs)
+            string s = "";
+            try
             {
-                if (ModelState.IsValid)
+                List<Employee> EmpList = new List<Employee>();
+                Employee objE = new Employee();
+                int i = 0;
+                while (frmEmployeeAdd["EmpID[" + i + "]"] != null)
                 {
-                    e.IsActive = true;
-                    e.Role = 1;
-                    if (EmployeeDAO.AddEmployee(e))
+                    objE = new Employee
                     {
-                        if (e == newEs.Last())
-                            return Content("Success");
-                    }
-                    else
+                        EmpID = frmEmployeeAdd["EmpID[" + i + "]"],
+                        Password = frmEmployeeAdd["Password[" + i + "]"],
+                        Firstname = frmEmployeeAdd["Firstname[" + i + "]"],
+                        Lastname = frmEmployeeAdd["Lastname[" + i + "]"],
+                        Address = frmEmployeeAdd["Address[" + i + "]"],
+                        Phone = frmEmployeeAdd["Phone[" + i + "]"],
+                        Email = frmEmployeeAdd["Email[" + i + "]"],
+                        Sex = Convert.ToBoolean(frmEmployeeAdd["Sex[" + i + "]"]),
+                        DoB = DateTime.Parse(frmEmployeeAdd["DoB[" + i + "]"]),
+                        IsActive = true,
+                        Role = 1
+                    };
+                    EmpList.Add(objE);
+                    i++;
+
+                }
+
+                // Check duplicate
+                foreach (var item in EmpList)
+                {
+                    if (EmpList.Where(e => e.EmpID == item.EmpID).Count() > 1)
                     {
-                        ModelState.AddModelError("", "Cannot add " + e.EmpID);
+                        s += "Error: ID duplicated! Please check and try again.\n";
                         break;
                     }
                 }
+
+                // Check exist
+                foreach (var item in EmpList)
+                {
+                    if (EmployeeDAO.GetEmployee(item.EmpID) != null)
+                    {
+                        s += "Error: ID \"" + item.EmpID + "\" exists.";
+                    }
+                }
+
+                // Start adding
+                if (s == "")
+                {
+                    string result = EmployeeDAO.AddEmployee(EmpList);
+                    s += result;
+                }
+            }
+            catch (Exception e)
+            {
+                s += e.Message + e.StackTrace;
             }
 
-            return View();
+            return Content(s);
         }
 
         // EMPLOYEE EDIT'S VIEW
@@ -286,7 +367,7 @@ namespace AirlinesReservationSystem.Controllers
         // FLIGHT DELETE's PROCESS
         public ActionResult FlightDelete(string id) => IsLoggedIn() && FlightDAO.DeleteFlight(id) ? Content("OK") : Content("Error");
 
-        // ROUTE ADD'S VIEW
+        // FLIFHT ADD'S VIEW
         public ActionResult FlightAdd()
         {
             if (IsLoggedIn())
@@ -297,7 +378,7 @@ namespace AirlinesReservationSystem.Controllers
             return RedirectToAction("Index");
         }
 
-        // ROUTE ADD'S PROCESS
+        // FLIGHT ADD'S PROCESS
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult FlightAdd(Flight newF)
@@ -321,7 +402,7 @@ namespace AirlinesReservationSystem.Controllers
             ViewBag.RouteData = RouteDAO.GetRouteList();
             return View();
         }
-        // EMPLOYEE EDIT'S VIEW
+        // FLIGHT EDIT'S VIEW
         public ActionResult FlightEdit(string id)
         {
             if (IsLoggedIn())
@@ -331,12 +412,12 @@ namespace AirlinesReservationSystem.Controllers
                 {
                     ViewBag.RouteData = RouteDAO.GetRouteList();
                     return View(f);
-                }   
+                }
             }
             return RedirectToAction("Index");
         }
 
-        // EMPLOYEE EDIT'S PROCESS
+        // FLIGHT EDIT'S PROCESS
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult FlightEdit(Flight updateF)
@@ -391,7 +472,7 @@ namespace AirlinesReservationSystem.Controllers
             {
                 if (TicketDAO.UpdateTicket(updateT))
                 {
-                    return RedirectToAction("OrderDetails",new { id = updateT.OrderID});
+                    return RedirectToAction("OrderDetails", new { id = updateT.OrderID });
                 }
                 else
                 {

@@ -15,6 +15,19 @@ namespace AirlinesReservationSystem.Models.ars
 
         public static IEnumerable<Ticket> GetTicketList(Int64 id) => db.Ticket.Where(t => t.OrderID == id);
 
+        public static double GetFlightServiceFee(int RNo) => db.Route.FirstOrDefault(r => r.RNo == RNo).Aircraft.ServiceFee;
+
+        public static Airport GetFlightDeparture(int RNo)
+        {
+            string id = db.Route.FirstOrDefault(r => r.RNo == RNo).Departure;
+            return db.Airport.FirstOrDefault(a => a.AirportID == id);
+        }
+        public static Airport GetFlightDestination(int RNo)
+        {
+            string id = db.Route.FirstOrDefault(r => r.RNo == RNo).Destination;
+            return db.Airport.FirstOrDefault(a => a.AirportID == id);
+        }
+
         public static bool BlockingOrderPaid(long id)
         {
             var o = GetOrder(id);
@@ -22,17 +35,22 @@ namespace AirlinesReservationSystem.Models.ars
             {
                 // Change status
                 o.Status = 1;
+                int totalDistance = 0;
 
                 // Calculate flight distance (flightdistance x total people)
                 var TicketList = TicketDAO.GetTicketList(o.OrderID);
-                int totalCount = TicketList.Count();
-                var TInfo = TicketList.Where(t => t.IsReturn == false).FirstOrDefault();
-                var objD = db.FlightDistance.Where(fd => fd.AirportID1 == TInfo.Flight.Route.Departure && fd.AirportID2 == TInfo.Flight.Route.Destination).FirstOrDefault();
-                if (objD == null)
+                //int totalCount = TicketList.Count();
+                foreach (var item in TicketList)
                 {
-                    objD = db.FlightDistance.Where(fd => fd.AirportID1 == TInfo.Flight.Route.Destination && fd.AirportID2 == TInfo.Flight.Route.Departure).FirstOrDefault();
+                    var TInfo = TicketList.FirstOrDefault(t => t.TicketID == item.TicketID);
+                    var objD = db.FlightDistance.Where(fd => fd.AirportID1 == TInfo.Flight.Route.Departure && fd.AirportID2 == TInfo.Flight.Route.Destination).FirstOrDefault();
+                    if (objD == null)
+                    {
+                        objD = db.FlightDistance.Where(fd => fd.AirportID1 == TInfo.Flight.Route.Destination && fd.AirportID2 == TInfo.Flight.Route.Departure).FirstOrDefault();
+                    }
+                    totalDistance += objD.Distance;
                 }
-                int totalDistance = objD.Distance * totalCount;
+
                 // Add total distance to skymiles in User
                 UsersDAO.GetUser(o.UserID).Skymiles += totalDistance;
 
@@ -47,55 +65,55 @@ namespace AirlinesReservationSystem.Models.ars
             var o = GetOrder(id);
             if (o != null)
             {
+                // Check if this order blocked or not
+                bool IsBlocked = false;
+                if (o.Status == 0)
+                {
+                    IsBlocked = true;
+                }
                 // Change status
                 o.Status = 2;
-
-                // Calculate flight distance (flightdistance x total people)
+                int totalDistance = 0;
                 var TicketList = TicketDAO.GetTicketList(o.OrderID);
-                int totalCount = TicketList.Count();
-                int totalInFlightCount = TicketList.Where(t => t.IsReturn == false).Count();
-                var TInfo = TicketList.Where(t => t.IsReturn == false).FirstOrDefault();
-                var ReTInfo = TicketList.Where(t => t.IsReturn == true).FirstOrDefault();
-                var objD = db.FlightDistance.Where(fd => fd.AirportID1 == TInfo.Flight.Route.Departure && fd.AirportID2 == TInfo.Flight.Route.Destination).FirstOrDefault();
-                if (objD == null)
+                // If this order is not blocked one, make changes to skymiles
+                if (!IsBlocked)
                 {
-                    objD = db.FlightDistance.Where(fd => fd.AirportID1 == TInfo.Flight.Route.Destination && fd.AirportID2 == TInfo.Flight.Route.Departure).FirstOrDefault();
-                }
-                int totalDistance = objD.Distance * totalCount;
-                // Subtract total distance from skymiles
-                var u = UsersDAO.GetUser(o.UserID);
-                u.Skymiles = u.Skymiles - totalDistance;
+                    // Calculate flight distance 
+                    foreach (var item in TicketList)
+                    {
+                        var TInfo = TicketList.FirstOrDefault(t => t.TicketID == item.TicketID);
+                        var objD = db.FlightDistance.Where(fd => fd.AirportID1 == TInfo.Flight.Route.Departure && fd.AirportID2 == TInfo.Flight.Route.Destination).FirstOrDefault();
+                        if (objD == null)
+                        {
+                            objD = db.FlightDistance.Where(fd => fd.AirportID1 == TInfo.Flight.Route.Destination && fd.AirportID2 == TInfo.Flight.Route.Departure).FirstOrDefault();
+                        }
+                        totalDistance += objD.Distance;
+                    }
 
-                // Add to AvailSeat to the Flights
-                Flight FInfo = FlightDAO.GetFlight(TInfo.FNo);
-                Flight ReFInfo = null;
-                if (ReTInfo != null)
-                {
-                    ReFInfo = FlightDAO.GetFlight(ReTInfo.FNo);
+                    // Subtract total distance from skymiles
+                    var u = UsersDAO.GetUser(o.UserID);
+                    u.Skymiles = u.Skymiles - totalDistance;
+                    db.SaveChanges();
                 }
-                if (TInfo.Class == "F")
+                
+
+                // Add back AvailSeat to the Flights
+                foreach (var item in TicketList)
                 {
-                    FInfo.AvailSeatsF += totalInFlightCount;
-                    if (ReFInfo != null)
+                    Flight FInfo = FlightDAO.GetFlight(item.FNo);
+                    if (item.Class == "F")
                     {
-                        ReFInfo.AvailSeatsF += totalInFlightCount;
+                        FInfo.AvailSeatsF = FInfo.AvailSeatsF - 1;
                     }
-                }
-                else if (TInfo.Class == "B")
-                {
-                    FInfo.AvailSeatsB += totalInFlightCount;
-                    if (ReFInfo != null)
+                    else if (item.Class == "B")
                     {
-                        ReFInfo.AvailSeatsB += totalInFlightCount;
+                        FInfo.AvailSeatsB = FInfo.AvailSeatsB - 1;
                     }
-                }
-                else
-                {
-                    FInfo.AvailSeatsE += totalInFlightCount;
-                    if (ReFInfo != null)
+                    else
                     {
-                        ReFInfo.AvailSeatsE += totalInFlightCount;
+                        FInfo.AvailSeatsE = FInfo.AvailSeatsE - 1;
                     }
+                    db.SaveChanges();
                 }
 
                 // Save changes
@@ -103,6 +121,11 @@ namespace AirlinesReservationSystem.Models.ars
                 return true;
             }
             return false;
+        }
+
+        public static bool CancelBlocking(long id)
+        {
+            return true;
         }
 
         public static string ProcessPayment(Payment payment, bool IsBlocked)
@@ -134,8 +157,8 @@ namespace AirlinesReservationSystem.Models.ars
                 db.Order.Add(order);
                 int ticketCount = 1;
 
-                // Create First Flight Ticket
-                Flight FInfo = FlightDAO.GetFlight(payment.FNo);
+                // Create Oneway / First Flight/ First Stop Ticket
+                Flight FInfo1 = FlightDAO.GetFlight(payment.FNo1);
                 payment.Passengers.ForEach(p =>
                 {
                     Ticket ticket = new Ticket();
@@ -143,22 +166,22 @@ namespace AirlinesReservationSystem.Models.ars
                     double price = 0;
                     if (p.Age >= 14)
                     {
-                        price += FInfo.BasePrice + FInfo.Route.Aircraft.ServiceFee;
+                        price += FInfo1.BasePrice + FInfo1.Route.Aircraft.ServiceFee;
                     }
                     else
                     {
-                        price += FInfo.BasePrice * 70 / 100 + FInfo.Route.Aircraft.ServiceFee;
+                        price += FInfo1.BasePrice * 70 / 100 + FInfo1.Route.Aircraft.ServiceFee;
                     }
-                    int daysToDeparture = Convert.ToInt16((FInfo.DepartureTime - DateTime.Now).TotalDays);
+                    double daysToDeparture = (FInfo1.DepartureTime - DateTime.Now).TotalDays;
                     if (daysToDeparture <= 14)
                     {
                         if (p.Age >= 14)
                         {
-                            price += FInfo.BasePrice * 0.02 * (14 - daysToDeparture);
+                            price += FInfo1.BasePrice * 0.02 * (14 - daysToDeparture);
                         }
                         else
                         {
-                            price += FInfo.BasePrice * 70 / 100 * 0.02 * (14 - daysToDeparture);
+                            price += FInfo1.BasePrice * 70 / 100 * 0.02 * (14 - daysToDeparture);
                         }
                     }
 
@@ -177,7 +200,7 @@ namespace AirlinesReservationSystem.Models.ars
                     }
                     ticket.TicketID = TicketID;
                     ticket.OrderID = OrderID;
-                    ticket.FNo = FInfo.FNo;
+                    ticket.FNo = FInfo1.FNo;
                     ticket.PassportNo = p.PassportNo;
                     ticket.Class = payment.Class;
                     ticket.Firstname = p.Firstname;
@@ -190,6 +213,66 @@ namespace AirlinesReservationSystem.Models.ars
                     Total += price;
                     ticketCount++;
                 });
+
+                // Create Oneway / First Flight/ First Stop Ticket
+                Flight FInfo2 = FlightDAO.GetFlight(payment.FNo2);
+                if (FInfo2 != null)
+                {
+                    payment.Passengers.ForEach(p =>
+                    {
+                        Ticket ticket = new Ticket();
+                        Int64 TicketID = Int64.Parse(OrderID.ToString() + ticketCount);
+                        double price = 0;
+                        if (p.Age >= 14)
+                        {
+                            price += FInfo2.BasePrice + FInfo2.Route.Aircraft.ServiceFee;
+                        }
+                        else
+                        {
+                            price += FInfo2.BasePrice * 70 / 100 + FInfo2.Route.Aircraft.ServiceFee;
+                        }
+                        double daysToDeparture = (FInfo2.DepartureTime - DateTime.Now).TotalDays;
+                        if (daysToDeparture <= 14)
+                        {
+                            if (p.Age >= 14)
+                            {
+                                price += FInfo2.BasePrice * 0.02 * (14 - daysToDeparture);
+                            }
+                            else
+                            {
+                                price += FInfo2.BasePrice * 70 / 100 * 0.02 * (14 - daysToDeparture);
+                            }
+                        }
+
+                        foreach (var item in p.Service)
+                        {
+                            price += ServiceDAO.GetService(item).ServiceFee;
+                            db.TicketService.Add(new TicketService { ServiceID = item, TicketID = TicketID });
+                        }
+                        if (payment.Class == "F")
+                        {
+                            price += 20;
+                        }
+                        else if (payment.Class == "B")
+                        {
+                            price += 10;
+                        }
+                        ticket.TicketID = TicketID;
+                        ticket.OrderID = OrderID;
+                        ticket.FNo = FInfo2.FNo;
+                        ticket.PassportNo = p.PassportNo;
+                        ticket.Class = payment.Class;
+                        ticket.Firstname = p.Firstname;
+                        ticket.Lastname = p.Lastname;
+                        ticket.Sex = p.Sex;
+                        ticket.Age = p.Age;
+                        ticket.IsReturn = false;
+                        ticket.Price = price;
+                        db.Ticket.Add(ticket);
+                        Total += price;
+                        ticketCount++;
+                    });
+                }
 
                 // Create Return Flight Ticket
                 Flight ReFInfo = FlightDAO.GetFlight(payment.ReFNo);
@@ -209,7 +292,7 @@ namespace AirlinesReservationSystem.Models.ars
                             price += ReFInfo.BasePrice * 70 / 100 + ReFInfo.Route.Aircraft.ServiceFee;
                         }
 
-                        int daysToDeparture = Convert.ToInt16((ReFInfo.DepartureTime - DateTime.Now).TotalDays);
+                        double daysToDeparture = (ReFInfo.DepartureTime - DateTime.Now).TotalDays;
                         if (daysToDeparture <= 14)
                         {
                             if (p.Age >= 14)
@@ -258,7 +341,11 @@ namespace AirlinesReservationSystem.Models.ars
                 // Seat Calculation
                 if (payment.Class == "F")
                 {
-                    FInfo.AvailSeatsF = FInfo.AvailSeatsF - payment.Passengers.Count();
+                    FInfo1.AvailSeatsF = FInfo1.AvailSeatsF - payment.Passengers.Count();
+                    if (FInfo2 != null)
+                    {
+                        FInfo2.AvailSeatsF = FInfo2.AvailSeatsF - payment.Passengers.Count();
+                    }
                     if (ReFInfo != null)
                     {
                         ReFInfo.AvailSeatsF = ReFInfo.AvailSeatsF - payment.Passengers.Count();
@@ -266,7 +353,11 @@ namespace AirlinesReservationSystem.Models.ars
                 }
                 else if (payment.Class == "B")
                 {
-                    FInfo.AvailSeatsB = FInfo.AvailSeatsB - payment.Passengers.Count();
+                    FInfo1.AvailSeatsB = FInfo1.AvailSeatsB - payment.Passengers.Count();
+                    if (FInfo2 != null)
+                    {
+                        FInfo2.AvailSeatsB = FInfo2.AvailSeatsB - payment.Passengers.Count();
+                    }
                     if (ReFInfo != null)
                     {
                         ReFInfo.AvailSeatsB = ReFInfo.AvailSeatsB - payment.Passengers.Count();
@@ -274,7 +365,11 @@ namespace AirlinesReservationSystem.Models.ars
                 }
                 else
                 {
-                    FInfo.AvailSeatsE = FInfo.AvailSeatsE - payment.Passengers.Count();
+                    FInfo1.AvailSeatsE = FInfo1.AvailSeatsE - payment.Passengers.Count();
+                    if (FInfo2 != null)
+                    {
+                        FInfo2.AvailSeatsE = FInfo2.AvailSeatsE - payment.Passengers.Count();
+                    }
                     if (ReFInfo != null)
                     {
                         ReFInfo.AvailSeatsE = ReFInfo.AvailSeatsE - payment.Passengers.Count();
@@ -285,17 +380,42 @@ namespace AirlinesReservationSystem.Models.ars
                 if (order.Status == 1)
                 {
                     int dis1 = 0;
-                    var objD1 = db.FlightDistance.Where(fd => fd.AirportID1 == FInfo.Route.Departure && fd.AirportID2 == FInfo.Route.Destination).FirstOrDefault();
+                    int dis2 = 0;
+                    int reDis = 0;
+                    var objD1 = db.FlightDistance.Where(fd => fd.AirportID1 == FInfo1.Route.Departure && fd.AirportID2 == FInfo1.Route.Destination).FirstOrDefault();
                     if (objD1 == null)
                     {
-                        objD1 = db.FlightDistance.Where(fd => fd.AirportID1 == FInfo.Route.Destination && fd.AirportID2 == FInfo.Route.Departure).FirstOrDefault();
+                        objD1 = db.FlightDistance.Where(fd => fd.AirportID1 == FInfo1.Route.Destination && fd.AirportID2 == FInfo1.Route.Departure).FirstOrDefault();
                     }
                     dis1 = objD1.Distance * payment.Passengers.Count();
 
-                    UsersDAO.GetUser(order.UserID).Skymiles += dis1;
+                    if (FInfo2 != null)
+                    {
+                        var objD2 = db.FlightDistance.Where(fd => fd.AirportID1 == FInfo2.Route.Departure && fd.AirportID2 == FInfo2.Route.Destination).FirstOrDefault();
+                        if (objD2 == null)
+                        {
+                            objD2 = db.FlightDistance.Where(fd => fd.AirportID1 == FInfo2.Route.Destination && fd.AirportID2 == FInfo2.Route.Departure).FirstOrDefault();
+                        }
+                        dis2 = objD2.Distance * payment.Passengers.Count();
+                    }
+
+                    if (ReFInfo != null)
+                    {
+                        var objReD = db.FlightDistance.Where(fd => fd.AirportID1 == ReFInfo.Route.Departure && fd.AirportID2 == ReFInfo.Route.Destination).FirstOrDefault();
+                        if (objReD == null)
+                        {
+                            objReD = db.FlightDistance.Where(fd => fd.AirportID1 == ReFInfo.Route.Destination && fd.AirportID2 == ReFInfo.Route.Departure).FirstOrDefault();
+                        }
+                        reDis = objReD.Distance * payment.Passengers.Count();
+                    }
+
+                    UsersDAO.GetUser(order.UserID).Skymiles += dis1 + dis2 + reDis;
                 }
 
                 db.SaveChanges();
+
+                // Charging creditcard
+
 
                 return "ok:" + OrderID;
             }
@@ -313,7 +433,7 @@ namespace AirlinesReservationSystem.Models.ars
                 DateTime now = DateTime.Now;
                 string OrderIDStr = "" + now.Year + now.Month + now.Day + now.Hour + now.Minute + now.Second;
                 Int64 OrderID = Int64.Parse(OrderIDStr);
-                Flight FInfo = FlightDAO.GetFlight(payment.FNo);
+                Flight FInfo = FlightDAO.GetFlight(payment.FNo1);
                 double FTotal = 0;
                 double ReFTotal = 0;
 
@@ -434,47 +554,5 @@ namespace AirlinesReservationSystem.Models.ars
                 return e.StackTrace;
             }
         }
-
-        //public static string ConfirmPayment(FormCollection frmPayment)
-        //{
-        //    try
-        //    {
-        //        string s = "";
-        //        int PeopleNum = int.Parse(frmPayment["PeopleNum"]);
-        //        string[] Firstname = frmPayment["Firstname"].Split(',');
-        //        string[] Lastname = frmPayment["Lastname"].Split(',');
-        //        string[] Sex = frmPayment["Sex"].Split(',');
-        //        string[] Age = frmPayment["Age"].Split(',');
-        //        string[][] Service = new string[PeopleNum][];
-        //        for (int i = 0; i < PeopleNum; i++)
-        //        {
-        //            Service[i] = frmPayment["Service" + (i + 1)].Split(',');
-        //        }
-        //        for (int i = 0; i < PeopleNum; i++)
-        //        {
-        //            s += "Passenger " + (i + 1) + "\n";
-        //            s += "Name: " + Firstname[i] + " " + Lastname[i] + "\n";
-        //            s += "Sex: " + Sex[i] + ", Age: " + Age[i] + "\n";
-        //            s += "Service: ";
-        //            foreach (var item in Service[i])
-        //            {
-        //                if (item == Service[i].Last())
-        //                {
-        //                    s += item + "\n";
-        //                }
-        //                else
-        //                {
-        //                    s += item + ", ";
-        //                }
-        //            }
-        //        }
-        //        return s;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return e.Message;
-        //    }
-
-        //}
     }
 }

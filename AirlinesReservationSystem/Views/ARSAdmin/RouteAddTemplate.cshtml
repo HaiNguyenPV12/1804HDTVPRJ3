@@ -1,0 +1,37 @@
+﻿@model List<AirlinesReservationSystem.Models.Route>
+
+@{
+    ViewBag.Title = "RouteAddTemplate";
+    int i = ViewBag.Index;
+    Layout = null;
+}
+
+<tr id="routeRow-@i">
+    <td>
+        @Html.DropDownListFor(model => model[i].RAirline, AirlinesReservationSystem.Models.arsadmin.Dropdowns.Airlines(), new { @class = "form-control" })
+    </td>
+    <td>
+        @Html.DropDownListFor(model => model[i].RAircraft, AirlinesReservationSystem.Models.arsadmin.Dropdowns.Aircrafts(), new { @class = "form-control" })
+    </td>
+    <td>
+        @Html.DropDownListFor(model => model[i].Departure, AirlinesReservationSystem.Models.arsadmin.Dropdowns.Airports(), new { @class = "form-control" })
+    </td>
+    <td>
+        @Html.DropDownListFor(model => model[i].Destination, AirlinesReservationSystem.Models.arsadmin.Dropdowns.Airports(), new { @class = "form-control" })
+    </td>
+    <td>
+        <button class="btn btn-danger" type="button" id="removeRow-@i" name="btnRemove">-</button>
+    </td>
+</tr>
+
+<script>
+    $(document).ready(function () {
+        var rowToRemove = 'routeRow-' +@i;
+        var btnRemove = 'removeRow-' +@i;
+
+        $('#'+btnRemove).click(function (e) {
+            e.preventDefault();
+            $('#' + rowToRemove).remove();
+        });
+    });
+</script>

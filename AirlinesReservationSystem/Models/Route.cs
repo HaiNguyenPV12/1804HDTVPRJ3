@@ -22,7 +22,6 @@ namespace AirlinesReservationSystem.Models
             this.Flight = new HashSet<Flight>();
         }
         [Key]
-        [Required]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int RNo { get; set; }
 

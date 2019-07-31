@@ -34,7 +34,8 @@ footer {
 }
 
     .btn-ars-dark:hover {
-        background-color: #ffca64 !important;
+        color: white;
+        background-color: #c66a00 !important;
     }
 
 .btn-ars-light {

@@ -1,78 +1,126 @@
-﻿@model AirlinesReservationSystem.Models.Route
+﻿@model List<AirlinesReservationSystem.Models.Route>
 
 @{
     ViewBag.Title = "RouteAdd";
 }
 
 <h2>Route - Add new Route <a href="/arsadmin/route" class="btn btn-warning">Back to list</a></h2>
-<div class="container">
+<div class="col-md-12">&nbsp;</div>
+<div>
 
 
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
 
-        <div class="">
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            <div class="form-group form-inline">
-                @Html.LabelFor(model => model.RAirline, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.RAirline, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
+        @*<div class="">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group form-inline">
+                    @Html.LabelFor(model => model.RAirline, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.RAirline, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
+                    </div>
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-10">
+                        @Html.ValidationMessageFor(model => model.RAirline, "", new { @class = "text-danger" })
+                    </div>
                 </div>
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-10">
-                    @Html.ValidationMessageFor(model => model.RAirline, "", new { @class = "text-danger" })
-                </div>
-            </div>
 
-            <div class="form-group form-inline">
-                @Html.LabelFor(model => model.RAircraft, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.RAircraft, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
+                <div class="form-group form-inline">
+                    @Html.LabelFor(model => model.RAircraft, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.RAircraft, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
+                    </div>
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-10">
+                        @Html.ValidationMessageFor(model => model.RAircraft, "", new { @class = "text-danger" })
+                    </div>
                 </div>
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-10">
-                    @Html.ValidationMessageFor(model => model.RAircraft, "", new { @class = "text-danger" })
-                </div>
-            </div>
 
-            <div class="form-group form-inline">
-                @Html.LabelFor(model => model.Departure, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Departure, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
+                <div class="form-group form-inline">
+                    @Html.LabelFor(model => model.Departure, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Departure, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
+                    </div>
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-10">
+                        @Html.ValidationMessageFor(model => model.Departure, "", new { @class = "text-danger" })
+                    </div>
                 </div>
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-10">
-                    @Html.ValidationMessageFor(model => model.Departure, "", new { @class = "text-danger" })
-                </div>
-            </div>
 
-            <div class="form-group form-inline">
-                @Html.LabelFor(model => model.Destination, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Destination, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
+                <div class="form-group form-inline">
+                    @Html.LabelFor(model => model.Destination, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Destination, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
+                    </div>
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-10">
+                        @Html.ValidationMessageFor(model => model.Destination, "", new { @class = "text-danger" })
+                    </div>
                 </div>
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-10">
-                    @Html.ValidationMessageFor(model => model.Destination, "", new { @class = "text-danger" })
-                </div>
-            </div>
 
 
 
-            <div class="form-group form-inline">
-                <div class="col-md-2">
+                <div class="form-group form-inline">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-10">
+                        <input type="submit" value="Add this route" class="btn btn-success" />
+                        <input type="reset" value="Reset" class="btn btn-warning" />
+                    </div>
                 </div>
-                <div class="col-md-10">
-                    <input type="submit" value="Add this route" class="btn btn-success" />
-                    <input type="reset" value="Reset" class="btn btn-warning" />
-                </div>
-            </div>
-        </div>
+            </div>*@
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <table class="table table-hover table-bordered">
+            <tr class="table-ars">
+                <th>
+                    @Html.DisplayNameFor(model => model[0].Airline.AirlineName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model[0].Aircraft.AircraftName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model[0].DepartureAirport.AirportName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model[0].DestinationAirport.AirportName)
+                </th>
+                <th>
+                    <button class="btn btn-success" id="btnAppend">+</button>
+                </th>
+            </tr>
+            <tbody id="RouteAddList"></tbody>
+        </table>
+        <button type="submit" class="btn btn-ars-light">Add Route(s)</button>
     }
-
 </div>
+
+<script>
+    $(document).ready(function () {
+        var i = 0;
+        appendForm();
+        i = i + 1;
+
+        function appendForm() {
+            $.post("/arsadmin/RouteAddTemplate?index=" + i, function (result) {
+                $("#RouteAddList").append(result);
+            });
+        }
+
+        $('#btnAppend').click(function (e) {
+            e.preventDefault();
+            appendForm();
+            i = i + 1;
+        });
+
+        $('#RouteAddList').bind('DOMNodeRemoved', function (e) {
+            if (i > 0) {
+                i = i - 1;
+            }
+        });
+    });
+</script>
