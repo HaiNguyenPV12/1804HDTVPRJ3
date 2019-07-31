@@ -481,7 +481,7 @@ namespace AirlinesReservationSystem.Controllers
             return Json(airports.ToArray(), JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult FlightCalendar(string Departure, string Destination, DateTime? date)
+        public ActionResult FlightCalendar(string Departure, string Destination, int? month, int? year)
         {
             var objD1 = FlightCalendarDAO.GetAirport(Departure);
             var objD2 = FlightCalendarDAO.GetAirport(Destination);
@@ -494,7 +494,14 @@ namespace AirlinesReservationSystem.Controllers
             {
                 ViewBag.ErrorM += "Destination missing ";
             }
-            ViewBag.Date = date;
+            ViewBag.Month = month;
+            ViewBag.Year = year;
+            if (objD1 != null && objD2 != null)
+            {
+                var FlightList = FlightCalendarDAO.GetFlight(Departure, Destination);
+                ViewBag.FlightList = FlightList;
+            }
+
             return View();
         }
     }
