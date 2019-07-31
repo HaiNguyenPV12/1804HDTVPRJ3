@@ -123,10 +123,10 @@ namespace AirlinesReservationSystem.Controllers
                 }
                 if (!invalid && !invalid2)
                     return RedirectToAction("Route");
-                ModelState.AddModelError("", "Routes Added: ");
-                foreach (var item in added)
+                if (added.Count > 0)
                 {
-                    ModelState.AddModelError("", item);
+                    ModelState.AddModelError("", "Routes Added: ");
+                    foreach (var item in added) { ModelState.AddModelError("", item); }
                 }
             }
             return View();
