@@ -394,9 +394,9 @@ namespace AirlinesReservationSystem.Controllers
                 objPa.Sex = Convert.ToBoolean(int.Parse(frmPayment["Sex" + i]));
                 objPa.Age = int.Parse(frmPayment["Age" + i]);
                 objPa.PassportNo = frmPayment["PassportNo" + i];
-                if (frmPayment["Service" + (i + 1)] != null)
+                if (frmPayment["Service" + i ] != null)
                 {
-                    objPa.Service = frmPayment["Service" + (i + 1)].Split(',');
+                    objPa.Service = frmPayment["Service" + i].Split(',');
                 }
                 else
                 {

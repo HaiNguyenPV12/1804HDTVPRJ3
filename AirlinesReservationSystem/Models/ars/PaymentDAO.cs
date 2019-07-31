@@ -42,7 +42,7 @@ namespace AirlinesReservationSystem.Models.ars
                 //int totalCount = TicketList.Count();
                 foreach (var item in TicketList)
                 {
-                    var TInfo = TicketList.FirstOrDefault(t=>t.TicketID == item.TicketID);
+                    var TInfo = TicketList.FirstOrDefault(t => t.TicketID == item.TicketID);
                     var objD = db.FlightDistance.Where(fd => fd.AirportID1 == TInfo.Flight.Route.Departure && fd.AirportID2 == TInfo.Flight.Route.Destination).FirstOrDefault();
                     if (objD == null)
                     {
@@ -50,7 +50,7 @@ namespace AirlinesReservationSystem.Models.ars
                     }
                     totalDistance += objD.Distance;
                 }
-                
+
                 // Add total distance to skymiles in User
                 UsersDAO.GetUser(o.UserID).Skymiles += totalDistance;
 
@@ -65,31 +65,43 @@ namespace AirlinesReservationSystem.Models.ars
             var o = GetOrder(id);
             if (o != null)
             {
+                // Check if this order blocked or not
+                bool IsBlocked = false;
+                if (o.Status == 0)
+                {
+                    IsBlocked = true;
+                }
                 // Change status
                 o.Status = 2;
                 int totalDistance = 0;
-                // Calculate flight distance
                 var TicketList = TicketDAO.GetTicketList(o.OrderID);
-                foreach (var item in TicketList)
+                // If this order is not blocked one, make changes to skymiles
+                if (!IsBlocked)
                 {
-                    var TInfo = TicketList.FirstOrDefault(t => t.TicketID == item.TicketID);
-                    var objD = db.FlightDistance.Where(fd => fd.AirportID1 == TInfo.Flight.Route.Departure && fd.AirportID2 == TInfo.Flight.Route.Destination).FirstOrDefault();
-                    if (objD == null)
+                    // Calculate flight distance 
+                    foreach (var item in TicketList)
                     {
-                        objD = db.FlightDistance.Where(fd => fd.AirportID1 == TInfo.Flight.Route.Destination && fd.AirportID2 == TInfo.Flight.Route.Departure).FirstOrDefault();
+                        var TInfo = TicketList.FirstOrDefault(t => t.TicketID == item.TicketID);
+                        var objD = db.FlightDistance.Where(fd => fd.AirportID1 == TInfo.Flight.Route.Departure && fd.AirportID2 == TInfo.Flight.Route.Destination).FirstOrDefault();
+                        if (objD == null)
+                        {
+                            objD = db.FlightDistance.Where(fd => fd.AirportID1 == TInfo.Flight.Route.Destination && fd.AirportID2 == TInfo.Flight.Route.Departure).FirstOrDefault();
+                        }
+                        totalDistance += objD.Distance;
                     }
-                    totalDistance += objD.Distance;
-                }
 
-                // Subtract total distance from skymiles
-                var u = UsersDAO.GetUser(o.UserID);
-                u.Skymiles = u.Skymiles - totalDistance;
+                    // Subtract total distance from skymiles
+                    var u = UsersDAO.GetUser(o.UserID);
+                    u.Skymiles = u.Skymiles - totalDistance;
+                    db.SaveChanges();
+                }
+                
 
                 // Add back AvailSeat to the Flights
                 foreach (var item in TicketList)
                 {
                     Flight FInfo = FlightDAO.GetFlight(item.FNo);
-                    if (item.Class=="F")
+                    if (item.Class == "F")
                     {
                         FInfo.AvailSeatsF = FInfo.AvailSeatsF - 1;
                     }
@@ -401,6 +413,9 @@ namespace AirlinesReservationSystem.Models.ars
                 }
 
                 db.SaveChanges();
+
+                // Charging creditcard
+
 
                 return "ok:" + OrderID;
             }
