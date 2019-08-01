@@ -19,19 +19,4 @@
     <td>
         @Html.DropDownListFor(model => model[i].Destination, AirlinesReservationSystem.Models.arsadmin.Dropdowns.Airports(), new { @class = "form-control" })
     </td>
-    <td>
-        <button class="btn btn-danger" type="button" id="removeRow-@i" name="btnRemove">-</button>
-    </td>
 </tr>
-
-<script>
-    $(document).ready(function () {
-        var rowToRemove = 'routeRow-' +@i;
-        var btnRemove = 'removeRow-' +@i;
-
-        $('#'+btnRemove).click(function (e) {
-            e.preventDefault();
-            $('#' + rowToRemove).remove();
-        });
-    });
-</script>
