@@ -45,7 +45,3 @@ footer {
     .btn-ars-light:hover {
         background-color: #ff9933 !important;
     }
-
-.table tbody tr > td.secondary {
-    background-color: #808080 !important;
-}
