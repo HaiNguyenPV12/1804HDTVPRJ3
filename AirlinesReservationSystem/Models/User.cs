@@ -12,6 +12,7 @@ namespace AirlinesReservationSystem.Models
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     public partial class User
     {
@@ -21,6 +22,7 @@ namespace AirlinesReservationSystem.Models
             this.Order = new HashSet<Order>();
         }
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Required]
         [StringLength(50)]
         public string UserID { get; set; }
@@ -43,7 +45,7 @@ namespace AirlinesReservationSystem.Models
 
         [Required]
         [StringLength(12)]
-        [DataType(DataType.PhoneNumber)]
+        [RegularExpression(@"^\d{10,11}$", ErrorMessage = "Phone number have from 10 to 11 digits")]
         public string Phone { get; set; }
 
         [Required]
@@ -59,11 +61,15 @@ namespace AirlinesReservationSystem.Models
         public int Age { get; set; }
 
         [Required]
+        [Display(Name = "Credit Card Number")]
+        [StringLength(16,MinimumLength =16, ErrorMessage = "Credit Card number must be have 16 digits")]
         public string CCNo { get; set; }
+
+
         public string PassportNo_ { get; set; }
 
         [Required]
-       
+        
         public int Skymiles { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

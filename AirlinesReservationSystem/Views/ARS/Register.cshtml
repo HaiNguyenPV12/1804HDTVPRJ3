@@ -3,14 +3,16 @@
 @{
     ViewBag.Title = "Register";
 }
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
 
 
 
-
-@using (Html.BeginForm()) 
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal" style="margin-left:200px">
         <h4>Create an Account</h4>
         <hr />
@@ -26,7 +28,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", @type="password" } })
+                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", @type = "password" } })
                 @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -58,7 +60,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Phone, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control", @id = "inputPhone" } })
                 @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -116,25 +118,35 @@
         </div>
 
         @*<div class="form-group">
-            @Html.LabelFor(model => model.Skymiles, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Skymiles, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Skymiles, "", new { @class = "text-danger" })
-            </div>
-        </div>*@
+                @Html.LabelFor(model => model.Skymiles, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Skymiles, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Skymiles, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-success" />
+                <input type="submit" id="btnSubmit" value="Create" class="btn btn-success" />
                 <input type="reset" value="Reset" class="btn btn-dark" />
-                @Html.ActionLink("Back to Index", "Index",null,new { @class ="btn btn-primary"})
+                @Html.ActionLink("Back to Index", "Index", null, new { @class = "btn btn-primary" })
             </div>
         </div>
     </div>
 }
+@*<script>
+    $("input").keyup(function () {
+        var phone = $('#inputPhone').val();
+        var ptPhone = '/^[0-9]{10,11}$/';
+        if (phone != ptPhone) {
+            $('#btnSubmit').attr('disabled', 'disabled');
+        }
+        else {
+            $('#btnSubmit').attr('disabled', null);
+        }
+
+    }));
+</script>*@
 
 
 
-<script src="~/Scripts/jquery-3.3.1.min.js"></script>
-<script src="~/Scripts/jquery.validate.min.js"></script>
-<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>

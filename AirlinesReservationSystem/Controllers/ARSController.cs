@@ -265,7 +265,7 @@ namespace AirlinesReservationSystem.Controllers
                 {
                     return RedirectToAction("Login");
                 }
-                ModelState.AddModelError("", "Register Error");
+                ModelState.AddModelError("", "UserID duplicated!!");
             }
             return View();
         }
