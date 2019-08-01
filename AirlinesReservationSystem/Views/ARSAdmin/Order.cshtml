@@ -3,69 +3,80 @@
 @{
     ViewBag.Title = "Order";
 }
-
+<link href="~/Content/datatables.min.css" rel="stylesheet" />
+<script src="~/Scripts/datatables.min.js"></script>
 <h2>Order List</h2>
-
-<table class="table table-bordered table-hover table-sm">
-    <tr class="table-ars">
-        <th>
-            @Html.DisplayNameFor(model => model.OrderID)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.UserID)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.OrderDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Total)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Status)
-        </th>
-        <th></th>
-    </tr>
-
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.OrderID)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.UserID)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.OrderDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Total)
-        </td>
-        <td>
-            @if (item.Status == 0)
+<div class="col-md-12">
+    <table class="table table-bordered table-hover table-sm" id="orderList">
+        <thead>
+            <tr class="table-ars">
+                <th>
+                    @Html.DisplayNameFor(model => model.OrderID)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.UserID)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.OrderDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Total)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Status)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
             {
-                @: Blocked
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.OrderID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.OrderDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Total)
+                    </td>
+                    <td>
+                        @if (item.Status == 0)
+                        {
+                            @: Blocked
+                        }
+                        else if (item.Status == 1)
+                        {
+                            @: Booked
+                        }
+                        else if (item.Status == 2)
+                        {
+                            @: Cancelled
+                        }
+                        else
+                        {
+                            @: Booked and reminded
+                        }
+                    </td>
+                    <td>
+                        @Html.ActionLink("Details", "OrderDetails", new { id = item.OrderID }, new { @class = "btn btn-danger" })
+                        @if (item.Status != 2)
+                        {
+                            @Html.ActionLink("Cancelled", "Cancelorder", new { id = item.OrderID }, new { @class = "btn btn-primary" })
+                        }
+                    </td>
+                </tr>
             }
-            else if (item.Status == 1)
-            {
-                @: Booked
-            }
-            else if(item.Status == 2)
-            {
-                @: Cancelled
-            }
-            else
-            {
-                @: Booked and reminded
-            }
-        </td>
-        <td>
-            @Html.ActionLink("Details", "OrderDetails", new { id=item.OrderID }, new { @class = "btn btn-danger"})
-            @if (item.Status != 2)
-            {
-                @Html.ActionLink("Cancelled", "Cancelorder", new { id=item.OrderID }, new { @class = "btn btn-primary"}) 
-            }
-        </td>
-    </tr>
-}
-
-</table>
+        </tbody>
+        <tfoot></tfoot>
+    </table>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#orderList').DataTable();
+    });
+</script>
