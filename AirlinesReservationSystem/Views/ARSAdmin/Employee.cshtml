@@ -4,6 +4,7 @@
     ViewBag.Title = "Employee";
     string modalTitle = "";
 }
+<h2>Employee <a href="/arsadmin/employeeadd" class="btn btn-success" @*onclick="setModal('add')"*@>Add new Employee</a></h2>
 
 <div class="col-12" id="employeeList">
 
@@ -50,14 +51,15 @@
         } else if (modalType == "list") {
             $('#employeeList').load("/arsadmin/employeelist");
         } else if (modalType == "edit") {
-            if (id!=null) {
-                $("#employeeList").load("/arsadmin/employeeedit?id="+id);
+            if (id != null) {
+                $("#employeeList").load("/arsadmin/employeeedit?id=" + id);
             }
         } else if (modalType == "delete") {
             if (id != null) {
                 $("#modalTitle").html("Comfirm delete");
                 $("#modalBody").html("<h3 class='text-danger'>Are you sure to delete employee \"" + id + "\"?</h3>");
                 $("#btnConfirm").removeClass("text-hide");
+                $('#btnConfirm').off('click');
                 $("#btnConfirm").on("click", function () { deleteEmployee(id); });
             }
         } else if (modalType == "") {
@@ -77,5 +79,6 @@
     $("#modal").on("hidden.bs.modal", function () {
         setModal("");
         $("#btnConfirm").addClass("text-hide");
+        $('#btnConfirm').off('click');
     });
 </script>

@@ -4,135 +4,179 @@
 <script src="~/Scripts/jquery.validate.unobtrusive.min.js" type="text/javascript"></script>
 <script src="~/Scripts/jquery.unobtrusive-ajax.min.js" type="text/javascript"></script>
 
-<h2>Employee - Update: "@Model.EmpID" <button class="btn btn-warning" onclick="setModal('list')">Back to list</button></h2>
+<h2>Employee - Update: "@Model.EmpID" <a class="btn btn-warning" href="/arsadmin/employee">Back to list</a></h2>
 <div class="container">
 
-    @using (Ajax.BeginForm("employeeedit", "arsadmin",
-        new AjaxOptions
-        {
-    // UpdateTargetId = "modalBody",
-    //InsertionMode = InsertionMode.Replace,
-    OnSuccess = "OnFormSubmit",
-            HttpMethod = "Post"
-        },
+    @using (Html.BeginForm("employeeedit", "arsadmin",FormMethod.Post,
+        //new AjaxOptions
+        //{
+        // UpdateTargetId = "modalBody",
+        //InsertionMode = InsertionMode.Replace,
+        //OnSuccess = "OnFormSubmit",
+        //        HttpMethod = "Post"
+        //    },
         new { @id = "frmEmployeeEdit" }))
     {
         @Html.AntiForgeryToken()
 
-    <div>
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.EmpID)
+        <div>
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.EmpID)
 
-        <div class="form-group form-inline">
-            @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", @style = "width:100%", @type = "password" } })
-            </div>
-            <div class="col-md-2"></div>
-            <div class="col-md-10">@Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })</div>
-        </div>
-
-        <div class="form-group form-inline">
-            @Html.LabelFor(model => model.Firstname, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-4">
-                @Html.EditorFor(model => model.Firstname, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
-            </div>
-            @Html.LabelFor(model => model.Lastname, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-4">
-                @Html.EditorFor(model => model.Lastname, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
-            </div>
-            <div class="col-md-2"></div>
-            <div class="col-md-4">@Html.ValidationMessageFor(model => model.Firstname, "", new { @class = "text-danger" })</div>
-            <div class="col-md-2"></div>
-            <div class="col-md-4">@Html.ValidationMessageFor(model => model.Lastname, "", new { @class = "text-danger" })</div>
-        </div>
-
-        <div class="form-group form-inline">
-            @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
-            </div>
-            <div class="col-md-2"></div>
-            <div class="col-md-10">@Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })</div>
-        </div>
-
-        <div class="form-group form-inline">
-            @Html.LabelFor(model => model.Phone, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
-            </div>
-            <div class="col-md-2"></div>
-            <div class="col-md-10">@Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })</div>
-        </div>
-
-        <div class="form-group form-inline">
-            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
-            </div>
-            <div class="col-md-2"></div>
-            <div class="col-md-10">@Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })</div>
-        </div>
-
-        <div class="form-group form-inline">
-            @Html.LabelFor(model => model.Sex, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <div class="form-check-inline">
-                    <label class="form-check-label">
-                        @Html.RadioButtonFor(model => model.Sex, true, new { @checked = true }) Male
-                    </label>
+            <div class="form-group form-inline">
+                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", @style = "width:100%", @type = "password" } })
                 </div>
-                <div class="form-check-inline">
-                    <label class="form-check-label">
-                        @Html.RadioButtonFor(model => model.Sex, false) Female
-                    </label>
+                <div class="col-md-2"></div>
+                <div class="col-md-10">@Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })</div>
+            </div>
+
+            <div class="form-group form-inline">
+                @Html.LabelFor(model => model.Firstname, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-4">
+                    @Html.EditorFor(model => model.Firstname, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
+                </div>
+                @Html.LabelFor(model => model.Lastname, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-4">
+                    @Html.EditorFor(model => model.Lastname, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
+                </div>
+                <div class="col-md-2"></div>
+                <div class="col-md-4">@Html.ValidationMessageFor(model => model.Firstname, "", new { @class = "text-danger" })</div>
+                <div class="col-md-2"></div>
+                <div class="col-md-4">@Html.ValidationMessageFor(model => model.Lastname, "", new { @class = "text-danger" })</div>
+            </div>
+
+            <div class="form-group form-inline">
+                @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
+                </div>
+                <div class="col-md-2"></div>
+                <div class="col-md-10">@Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })</div>
+            </div>
+
+            <div class="form-group form-inline">
+                @Html.LabelFor(model => model.Phone, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
+                </div>
+                <div class="col-md-2"></div>
+                <div class="col-md-10">@Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })</div>
+            </div>
+
+            <div class="form-group form-inline">
+                @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
+                </div>
+                <div class="col-md-2"></div>
+                <div class="col-md-10">@Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })</div>
+            </div>
+
+            <div class="form-group form-inline">
+                @Html.LabelFor(model => model.Sex, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-4">
+                    <select name="Sex" id="Sex" class="form-control" style="width:100%">
+                        <option value=true
+                                @if (Model.Sex == true) { @: selected
+                                }>
+                            Male
+                        </option>
+                        <option value=false
+                                @if (Model.Sex == false) { @: selected
+                                }>
+                            Female
+                        </option>
+                    </select>
+                </div>
+
+                @Html.LabelFor(model => model.Role, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-4">
+                    @if (Model.Role == 0 && AirlinesReservationSystem.Models.arsadmin.EmployeeDAO.GetEmployeeList().Where(e => e.IsActive).Where(e => e.Role == 0).Count() <= 1)
+                    {
+                        <input type="text" class="form-control" style="width:100%" value="Admin" readonly data-toggle="tooltip" title="Cannot change because there's only one admin active." data-placement="bottom"/>
+                        <input type="hidden" name="Role" id="Role"  value="@Model.Role" />
+                    }
+                    else
+                    {
+                        <select name="Role" id="Role" class="form-control" style="width:100%">
+                            <option value=1
+                                    @if (Model.Role == 1) { @: selected
+                                    }>
+                                Clerk
+                            </option>
+                            <option value=0
+                                    @if (Model.Role == 0) { @: selected
+                                    }>
+                                Admin
+                            </option>
+                        </select>
+                    }
+
+                </div>
+
+                <div class="col-md-2"></div>
+                <div class="col-md-4">
+                    @Html.ValidationMessageFor(model => model.Sex, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-2"></div>
+                <div class="col-md-4">
+                    @Html.ValidationMessageFor(model => model.Role, "", new { @class = "text-danger" })
                 </div>
             </div>
-            <div class="col-md-2"></div>
-            <div class="col-md-10">
-                @Html.ValidationMessageFor(model => model.Sex, "", new { @class = "text-danger" })
-            </div>
-        </div>
 
-        <div class="form-group form-inline">
-            @Html.LabelFor(model => model.DoB, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(model => model.DoB, "{0:yyyy-MM-dd}", new { @class = "form-control", @style = "width:100%", @type = "date" })
-                @Html.ValidationMessageFor(model => model.DoB, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group form-inline">
-            @Html.LabelFor(model => model.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <div class="form-check-inline">
-                    <label class="form-check-label">
-                        @Html.CheckBoxFor(model => model.IsActive) 
-                    </label>
+            <div class="form-group form-inline">
+                @Html.LabelFor(model => model.DoB, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => model.DoB, "{0:yyyy-MM-dd}", new { @class = "form-control", @style = "width:100%", @type = "date" })
+                    @Html.ValidationMessageFor(model => model.DoB, "", new { @class = "text-danger" })
                 </div>
             </div>
-            <div class="col-md-2"></div>
-            <div class="col-md-10">
-                @Html.ValidationMessageFor(model => model.Sex, "", new { @class = "text-danger" })
-            </div>
-        </div>
 
-        <div class="form-group form-inline">
-            <div class="col-md-2"></div>
-            <div class="col-md-10">
-                <input type="submit" value="Update" class="btn btn-success" id="btnEmployeeUpdate" />
-                <input type="reset" value="Reset" class="btn btn-warning" />
+            <div class="form-group form-inline">
+                @Html.LabelFor(model => model.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @if (Model.Role == 0 && AirlinesReservationSystem.Models.arsadmin.EmployeeDAO.GetEmployeeList().Where(e => e.IsActive).Where(e => e.Role == 0).Count() <= 1)
+                    {
+                        <input type="hidden" name="IsActive" id="IsActive" value="true" />
+                        @:Is active. Cannot change this because there's only 1 admin active for now.
+                    }
+                    else
+                    {
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                @Html.CheckBoxFor(model => model.IsActive)
+                            </label>
+                        </div>
+                    }
+
+                </div>
+                <div class="col-md-2"></div>
+                <div class="col-md-10">
+                    @Html.ValidationMessageFor(model => model.IsActive, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group form-inline">
+                <div class="col-md-2"></div>
+                <div class="col-md-10">
+                    <input type="submit" value="Update" class="btn btn-success" id="btnEmployeeUpdate" />
+                    <input type="reset" value="Reset" class="btn btn-warning" />
+                </div>
             </div>
         </div>
-    </div>
     }
 </div>
 <script>
-    function OnFormSubmit(result, status, xhr) {
-        if (result == "Success") {
-            $('#employeeList').load("/arsadmin/employeelist");
-        } else {
-            $('#employeeList').html(result);
-        }
-    }
+    //function OnFormSubmit(result, status, xhr) {
+    //    if (result == "Success") {
+    //        $('#employeeList').load("/arsadmin/employeelist");
+    //    } else {
+    //        $('#employeeList').html(result);
+    //    }
+    //}
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
 </script>

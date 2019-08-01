@@ -1,5 +1,5 @@
 ﻿@model IEnumerable<AirlinesReservationSystem.Models.Employee>
-<h2>Employee <a href="/arsadmin/employeeadd" class="btn btn-success" @*onclick="setModal('add')"*@>Add new Employee</a></h2>
+
 <table class="table table-bordered table-hover table-sm">
     <tr class="table-ars">
         <th>
@@ -73,7 +73,7 @@
                 @Html.DisplayFor(modelItem => item.IsActive)
             </td>
             <td>
-                @if (item.Role==0)
+                @if (item.Role == 0)
                 {
                     @:Admin
                 }
@@ -83,16 +83,33 @@
                 }
             </td>
             <td>
-                @if (((AirlinesReservationSystem.Models.Employee)Session["employee"]).EmpID != item.EmpID || item.Role != 0)
+                <a href="/arsadmin/employeeedit?id=@item.EmpID" class="btn btn-warning" @*onclick="setModal('edit','@item.EmpID')"*@>Edit</a>
+                @if (item.Role != 0)
                 {
-                    <button class="btn btn-warning" onclick="setModal('edit','@item.EmpID')">Edit</button>
                     <button class="btn btn-danger" data-toggle="modal" data-target="#modal" onclick="setModal('delete','@item.EmpID')">Delete</button>
                 }
                 else
                 {
-                    <button class="btn btn-secondary" data-toggle="tooltip" title="Cannot edit admmin." data-placement="bottom">Edit</button>
-                    <button class="btn btn-secondary" data-toggle="tooltip" title="Cannot delete admin." data-placement="bottom">Delete</button>
+                    if (AirlinesReservationSystem.Models.arsadmin.EmployeeDAO.GetEmployeeList().Where(e => e.IsActive).Where(e => e.Role == 0).Count() > 1)
+                    {
+                        <button class="btn btn-danger" data-toggle="modal" data-target="#modal" onclick="setModal('delete','@item.EmpID')">Delete</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-secondary" data-toggle="tooltip" title="Cannot delete because there's only one admin active." data-placement="bottom">Delete</button>
+                    }
                 }
+
+                @*@if (((AirlinesReservationSystem.Models.Employee)Session["employee"]).EmpID != item.EmpID || item.Role != 0)
+        {
+            <button class="btn btn-warning" onclick="setModal('edit','@item.EmpID')">Edit</button>
+            <button class="btn btn-danger" data-toggle="modal" data-target="#modal" onclick="setModal('delete','@item.EmpID')">Delete</button>
+        }
+        else
+        {
+            <button class="btn btn-secondary" data-toggle="tooltip" title="Cannot edit admmin." data-placement="bottom">Edit</button>
+            <button class="btn btn-secondary" data-toggle="tooltip" title="Cannot delete admin." data-placement="bottom">Delete</button>
+        }*@
 
             </td>
         </tr>
