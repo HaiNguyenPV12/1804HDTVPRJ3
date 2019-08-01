@@ -12,7 +12,11 @@ namespace AirlinesReservationSystem.Models
         private static IEnumerable<FlightResult> secondTripFromStop;
         public static IEnumerable<FlightResult> SecondTripFromStop { get => secondTripFromStop; set => secondTripFromStop = value; }
 
-        public static IEnumerable<Flight> GetFlights() => db.Flight;
+        public static IEnumerable<Flight> GetFlights()
+        {
+            db = new AirlineDBEntities(); //refresh cache
+            return db.Flight;
+        }
 
         public static IEnumerable<Route> GetRoutes() => db.Route;
 

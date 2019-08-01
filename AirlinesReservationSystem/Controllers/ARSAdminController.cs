@@ -77,29 +77,24 @@ namespace AirlinesReservationSystem.Controllers
         }
 
         // ROUTE ADD'S PROCESS
-        //    string addResult = RouteDAO.AddRoute(newRoutes);
-        //    if (addResult == "ok")
-        //    {
-        //        return RedirectToAction("Route");
-        //    }
-        //    else
-        //    {
-        //        ModelState.AddModelError("", addResult);
-        //    }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult RouteAdd(List<Route> newRoutes)
         {
+            //init variables for validation purposes
             bool invalid = false, invalid2 = false;
             List<Route> routeToSkip = new List<Route>();
             int total = newRoutes.Count;
             List<string> added = new List<string>();
+
+            //check list for any invalid routes (if departure = destination)
             foreach (var item in newRoutes)
             {
                 if (item.Departure == item.Destination)
                 {
                     ModelState.AddModelError("", string.Format("Error at: {0} with plane {1}. Arrival must be different than Departure", item.RAirline, item.RAircraft));
                     invalid2 = true;
+                    //assign route as invalid
                     routeToSkip.Add(item);
                 }
             }
@@ -112,21 +107,31 @@ namespace AirlinesReservationSystem.Controllers
                     {
                         if (item.Equals(itemToSkip)) { skip = true; }
                     }
+
+                    //skip if item in original list equals to any in designated invalid routes, reset skip check
                     if (skip) { skip = false; continue; }
+
+                    //perform add procedure. If route is invalid, add feedback message as validation error,
                     if (!RouteDAO.AddRoute(item))
                     {
                         ModelState.AddModelError("", string.Format("Could not add {0} with plane {1} going from {2} to {3}", item.RAirline, item.RAircraft, item.Departure, item.Destination));
                         invalid = true;
                         total--;
                     }
-                    added.Add(string.Format("{0}({1}) : {2} - {3}", item.RAirline, item.RAircraft, item.Departure, item.Destination));
+                    //else add to success strings to display in case invalid validation occurs
+                    else
+                        added.Add(string.Format("{0}({1}) : {2} - {3}", item.RAirline, item.RAircraft, item.Departure, item.Destination));
                 }
+
+                //if everything is inserted successfully, return to list
                 if (!invalid && !invalid2)
                     return RedirectToAction("Route");
-                ModelState.AddModelError("", "Routes Added: ");
-                foreach (var item in added)
+
+                //if there were errors, resets page and notify any inserted routes
+                if (added.Count > 0)
                 {
-                    ModelState.AddModelError("", item);
+                    ModelState.AddModelError("", "Routes Added: ");
+                    foreach (var item in added) { ModelState.AddModelError("", item); }
                 }
             }
             return View();
@@ -155,13 +160,20 @@ namespace AirlinesReservationSystem.Controllers
 
         // ================ EMPLOYEE ==================
         // EMPLOYEE's VIEW
-        public ActionResult Employee() => IsAdminLoggedIn() ? View() : (ActionResult)RedirectToAction("Index");
+        public ActionResult Employee() => IsAdminLoggedIn() ? View(EmployeeDAO.GetEmployeeList()) : (ActionResult)RedirectToAction("Index");
 
         // EMPLOYEE's LIST
-        public ActionResult EmployeeList() => IsAdminLoggedIn() ? PartialView(EmployeeDAO.GetEmployeeList()) : (ActionResult)Content("");
+        public ActionResult EmployeeList()
+        {
+            if (IsAdminLoggedIn())
+            {
+                return PartialView(EmployeeDAO.GetEmployeeList());
+            }
+            return Content("");
+        }
 
         // EMPLOYEE DELETE's PROCESS
-        public ActionResult EmployeeDelete(string id) => IsAdminLoggedIn() && EmployeeDAO.DeleteEmployee(id) ? Content("OK") : Content("Error");
+        public ActionResult EmployeeDelete(string id) => IsAdminLoggedIn() && EmployeeDAO.DeleteEmployee(id) ? Content("ok") : Content("Error");
 
         // EMPLOYEE ADD'S VIEW
         public ActionResult EmployeeAdd() => IsAdminLoggedIn() ? View() : (ActionResult)RedirectToAction("Index");
@@ -194,8 +206,8 @@ namespace AirlinesReservationSystem.Controllers
                         Email = frmEmployeeAdd["Email[" + i + "]"],
                         Sex = Convert.ToBoolean(frmEmployeeAdd["Sex[" + i + "]"]),
                         DoB = DateTime.Parse(frmEmployeeAdd["DoB[" + i + "]"]),
-                        IsActive = true,
-                        Role = 1
+                        Role = int.Parse(frmEmployeeAdd["Role[" + i + "]"]),
+                        IsActive = true
                     };
                     EmpList.Add(objE);
                     i++;
@@ -237,7 +249,7 @@ namespace AirlinesReservationSystem.Controllers
         }
 
         // EMPLOYEE EDIT'S VIEW
-        public ActionResult EmployeeEdit(string id) => IsAdminLoggedIn() && EmployeeDAO.GetEmployee(id) != null ? PartialView(EmployeeDAO.GetEmployee(id)) : (ActionResult)RedirectToAction("Index");
+        public ActionResult EmployeeEdit(string id) => IsAdminLoggedIn() && EmployeeDAO.GetEmployee(id) != null ? View(EmployeeDAO.GetEmployee(id)) : (ActionResult)RedirectToAction("Index");
 
         // EMPLOYEE EDIT'S PROCESS
         [HttpPost]
@@ -248,11 +260,11 @@ namespace AirlinesReservationSystem.Controllers
             {
                 if (EmployeeDAO.UpdateEmployee(updateE))
                 {
-                    return Content("Success");
+                    return RedirectToAction("Employee");
                 }
                 ModelState.AddModelError("", "Error updating this employee!");
             }
-            return PartialView();
+            return View(updateE);
         }
         //================ CUSTOMER ==================
 

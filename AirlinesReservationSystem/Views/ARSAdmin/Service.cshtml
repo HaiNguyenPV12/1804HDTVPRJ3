@@ -3,60 +3,64 @@
 @{
     ViewBag.Title = "Service";
 }
-
+<link href="~/Content/datatables.min.css" rel="stylesheet" />
+<script src="~/Scripts/datatables.min.js"></script>
 <h2>Service <a href="/arsadmin/serviceadd" class="btn btn-success">Add new Service</a></h2>
+<div class="col-md-12">
+    <table class="table table-bordered table-hover table-sm" id="serviceList">
+        <thead>
+            <tr class="table-ars">
+                <th>
+                    @Html.DisplayNameFor(model => model.ServiceName)
+                </th>
+                <th style="width:40vw">
+                    @Html.DisplayNameFor(model => model.ServiceDetails)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ServiceFee)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IsServing)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ServiceName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ServiceDetails)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ServiceFee)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IsServing)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "ServiceEdit", new { id = item.ServiceID }, new { @class = "btn btn-warning" })
 
-<table class="table table-bordered table-hover table-sm">
-    <tr class="table-ars">
-        <th>
-            @Html.DisplayNameFor(model => model.ServiceName)
-        </th>
-        <th style="width:40vw">
-            @Html.DisplayNameFor(model => model.ServiceDetails)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ServiceFee)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.IsServing)
-        </th>
-        <th></th>
-    </tr>
+                        @if (item.IsServing)
+                        {
+                            <button type="button" class="btn btn-secondary" data-toggle="tooltip" title="Can only delete inactive services." data-placement="bottom">Delete</button>
+                        }
+                        else
+                        {
+                            <input type="button" value="Delete" data-toggle="modal" data-target="#modal" class="btn btn-danger" onclick="confirmDeleteService('@item.ServiceID')" />
+                            @*@Html.ActionLink("Delete", "Delete", new { id = item.ServiceID }, new { @class = "btn btn-danger" })*@
+                        }
 
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ServiceName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ServiceDetails)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ServiceFee)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsServing)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "ServiceEdit", new { id = item.ServiceID }, new { @class = "btn btn-warning" })
-
-                @if (item.IsServing)
-                {
-                    <button type="button" class="btn btn-secondary" data-toggle="tooltip" title="Can only delete inactive services." data-placement="bottom">Delete</button>
-                }
-                else
-                {
-                    <input type="button" value="Delete" data-toggle="modal" data-target="#modal" class="btn btn-danger" onclick="confirmDeleteService('@item.ServiceID')"/>
-                    @*@Html.ActionLink("Delete", "Delete", new { id = item.ServiceID }, new { @class = "btn btn-danger" })*@
-                }
-
-            </td>
-        </tr>
-    }
-
-</table>
-
+                    </td>
+                </tr>
+            }
+        </tbody>
+        <tfoot></tfoot>
+    </table>
+</div>
 <div class="modal fade" id="modal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -69,7 +73,7 @@
 
             <!-- Modal body -->
             <div class="modal-body" id="modalBody">
-                
+
             </div>
 
             <!-- Modal footer -->
@@ -85,6 +89,7 @@
 <script>
     $(document).ready(function () {
         $('[data-toggle="tooltip"]').tooltip();
+        $('#serviceList').DataTable();
     });
     function confirmDeleteService(id) {
         $("#modalBody").html("<h3 class='text-danger'>Are you sure to delete service \"" + id + "\"?</h3>");

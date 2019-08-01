@@ -28,9 +28,18 @@ namespace AirlinesReservationSystem.Models.ars
             return db.Airport.FirstOrDefault(a => a.AirportID == id);
         }
 
-        public static bool BlockingOrderPaid(long id)
+        public static string BlockingOrderPaid(long id, string CCNo, string CVV)
         {
             var o = GetOrder(id);
+            var card = bank.BankDAO.GetCreditCard(CCNo);
+            if (card == null || card.CVV != CVV)
+            {
+                return "Error: Credit Card is not valid.";
+            }
+            if (card.Balance < o.Total)
+            {
+                return "Error: Not enough money in account.";
+            }
             if (o != null)
             {
                 // Change status
@@ -52,17 +61,28 @@ namespace AirlinesReservationSystem.Models.ars
                 }
 
                 // Add total distance to skymiles in User
-                UsersDAO.GetUser(o.UserID).Skymiles += totalDistance;
+                db.User.FirstOrDefault(u => u.UserID == o.UserID).Skymiles += totalDistance;
+
+                // Charging
+                card.Balance = card.Balance - o.Total;
 
                 db.SaveChanges();
-                return true;
+                return "ok";
             }
-            return false;
+            return "Error: Order ID not valid.";
         }
 
-        public static bool CancelOrder(long id)
+        public static string CancelOrder(long id)
         {
             var o = GetOrder(id);
+            var card = bank.BankDAO.GetCreditCard(db.User.FirstOrDefault(u => u.UserID == o.UserID).CCNo);
+            if (o.Status == 1)
+            {
+                if (card == null)
+                {
+                    return "Error: Credit Card is not valid.";
+                }
+            }
             if (o != null)
             {
                 // Check if this order blocked or not
@@ -74,7 +94,9 @@ namespace AirlinesReservationSystem.Models.ars
                 // Change status
                 o.Status = 2;
                 int totalDistance = 0;
+                double refund = 0;
                 var TicketList = TicketDAO.GetTicketList(o.OrderID);
+
                 // If this order is not blocked one, make changes to skymiles
                 if (!IsBlocked)
                 {
@@ -91,45 +113,82 @@ namespace AirlinesReservationSystem.Models.ars
                     }
 
                     // Subtract total distance from skymiles
-                    var u = UsersDAO.GetUser(o.UserID);
+                    var u = db.User.FirstOrDefault(user => user.UserID == o.UserID);
                     u.Skymiles = u.Skymiles - totalDistance;
                     db.SaveChanges();
                 }
-                
+
 
                 // Add back AvailSeat to the Flights
                 foreach (var item in TicketList)
                 {
-                    Flight FInfo = FlightDAO.GetFlight(item.FNo);
+                    Flight FInfo = db.Flight.FirstOrDefault(f => f.FNo == item.FNo);
                     if (item.Class == "F")
                     {
-                        FInfo.AvailSeatsF = FInfo.AvailSeatsF - 1;
+                        FInfo.AvailSeatsF = FInfo.AvailSeatsF + 1;
                     }
                     else if (item.Class == "B")
                     {
-                        FInfo.AvailSeatsB = FInfo.AvailSeatsB - 1;
+                        FInfo.AvailSeatsB = FInfo.AvailSeatsB + 1;
                     }
                     else
                     {
-                        FInfo.AvailSeatsE = FInfo.AvailSeatsE - 1;
+                        FInfo.AvailSeatsE = FInfo.AvailSeatsE + 1;
                     }
                     db.SaveChanges();
                 }
 
+                // Refund to user account
+                var firstFNo = TicketList.Where(t => t.IsReturn == false).FirstOrDefault().FNo;
+                var flight = db.Flight.FirstOrDefault(f => f.FNo == firstFNo);
+                var daysToDeparture = (flight.DepartureTime - DateTime.Now).TotalDays;
+                if (daysToDeparture >= 14)
+                {
+                    refund = Convert.ToInt32(o.Total - o.Total * 0.02);
+                }
+                else
+                {
+                    refund = Convert.ToInt32(o.Total - o.Total * 0.02 * (14 - daysToDeparture));
+                }
+                var cardFinal = bank.BankDAO.GetCreditCard(db.User.FirstOrDefault(u => u.UserID == o.UserID).CCNo);
+                cardFinal.Balance += refund;
+
                 // Save changes
+                db.SaveChanges();
+                return "ok";
+            }
+            return "error";
+        }
+
+
+        public static bool Test(int seat, string FNo)
+        {
+            var flight = db.Flight.Where(f => f.FNo == FNo).FirstOrDefault();
+            if (flight != null)
+            {
+                flight.AvailSeatsE = flight.AvailSeatsE - seat;
                 db.SaveChanges();
                 return true;
             }
             return false;
         }
 
-        public static bool CancelBlocking(long id)
+        public static string ProcessPayment(Payment payment, bool isBlocked)
         {
-            return true;
-        }
+            // Checking creditcard
+            var card = bank.BankDAO.GetCreditCard(payment.CCNo);
+            if (!isBlocked)
+            {
+                if (card == null || card.CVV != payment.CVV)
+                {
+                    return "Error: Credit Card is not valid.";
+                }
+                if (card.Balance < payment.Total)
+                {
+                    return "Error: Not enough money in account.";
+                }
+            }
 
-        public static string ProcessPayment(Payment payment, bool IsBlocked)
-        {
             string s = "";
             try
             {
@@ -142,7 +201,7 @@ namespace AirlinesReservationSystem.Models.ars
                 Order order = new Order();
                 order.OrderID = OrderID;
                 order.OrderDate = now;
-                if (IsBlocked)
+                if (isBlocked)
                 {
                     order.Status = 0;
                 }
@@ -339,42 +398,52 @@ namespace AirlinesReservationSystem.Models.ars
                 db.Order.FirstOrDefault(o => o.OrderID == OrderID).Total = Total;
 
                 // Seat Calculation
+                var SFInfo1 = db.Flight.Where(f => f.FNo == payment.FNo1).FirstOrDefault();
+                var SFInfo2 = db.Flight.Where(f => f.FNo == payment.FNo2).FirstOrDefault();
+                var SReFInfo = db.Flight.Where(f => f.FNo == payment.ReFNo).FirstOrDefault();
                 if (payment.Class == "F")
                 {
-                    FInfo1.AvailSeatsF = FInfo1.AvailSeatsF - payment.Passengers.Count();
-                    if (FInfo2 != null)
+                    SFInfo1.AvailSeatsF = SFInfo1.AvailSeatsF - payment.Passengers.Count();
+
+                    if (SFInfo2 != null)
                     {
-                        FInfo2.AvailSeatsF = FInfo2.AvailSeatsF - payment.Passengers.Count();
+                        SFInfo2.AvailSeatsF = SFInfo2.AvailSeatsF - payment.Passengers.Count();
                     }
-                    if (ReFInfo != null)
+                    if (SReFInfo != null)
                     {
-                        ReFInfo.AvailSeatsF = ReFInfo.AvailSeatsF - payment.Passengers.Count();
+                        SReFInfo.AvailSeatsF = SReFInfo.AvailSeatsF - payment.Passengers.Count();
                     }
                 }
                 else if (payment.Class == "B")
                 {
-                    FInfo1.AvailSeatsB = FInfo1.AvailSeatsB - payment.Passengers.Count();
-                    if (FInfo2 != null)
+                    SFInfo1.AvailSeatsB = SFInfo1.AvailSeatsB - payment.Passengers.Count();
+                    if (SFInfo2 != null)
                     {
-                        FInfo2.AvailSeatsB = FInfo2.AvailSeatsB - payment.Passengers.Count();
+                        SFInfo2.AvailSeatsB = SFInfo2.AvailSeatsB - payment.Passengers.Count();
                     }
-                    if (ReFInfo != null)
+                    if (SReFInfo != null)
                     {
-                        ReFInfo.AvailSeatsB = ReFInfo.AvailSeatsB - payment.Passengers.Count();
+                        SReFInfo.AvailSeatsB = SReFInfo.AvailSeatsB - payment.Passengers.Count();
                     }
                 }
                 else
                 {
-                    FInfo1.AvailSeatsE = FInfo1.AvailSeatsE - payment.Passengers.Count();
-                    if (FInfo2 != null)
+                    //if (!Test(payment.Passengers.Count(), SFInfo1.FNo))
+                    //{
+                    //    return "Error: cannot add seat";
+                    //}
+                    SFInfo1.AvailSeatsE = SFInfo1.AvailSeatsE - payment.Passengers.Count();
+                    if (SFInfo2 != null)
                     {
-                        FInfo2.AvailSeatsE = FInfo2.AvailSeatsE - payment.Passengers.Count();
+                        SFInfo2.AvailSeatsE = SFInfo2.AvailSeatsE - payment.Passengers.Count();
                     }
-                    if (ReFInfo != null)
+                    if (SReFInfo != null)
                     {
-                        ReFInfo.AvailSeatsE = ReFInfo.AvailSeatsE - payment.Passengers.Count();
+                        SReFInfo.AvailSeatsE = SReFInfo.AvailSeatsE - payment.Passengers.Count();
                     }
                 }
+                db.SaveChanges();
+
 
                 // Skymile
                 if (order.Status == 1)
@@ -409,19 +478,23 @@ namespace AirlinesReservationSystem.Models.ars
                         reDis = objReD.Distance * payment.Passengers.Count();
                     }
 
-                    UsersDAO.GetUser(order.UserID).Skymiles += dis1 + dis2 + reDis;
+                    db.User.FirstOrDefault(u => u.UserID == order.UserID).Skymiles += dis1 + dis2 + reDis;
                 }
-
                 db.SaveChanges();
 
                 // Charging creditcard
+                if (!isBlocked)
+                {
+                    card.Balance = card.Balance - Total;
+                }
 
-
+                // Saving changes
+                db.SaveChanges();
                 return "ok:" + OrderID;
             }
             catch (Exception e)
             {
-                return e.Message + "\n" + e.StackTrace;
+                return e.Message;
             }
         }
 

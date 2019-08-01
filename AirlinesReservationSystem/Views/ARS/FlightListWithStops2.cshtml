@@ -65,6 +65,27 @@
                     <b>Landing:</b>
                     @firstTrip.FlightVM.ArrivalTime
                 </li>
+                @{
+                    int fcSeatsFT = 0, bSeatsFT = 0, eSeatsFT = 0;
+                    if (firstTrip.FlightVM.AvailSeatsF != null) { fcSeatsFT = int.Parse(firstTrip.FlightVM.AvailSeatsF.ToString()); }
+                    if (firstTrip.FlightVM.AvailSeatsB != null) { bSeatsFT = int.Parse(firstTrip.FlightVM.AvailSeatsB.ToString()); }
+                    eSeatsFT = firstTrip.FlightVM.AvailSeatsE;
+                }
+                <li class="list-group-item list-group-item-action">
+                    <b>Available Seats:</b>
+                    <table class="table table-sm">
+                        <tr class="text-md-center">
+                            <th>First Class</th>
+                            <th>Business</th>
+                            <th>Economy</th>
+                        </tr>
+                        <tr class="text-md-center">
+                            <td>@fcSeatsFT</td>
+                            <td>@bSeatsFT</td>
+                            <td>@eSeatsFT</td>
+                        </tr>
+                    </table>
+                </li>
             </ul>
         </div>
     </div>
@@ -138,6 +159,27 @@
                     <li class="list-group-item list-group-item-action">
                         <b>Landing:</b>
                         @item.FlightVM.ArrivalTime
+                    </li>
+                    @{
+                        int fcSeats = 0, bSeats = 0, eSeats = 0;
+                        if (item.FlightVM.AvailSeatsF != null) { fcSeats = int.Parse(item.FlightVM.AvailSeatsF.ToString()); }
+                        if (item.FlightVM.AvailSeatsB != null) { bSeats = int.Parse(item.FlightVM.AvailSeatsB.ToString()); }
+                        eSeats = item.FlightVM.AvailSeatsE;
+                    }
+                    <li class="list-group-item list-group-item-action">
+                        <b>Available Seats:</b>
+                        <table class="table table-sm">
+                            <tr class="text-md-center">
+                                <th>First Class</th>
+                                <th>Business</th>
+                                <th>Economy</th>
+                            </tr>
+                            <tr class="text-md-center">
+                                <td>@fcSeats</td>
+                                <td>@bSeats</td>
+                                <td>@eSeats</td>
+                            </tr>
+                        </table>
                     </li>
                 </ul>
             </div>

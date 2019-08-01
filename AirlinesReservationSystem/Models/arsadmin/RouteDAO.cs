@@ -16,6 +16,15 @@ namespace AirlinesReservationSystem.Models.arsadmin
             return db.Route;
         }
 
+        public static Airline GetAirline(string AirlineID)
+        {
+            return db.Airline.FirstOrDefault(a => a.AirlineID == AirlineID);
+        }
+        public static Aircraft GetAircraft(string AircraftID)
+        {
+            return db.Aircraft.FirstOrDefault(a => a.AircraftID == AircraftID);
+        }
+
         public static IEnumerable<Route> GetRouteByFilter(string Airline)
         {
             return db.Route.Where(r => r.RAirline.ToLower() == Airline.Trim().ToLower());

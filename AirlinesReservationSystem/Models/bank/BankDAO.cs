@@ -11,6 +11,8 @@ namespace AirlinesReservationSystem.Models.bank
 
         public static IEnumerable<CreditCard> GetCreditCards() => db.CreditCard;
 
+
+
         public static CreditCard GetCreditCard(string cardNo) => db.CreditCard.FirstOrDefault(item => item.CCNo == cardNo);
 
         public static bool AddCreditCard(CreditCard creditCard)
