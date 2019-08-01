@@ -28,9 +28,18 @@ namespace AirlinesReservationSystem.Models.ars
             return db.Airport.FirstOrDefault(a => a.AirportID == id);
         }
 
-        public static bool BlockingOrderPaid(long id)
+        public static string BlockingOrderPaid(long id, string CCNo, string CVV)
         {
             var o = GetOrder(id);
+            var card = bank.BankDAO.GetCreditCard(CCNo);
+            if (card == null || card.CVV != CVV)
+            {
+                return "Error: Credit Card is not valid.";
+            }
+            if (card.Balance < o.Total)
+            {
+                return "Error: Not enough money in account.";
+            }
             if (o != null)
             {
                 // Change status
@@ -54,19 +63,22 @@ namespace AirlinesReservationSystem.Models.ars
                 // Add total distance to skymiles in User
                 UsersDAO.GetUser(o.UserID).Skymiles += totalDistance;
 
+                // Charging
+                card.Balance = card.Balance - o.Total;
+
                 db.SaveChanges();
-                return true;
+                return "ok";
             }
-            return false;
+            return "Error: Order ID not valid.";
         }
 
         public static string CancelOrder(long id)
         {
             var o = GetOrder(id);
-            var cc = bank.BankDAO.GetCreditCard(db.User.FirstOrDefault(u => u.UserID == o.UserID).CCNo);
+            var card = bank.BankDAO.GetCreditCard(db.User.FirstOrDefault(u => u.UserID == o.UserID).CCNo);
             if (o.Status == 1)
             {
-                if (cc == null)
+                if (card == null)
                 {
                     return "Error: Credit Card is not valid.";
                 }
@@ -127,7 +139,7 @@ namespace AirlinesReservationSystem.Models.ars
                 }
 
                 // Refund to user account
-                var firstFNo= TicketList.Where(t => t.IsReturn == false).FirstOrDefault().FNo;
+                var firstFNo = TicketList.Where(t => t.IsReturn == false).FirstOrDefault().FNo;
                 var flight = db.Flight.FirstOrDefault(f => f.FNo == firstFNo);
                 var daysToDeparture = (flight.DepartureTime - DateTime.Now).TotalDays;
                 if (daysToDeparture >= 14)
@@ -138,8 +150,8 @@ namespace AirlinesReservationSystem.Models.ars
                 {
                     refund = Convert.ToInt32(o.Total - o.Total * 0.02 * (14 - daysToDeparture));
                 }
-                var ccT = bank.BankDAO.GetCreditCard(db.User.FirstOrDefault(u => u.UserID == o.UserID).CCNo);
-                ccT.Balance += refund;
+                var cardFinal = bank.BankDAO.GetCreditCard(db.User.FirstOrDefault(u => u.UserID == o.UserID).CCNo);
+                cardFinal.Balance += refund;
 
                 // Save changes
                 db.SaveChanges();
@@ -153,22 +165,17 @@ namespace AirlinesReservationSystem.Models.ars
             return true;
         }
 
-        public static string ProcessPayment(Payment payment, bool IsBlocked)
+        public static string ProcessPayment(Payment payment, bool isBlocked)
         {
             // Checking creditcard
-
-            var cc = bank.BankDAO.GetCreditCard(UsersDAO.GetUser(payment.UserID).CCNo);
-            if (!IsBlocked)
+            var card = bank.BankDAO.GetCreditCard(payment.CCNo);
+            if (!isBlocked)
             {
-                if (cc == null)
+                if (card == null || card.CVV != payment.CVV)
                 {
                     return "Error: Credit Card is not valid.";
                 }
-                if (cc.Balance < payment.Total)
-                {
-                    return "Error: Not enough money in account.";
-                }
-                if (cc.Balance < payment.Total)
+                if (card.Balance < payment.Total)
                 {
                     return "Error: Not enough money in account.";
                 }
@@ -186,7 +193,7 @@ namespace AirlinesReservationSystem.Models.ars
                 Order order = new Order();
                 order.OrderID = OrderID;
                 order.OrderDate = now;
-                if (IsBlocked)
+                if (isBlocked)
                 {
                     order.Status = 0;
                 }
@@ -457,9 +464,9 @@ namespace AirlinesReservationSystem.Models.ars
                 }
 
                 // Charging creditcard
-                if (!IsBlocked)
+                if (!isBlocked)
                 {
-                    cc.Balance = cc.Balance - Total;
+                    card.Balance = card.Balance - Total;
                 }
 
                 // Saving changes

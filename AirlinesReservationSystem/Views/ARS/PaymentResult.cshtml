@@ -196,7 +196,8 @@
                 {
                     if (Session["user"].ToString() == Model.UserID)
                     {
-                        @Html.ActionLink("Pay this order", "BlockingPayment", new { @id = Model.OrderID }, new { @class = "btn btn-lg btn-success text-center" })
+                        @*@Html.ActionLink("Pay this order", "BlockingPayment", new { @id = Model.OrderID }, new { @class = "btn btn-lg btn-success text-center" })*@
+                        <input type="button" class="btn btn-lg btn-success" value="Pay this order" data-toggle="modal" data-target="#modal" onclick="confirmPayBlocking(@Model.OrderID)" />
                         <input type="button" class="btn btn-lg btn-danger" value="Cancel this order" data-toggle="modal" data-target="#modal" onclick="confirmCancelOrder(@Model.OrderID)" />
                     }
 
@@ -243,7 +244,7 @@
 
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" data-dismiss="modal" id="btnConfirm">Confirm</button>
+                    <button type="button" class="btn btn-success" id="btnConfirm">Confirm</button>
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                 </div>
 
@@ -259,6 +260,34 @@ else
 
 
 <script>
+
+    function confirmPayBlocking(id) {
+        var s = "";
+        s += "<div class='form-group form-inline'>";
+        s += "<div class='col-md-6 text-right'>Credit Card number:</div>";
+        s += "<div class='col-md-6'><input type='text' name='CCNo' id='CCNo' value='@AirlinesReservationSystem.Models.ars.UsersDAO.GetUser(Model.UserID).CCNo' class='form-control' /></div>";
+        s += "<div class='col-md-6 text-right'>CVV:</div>";
+        s += "<div class='col-md-6'><input type='text' name='CVV' id='CVV' class='form-control' maxlength=3 /></div>";
+        s += "<div class='col-md-12 text-center text-danger' id='paymentM'></div>";
+        s += "</div>";
+        $("#modalBody").html(s);
+        $("#modalTitle").html("Payment confirm");
+        $("#btnConfirm").off("click");
+        $("#btnConfirm").on("click", function () { payBlocking(id); });
+    }
+
+    function payBlocking(id) {
+        var CCNo = $("#CCNo").val();
+        var CVV = $("#CVV").val();
+        $.post("/ars/blockingpayment?id=" + id + "&CCNo=" + CCNo + "&CVV=" + CVV, function (result) {
+            if (result == "ok") {
+                window.location.reload();
+            } else {
+                $('#paymentM').html(result);
+            }
+        });
+    }
+
     function confirmCancelOrder(id) {
         var s = "";
         s += "<h3 class='text-danger'>";
@@ -277,6 +306,8 @@ else
         }
         s+="Are you sure to cancel order: \"#" + id + "\"?</h3>";
         $("#modalBody").html(s);
+        $("#modalTitle").html("Cancel confirm");
+        $("#btnConfirm").off("click");
         $("#btnConfirm").on("click", function () { cancelOrder(id); });
     }
 

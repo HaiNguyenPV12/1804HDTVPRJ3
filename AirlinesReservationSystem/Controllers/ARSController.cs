@@ -466,10 +466,11 @@ namespace AirlinesReservationSystem.Controllers
 
         //---------------- ORDER PROCESS ------------------
         // PAY THE BLOCKED ORDER
-        public ActionResult BlockingPayment(Int64 id)
+        public ActionResult BlockingPayment(Int64 id, string CCNo, string CVV)
         {
-            PaymentDAO.BlockingOrderPaid(id);
-            return RedirectToAction("PaymentResult", new { id = id });
+            string s = PaymentDAO.BlockingOrderPaid(id, CCNo, CVV);
+            return Content(s);
+            //return RedirectToAction("PaymentResult", new { id = id });
         }
         // CANCELED THE PAID ORDER
         public ActionResult CancelPayment(long id)
