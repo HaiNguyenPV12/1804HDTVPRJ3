@@ -262,12 +262,7 @@
                         <dd class="col-7">@user.Phone</dd>
                         <dt class="col-5 text-right">Credit Card No.</dt>
                         <dd class="col-7">
-
-                            @for (int i = 0; i < user.CCNo.Length - 4; i++)
-                            {
-                                @:*
-                            }
-                            @user.CCNo.Substring(user.CCNo.Length - 4, 4)
+                            <input name="CCNo" id="CCNo" value="@user.CCNo" class="form-control"/>
                         </dd>
                     </dl>
                 </div>

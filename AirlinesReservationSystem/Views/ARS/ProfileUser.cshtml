@@ -4,110 +4,116 @@
     ViewBag.Title = "ProfileUser";
 }
 
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
 
-    <div class="form-horizontal" style="margin-left:200px">
-        <h4>Profile User</h4>
-        <hr />
-        <table class="table table-bordered table-hover table-sm">
-            <tr class="col-6">
-                <th>
-                    @Html.DisplayNameFor(model => model.UserID)
-                </th>
-                <th>
-                    @Html.DisplayFor(model => model.UserID)
-                </th>
+                <div class="form-horizontal" style="margin-left:200px">
+                    <h4>Profile User</h4>
+                    <hr />
+                    <table class="table table-hover table-sm">
+                        <tr class="col-6">
+                            <th>
+                                @Html.DisplayNameFor(model => model.UserID)
+                            </th>
+                            <th>
+                                @Html.DisplayFor(model => model.UserID)
+                            </th>
 
-            </tr>        
-            <tr class="col-6">
-                <th>
-                    @Html.DisplayNameFor(model => model.FirstName)
-                </th>
-                <th>
-                    @Html.DisplayFor(model => model.FirstName)
-                </th>
-            </tr>
-            <tr class="col-6">
-                <th>
-                    @Html.DisplayNameFor(model => model.LastName)
-                </th>
-                <th>
-                    @Html.DisplayFor(model => model.LastName)
-                </th>
-            </tr>
-            <tr class="col-6">
-                <th>
-                    @Html.DisplayNameFor(model => model.Address)
-                </th>
-                <th>
-                    @Html.DisplayFor(model => model.Address)
-                </th>
-            </tr>
-            <tr class="col-6">
-                <th>
-                    @Html.DisplayNameFor(model => model.Phone)
-                </th>
-                <th>
-                    @Html.DisplayFor(model => model.Phone)
-                </th>
-            </tr>
-            <tr class="col-6">
-                <th>
-                    @Html.DisplayNameFor(model => model.Email)
-                </th>
-                <th>
-                    @Html.DisplayFor(model => model.Email)
-                </th>
-            </tr>
-            <tr class="col-6">
-                <th>
-                    @Html.DisplayNameFor(model => model.Sex)
-                </th>
-                <th>
-                    @if (Model.Sex)
-                    {
-                        @:Male
-                    }
-                    else
-                    {
-                        @:Female
-                    }
-                </th>
-            </tr>
-            <tr class="col-6">
-                <th>
-                    @Html.DisplayNameFor(model => model.Age)
-                </th>
-                <th>
-                    @Html.DisplayFor(model => model.Age)
-                </th>
-            </tr>
-            <tr class="col-6">
-                <th>
-                    @Html.DisplayNameFor(model => model.CCNo)
-                </th>
-                <th>
-                    @Html.DisplayFor(model => model.CCNo)
-                </th>
-            </tr>
-            <tr class="col-6">
-                <th>
-                    @Html.DisplayNameFor(model => model.PassportNo_)
-                </th>
-                <th>
-                    @Html.DisplayFor(model => model.PassportNo_)
-                </th>
-            </tr>
-            <tr class="col-6">
-                <th>
-                    @Html.DisplayNameFor(model => model.Skymiles)
-                </th>
-                <th>
-                    @Html.DisplayFor(model => model.Skymiles)
-                </th>
-            </tr>
-        </table>
-        <p>
-            @Html.ActionLink("Edit", "EditUser", null, new { @class = "btn btn-success" }) 
-            @Html.ActionLink("Back to Index", "Index", null, new { @class = "btn btn-dark" })
-        </p>
+                        </tr>
+                        <tr class="col-6">
+                            <th>
+                                @Html.DisplayNameFor(model => model.FirstName)
+                            </th>
+                            <th>
+                                @Html.DisplayFor(model => model.FirstName)
+                            </th>
+                        </tr>
+                        <tr class="col-6">
+                            <th>
+                                @Html.DisplayNameFor(model => model.LastName)
+                            </th>
+                            <th>
+                                @Html.DisplayFor(model => model.LastName)
+                            </th>
+                        </tr>
+                        <tr class="col-6">
+                            <th>
+                                @Html.DisplayNameFor(model => model.Address)
+                            </th>
+                            <th>
+                                @Html.DisplayFor(model => model.Address)
+                            </th>
+                        </tr>
+                        <tr class="col-6">
+                            <th>
+                                @Html.DisplayNameFor(model => model.Phone)
+                            </th>
+                            <th>
+                                @Html.DisplayFor(model => model.Phone)
+                            </th>
+                        </tr>
+                        <tr class="col-6">
+                            <th>
+                                @Html.DisplayNameFor(model => model.Email)
+                            </th>
+                            <th>
+                                @Html.DisplayFor(model => model.Email)
+                            </th>
+                        </tr>
+                        <tr class="col-6">
+                            <th>
+                                @Html.DisplayNameFor(model => model.Sex)
+                            </th>
+                            <th>
+                                @if (Model.Sex)
+                                {
+                                    @:Male
+                                }
+                                else
+                                {
+                                    @:Female
+                                }
+                            </th>
+                        </tr>
+                        <tr class="col-6">
+                            <th>
+                                @Html.DisplayNameFor(model => model.Age)
+                            </th>
+                            <th>
+                                @Html.DisplayFor(model => model.Age)
+                            </th>
+                        </tr>
+                        <tr class="col-6">
+                            <th>
+                                @Html.DisplayNameFor(model => model.CCNo)
+                            </th>
+                            <th>
+                                @Html.DisplayFor(model => model.CCNo)
+                            </th>
+                        </tr>
+                        <tr class="col-6">
+                            <th>
+                                @Html.DisplayNameFor(model => model.PassportNo_)
+                            </th>
+                            <th>
+                                @Html.DisplayFor(model => model.PassportNo_)
+                            </th>
+                        </tr>
+                        <tr class="col-6">
+                            <th>
+                                @Html.DisplayNameFor(model => model.Skymiles)
+                            </th>
+                            <th>
+                                @Html.DisplayFor(model => model.Skymiles)
+                            </th>
+                        </tr>
+                    </table>
+                    <p>
+                        @Html.ActionLink("Edit", "EditUser", null, new { @class = "btn btn-success" })
+                        @Html.ActionLink("Back to Index", "Index", null, new { @class = "btn btn-dark" })
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
