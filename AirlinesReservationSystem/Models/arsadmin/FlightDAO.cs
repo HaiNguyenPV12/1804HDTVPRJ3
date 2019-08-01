@@ -11,7 +11,11 @@ namespace AirlinesReservationSystem.Models.arsadmin
 
         public static Flight GetFlight(string FNo) => db.Flight.Where(r => r.FNo == FNo).FirstOrDefault();
 
-        public static IEnumerable<Flight> GetFlightList() => db.Flight;
+        public static IEnumerable<Flight> GetFlightList()
+        {
+            db = new AirlineDBEntities(); //refresh cache
+            return db.Flight;
+        }
 
         public static bool IsExistInTicket(string FNo)
         {
