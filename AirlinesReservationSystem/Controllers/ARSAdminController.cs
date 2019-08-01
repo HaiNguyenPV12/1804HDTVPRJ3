@@ -371,7 +371,8 @@ namespace AirlinesReservationSystem.Controllers
         {
             if (IsLoggedIn())
             {
-                return View(FlightDAO.GetFlightList());
+                AirlineDBEntities db = new AirlineDBEntities();
+                return View(db.Flight);
             }
             return RedirectToAction("Index");
         }
