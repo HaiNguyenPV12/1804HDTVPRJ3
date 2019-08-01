@@ -29,5 +29,8 @@ namespace AirlinesReservationSystem.Models.ars
         public string ReFNo { get; set; }
         public string UserID { get; set; }
         public string Class { get; set; }
+        public string CCNo { get; set; }
+        public string CVV { get; set; }
+        public double Total { get; set; }
     }
 }

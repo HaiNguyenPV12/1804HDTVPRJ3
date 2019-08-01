@@ -374,6 +374,9 @@ namespace AirlinesReservationSystem.Controllers
             objP.AdultNum = int.Parse(frmPayment["AdultNum"]);
             objP.ChildNum = int.Parse(frmPayment["ChildNum"]);
             objP.Class = frmPayment["Class"];
+            objP.Total = double.Parse(frmPayment["Total"]);
+            objP.CCNo = frmPayment["CCNo"];
+            objP.CVV = frmPayment["CVV"];
             //string[] Firstname = frmPayment["Firstname"].Split(',');
             //string[] Lastname = frmPayment["Lastname"].Split(',');
             //string[] SexStr = frmPayment["Sex"].Split(',');

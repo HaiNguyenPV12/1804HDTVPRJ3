@@ -4,7 +4,8 @@
     ViewBag.Title = "Employee";
     string modalTitle = "";
 }
-
+<link href="~/Content/datatables.min.css" rel="stylesheet" />
+<script src="~/Scripts/datatables.min.js"></script>
 <h2>Employee <a href="/arsadmin/employeeadd" class="btn btn-success" @*onclick="setModal('add')"*@>Add new Employee</a></h2>
 
 <div class="col-md-12" id="employeeList">
@@ -149,6 +150,10 @@
     //function loadEmpList() {
     //    $("#employeeList").load("/arsadmin/employeelist");
     //}
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+        $('#employeeListView').DataTable();
+    });
 
     function setModal(modalType, id) {
         if (modalType == "add") {
@@ -180,7 +185,7 @@
         $.post("/arsadmin/employeedelete?id=" + id, function (result) {
             if (result == "ok") {
                 $('#modal').modal('hide');
-                window.location.href="/arsadmin/employee"
+                window.location.href = "/arsadmin/employee"
             }
         });
     }

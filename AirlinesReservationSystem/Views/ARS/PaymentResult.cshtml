@@ -212,7 +212,12 @@
                 {
                     if (Session["user"].ToString() == Model.UserID)
                     {
-                        <input type="button" class="btn btn-lg btn-danger" value="Cancel this order" data-toggle="modal" data-target="#modal" onclick="confirmCancelOrder(@Model.OrderID)" />
+                        var flight = AirlinesReservationSystem.Models.arsadmin.FlightDAO.GetFlight(TicketList.Where(t => t.IsReturn == false).FirstOrDefault().FNo);
+                        if (DateTime.Now <= flight.DepartureTime)
+                        {
+                            <input type="button" class="btn btn-lg btn-danger" value="Cancel this order" data-toggle="modal" data-target="#modal" onclick="confirmCancelOrder(@Model.OrderID)" />
+                        }
+
                     }
                 }
             }
@@ -255,7 +260,23 @@ else
 
 <script>
     function confirmCancelOrder(id) {
-        $("#modalBody").html("<h3 class='text-danger'>Are you sure to cancel order: \"#" + id + "\"?</h3>");
+        var s = "";
+        s += "<h3 class='text-danger'>";
+        @if (Model.Status==1)
+        {
+            var flight = AirlinesReservationSystem.Models.arsadmin.FlightDAO.GetFlight(TicketList.Where(t => t.IsReturn == false).FirstOrDefault().FNo);
+            var daysToDeparture = (flight.DepartureTime - DateTime.Now).TotalDays;
+            if (daysToDeparture >= 14)
+            {
+                @: s += "Cancel this order, we will refund @( Convert.ToInt32(Model.Total - Model.Total * 0.02)) to your account.";
+            }
+            else
+            {
+                @: s+= "Cancel this order, we will refund @(Convert.ToInt32(Model.Total - Model.Total * 0.02 * (14 - daysToDeparture))) to your account.";
+            }
+        }
+        s+="Are you sure to cancel order: \"#" + id + "\"?</h3>";
+        $("#modalBody").html(s);
         $("#btnConfirm").on("click", function () { cancelOrder(id); });
     }
 

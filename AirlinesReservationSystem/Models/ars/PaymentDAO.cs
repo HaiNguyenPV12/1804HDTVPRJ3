@@ -60,9 +60,17 @@ namespace AirlinesReservationSystem.Models.ars
             return false;
         }
 
-        public static bool CancelOrder(long id)
+        public static string CancelOrder(long id)
         {
             var o = GetOrder(id);
+            var cc = bank.BankDAO.GetCreditCard(db.User.FirstOrDefault(u => u.UserID == o.UserID).CCNo);
+            if (o.Status == 1)
+            {
+                if (cc == null)
+                {
+                    return "Error: Credit Card is not valid.";
+                }
+            }
             if (o != null)
             {
                 // Check if this order blocked or not
@@ -74,7 +82,9 @@ namespace AirlinesReservationSystem.Models.ars
                 // Change status
                 o.Status = 2;
                 int totalDistance = 0;
+                double refund = 0;
                 var TicketList = TicketDAO.GetTicketList(o.OrderID);
+
                 // If this order is not blocked one, make changes to skymiles
                 if (!IsBlocked)
                 {
@@ -95,7 +105,7 @@ namespace AirlinesReservationSystem.Models.ars
                     u.Skymiles = u.Skymiles - totalDistance;
                     db.SaveChanges();
                 }
-                
+
 
                 // Add back AvailSeat to the Flights
                 foreach (var item in TicketList)
@@ -116,11 +126,26 @@ namespace AirlinesReservationSystem.Models.ars
                     db.SaveChanges();
                 }
 
+                // Refund to user account
+                var firstFNo= TicketList.Where(t => t.IsReturn == false).FirstOrDefault().FNo;
+                var flight = db.Flight.FirstOrDefault(f => f.FNo == firstFNo);
+                var daysToDeparture = (flight.DepartureTime - DateTime.Now).TotalDays;
+                if (daysToDeparture >= 14)
+                {
+                    refund = Convert.ToInt32(o.Total - o.Total * 0.02);
+                }
+                else
+                {
+                    refund = Convert.ToInt32(o.Total - o.Total * 0.02 * (14 - daysToDeparture));
+                }
+                var ccT = bank.BankDAO.GetCreditCard(db.User.FirstOrDefault(u => u.UserID == o.UserID).CCNo);
+                ccT.Balance += refund;
+
                 // Save changes
                 db.SaveChanges();
-                return true;
+                return "ok";
             }
-            return false;
+            return "error";
         }
 
         public static bool CancelBlocking(long id)
@@ -130,6 +155,25 @@ namespace AirlinesReservationSystem.Models.ars
 
         public static string ProcessPayment(Payment payment, bool IsBlocked)
         {
+            // Checking creditcard
+
+            var cc = bank.BankDAO.GetCreditCard(UsersDAO.GetUser(payment.UserID).CCNo);
+            if (!IsBlocked)
+            {
+                if (cc == null)
+                {
+                    return "Error: Credit Card is not valid.";
+                }
+                if (cc.Balance < payment.Total)
+                {
+                    return "Error: Not enough money in account.";
+                }
+                if (cc.Balance < payment.Total)
+                {
+                    return "Error: Not enough money in account.";
+                }
+            }
+
             string s = "";
             try
             {
@@ -412,16 +456,20 @@ namespace AirlinesReservationSystem.Models.ars
                     UsersDAO.GetUser(order.UserID).Skymiles += dis1 + dis2 + reDis;
                 }
 
-                db.SaveChanges();
-
                 // Charging creditcard
+                if (!IsBlocked)
+                {
+                    cc.Balance = cc.Balance - Total;
+                }
 
+                // Saving changes
+                db.SaveChanges();
 
                 return "ok:" + OrderID;
             }
             catch (Exception e)
             {
-                return e.Message + "\n" + e.StackTrace;
+                return e.Message;
             }
         }
 

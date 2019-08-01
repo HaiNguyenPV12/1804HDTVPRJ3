@@ -69,6 +69,7 @@
             <input type="hidden" id="PeopleNum" name="PeopleNum" value="@PeopleNum" />
             <input type="hidden" name="AdultNum" value="@AdultNum" />
             <input type="hidden" name="ChildNum" value="@ChildNum" />
+            <input type="hidden" name="Total" id="Total" value="" />
             @* ----- INITIALIZE ONEWAY/FIRST TRIP/FIRST STOP ----- *@
             <input type="hidden" name="FNo[1]" value="@FInfo1.FNo" />
             <input type="hidden" id="FPrice[1]" value="@FInfo1.BasePrice" />
@@ -271,7 +272,9 @@
                     </dl>
                 </div>
             </div>
+            <div class="row container-fluid text-danger" id="paymentConfirmDiv">
 
+            </div>
             <div class="text-center mt-2">
                 <button type="button" class="btn btn-success" onclick="validatePayment('book')">
                     <h2>Book</h2>
@@ -312,9 +315,7 @@
     </div>
 </div>
 
-<div class="row container-fluid" id="paymentConfirmDiv">
 
-</div>
 
 
 <script>
@@ -600,5 +601,6 @@
         result += "<dd class='col-6 text-right'>" + total + "$</dd>";
 
         $("#paymentDiv").html(result);
+        $("#Total").val(total);
     }
 </script>

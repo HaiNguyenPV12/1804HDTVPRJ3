@@ -16,17 +16,17 @@ namespace AirlinesReservationSystem.Models.arsadmin
 
         public static bool UpdateTicket(Ticket updateT)
         {
-            //var model = db.Ticket.Find(d);
             var s = GetTicket(updateT.TicketID);
-            var d = db.Ticket.Where(item => item.OrderID == updateT.OrderID && item.Age < 14);
+            List<Ticket> d = db.Ticket.Where(item => item.OrderID == updateT.OrderID && item.Age < 14 && item.PassportNo == s.PassportNo).ToList();
+            int c = d.Count();
             if (s != null)
             {
-                if(d != null)
-                {                    
+                if (c > 0)
+                {
                     s.PassportNo = updateT.PassportNo;
-                    foreach (var x in d)
+                    foreach (var item in d)
                     {
-                        x.PassportNo = updateT.PassportNo;
+                        GetTicket(item.TicketID).PassportNo = updateT.PassportNo;
                     }
                 }
                 else
