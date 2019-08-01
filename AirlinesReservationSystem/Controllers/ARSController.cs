@@ -26,6 +26,11 @@ namespace AirlinesReservationSystem.Controllers
             int totalPassenger = flightSearch.Adult + flightSearch.Children + flightSearch.Senior;
             int totalAdults = flightSearch.Adult + flightSearch.Senior;
             if (!flightSearch.IsRoundTrip) { ModelState.Remove("ReturnDepartureTime"); }
+            if (flightSearch.Departure == flightSearch.Destination)
+            {
+                ModelState.AddModelError("", "Destination(To) must be different than Origin(From).");
+                return View(flightSearch);
+            }
             if (ModelState.IsValid && totalPassenger > 0 && totalAdults > 0)
             {
                 //Session["searchParams0"] = flightSearch;
@@ -207,7 +212,7 @@ namespace AirlinesReservationSystem.Controllers
             Session["fid1"] = null;
             FlightSearch flightSearch = (FlightSearch)Session["searchParams"];
             ViewBag.RoundTrip = flightSearch.IsRoundTrip;
-            IEnumerable<FlightResult> firstTrips = FlightSearchDAO.GetFlightResultsWithStops(flightSearch).OrderBy(item=>item.FlightVM.BasePrice);
+            IEnumerable<FlightResult> firstTrips = FlightSearchDAO.GetFlightResultsWithStops(flightSearch).OrderBy(item => item.FlightVM.BasePrice);
             Session["firstTrips"] = firstTrips;
             if (firstTrips.Count() == 0)
             {

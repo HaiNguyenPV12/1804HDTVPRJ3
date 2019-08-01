@@ -9,7 +9,10 @@
 
 
     $('#formDate').change(function () {
-        var currentDate = new Date($.now());
+        var current = new Date($.now());
+        var currentDateEpoch = dateToEpoch(current);
+        var currentDate = new Date(currentDateEpoch);
+        console.log(currentDate);
         var departureDate = new Date($('#DepartureTime').val());
         var returnDate = new Date($('#ReturnDepartureTime').val());
         if (departureDate > returnDate && $('#optionRoundTrip').is(':checked') || departureDate < currentDate) {
@@ -26,6 +29,10 @@
             }
         }
     });
+
+    function dateToEpoch(thedate) {
+        return thedate.setHours(0, 0, 0, 0);
+    }
 
     $('#formPassengers').change(function () {
         var adultNo = $('#adultNo').val();
