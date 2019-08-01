@@ -160,7 +160,7 @@ namespace AirlinesReservationSystem.Controllers
 
         // ================ EMPLOYEE ==================
         // EMPLOYEE's VIEW
-        public ActionResult Employee() => IsAdminLoggedIn() ? View() : (ActionResult)RedirectToAction("Index");
+        public ActionResult Employee() => IsAdminLoggedIn() ? View(EmployeeDAO.GetEmployeeList()) : (ActionResult)RedirectToAction("Index");
 
         // EMPLOYEE's LIST
         public ActionResult EmployeeList()
@@ -173,7 +173,7 @@ namespace AirlinesReservationSystem.Controllers
         }
 
         // EMPLOYEE DELETE's PROCESS
-        public ActionResult EmployeeDelete(string id) => IsAdminLoggedIn() && EmployeeDAO.DeleteEmployee(id) ? Content("OK") : Content("Error");
+        public ActionResult EmployeeDelete(string id) => IsAdminLoggedIn() && EmployeeDAO.DeleteEmployee(id) ? Content("ok") : Content("Error");
 
         // EMPLOYEE ADD'S VIEW
         public ActionResult EmployeeAdd() => IsAdminLoggedIn() ? View() : (ActionResult)RedirectToAction("Index");
