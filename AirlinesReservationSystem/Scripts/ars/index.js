@@ -24,6 +24,26 @@
         }
     });
 
+    $('#formPassengers').change(function () {
+        var adultNo = $('#adultNo').val();
+        var childrenNo = $('#childrenNo').val();
+        var seniorNo = $('#seniorNo').val();
+
+        if (adultNo < 0) { $('#adultNo').val(0); }
+        if (childrenNo < 0) { $('#childrenNo').val(0); }
+        if (seniorNo < 0) { $('#seniorNo').val(0); }
+
+        var totalPassenger = adultNo + childrenNo + seniorNo;
+        if (totalPassenger <= 0) {
+            $('#seatError').show();
+            $("#btnSubmit").attr("disabled", true);
+        }
+        else {
+            $('#seatError').hide();
+            $("#btnSubmit").attr("disabled", false);
+        }
+    });
+
     $('#btnSwap').click(function (e) {
         e.preventDefault();
         //get original locations
