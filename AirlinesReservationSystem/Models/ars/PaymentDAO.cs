@@ -61,7 +61,7 @@ namespace AirlinesReservationSystem.Models.ars
                 }
 
                 // Add total distance to skymiles in User
-                UsersDAO.GetUser(o.UserID).Skymiles += totalDistance;
+                db.User.FirstOrDefault(u => u.UserID == o.UserID).Skymiles += totalDistance;
 
                 // Charging
                 card.Balance = card.Balance - o.Total;
@@ -113,7 +113,7 @@ namespace AirlinesReservationSystem.Models.ars
                     }
 
                     // Subtract total distance from skymiles
-                    var u = UsersDAO.GetUser(o.UserID);
+                    var u = db.User.FirstOrDefault(user => user.UserID == o.UserID);
                     u.Skymiles = u.Skymiles - totalDistance;
                     db.SaveChanges();
                 }
@@ -122,18 +122,18 @@ namespace AirlinesReservationSystem.Models.ars
                 // Add back AvailSeat to the Flights
                 foreach (var item in TicketList)
                 {
-                    Flight FInfo = FlightDAO.GetFlight(item.FNo);
+                    Flight FInfo = db.Flight.FirstOrDefault(f => f.FNo == item.FNo);
                     if (item.Class == "F")
                     {
-                        FInfo.AvailSeatsF = FInfo.AvailSeatsF - 1;
+                        FInfo.AvailSeatsF = FInfo.AvailSeatsF + 1;
                     }
                     else if (item.Class == "B")
                     {
-                        FInfo.AvailSeatsB = FInfo.AvailSeatsB - 1;
+                        FInfo.AvailSeatsB = FInfo.AvailSeatsB + 1;
                     }
                     else
                     {
-                        FInfo.AvailSeatsE = FInfo.AvailSeatsE - 1;
+                        FInfo.AvailSeatsE = FInfo.AvailSeatsE + 1;
                     }
                     db.SaveChanges();
                 }
@@ -160,10 +160,6 @@ namespace AirlinesReservationSystem.Models.ars
             return "error";
         }
 
-        public static bool CancelBlocking(long id)
-        {
-            return true;
-        }
 
         public static bool Test(int seat, string FNo)
         {
@@ -437,7 +433,6 @@ namespace AirlinesReservationSystem.Models.ars
                     //    return "Error: cannot add seat";
                     //}
                     SFInfo1.AvailSeatsE = SFInfo1.AvailSeatsE - payment.Passengers.Count();
-                    db.SaveChanges();
                     if (SFInfo2 != null)
                     {
                         SFInfo2.AvailSeatsE = SFInfo2.AvailSeatsE - payment.Passengers.Count();
@@ -448,7 +443,7 @@ namespace AirlinesReservationSystem.Models.ars
                     }
                 }
                 db.SaveChanges();
-                
+
 
                 // Skymile
                 if (order.Status == 1)
@@ -483,7 +478,7 @@ namespace AirlinesReservationSystem.Models.ars
                         reDis = objReD.Distance * payment.Passengers.Count();
                     }
 
-                    UsersDAO.GetUser(order.UserID).Skymiles += dis1 + dis2 + reDis;
+                    db.User.FirstOrDefault(u => u.UserID == order.UserID).Skymiles += dis1 + dis2 + reDis;
                 }
                 db.SaveChanges();
 
