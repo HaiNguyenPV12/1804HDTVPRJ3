@@ -13,12 +13,14 @@
     <div class="flightSearch-content container">
         <span class="text-danger" id="errorMessage">@TempData["errorM"]</span>
         <span id='dateError' style="display:none" class="text-danger">Return date can't be earlier than departure date.</span>
+        <span id='dateErrorNow' style="display:none" class="text-danger">Departure date can't be earlier than current date.</span>
+        <span id='seatError' style="display:none" class="text-danger">Passenger numbers are invalid.</span>
 
         @using (Html.BeginForm("Index", "ARS", FormMethod.Post, new { @id = "flightSearchForm"}))
         {
             @Html.ValidationSummary(false, "", new { @class = "text-danger" })
-            <h3>
-                Search for flights
+            <div class="row col-md-12">
+                <h3 class="mr-md-3">Search for flights</h3>
                 <div class="btn-group btn-group-toggle pb-2" data-toggle="buttons" id="roundTripRadio">
                     <label class="btn btn-secondary active">
                         <input type="radio" name="IsRoundTrip" id="optionOneWay" autocomplete="off" checked value="false"> One way
@@ -27,7 +29,7 @@
                         <input type="radio" name="IsRoundTrip" id="optionRoundTrip" autocomplete="off" value="true">Roundtrip
                     </label>
                 </div>
-            </h3>
+            </div>
             <div class="container-fluid">
                 <div class="form-group form-inline">
                     <div class="col-md-1">
@@ -80,13 +82,13 @@
                     </div>
                 </div>
                 <h5 class="row">Travelers:</h5>
-                <div class="form-group row">
+                <div class="form-group row" id="formPassengers">
                     <label class="col-form-label mr-md-2">Adults:</label>
-                    @Html.TextBoxFor(item => item.Adult, new { @Value = "1", @class = "form-control col-md-1", @min = "0", @type = "number" })
+                    @Html.TextBoxFor(item => item.Adult, new { @Value = "1", @class = "form-control col-md-1", @min = "0", @type = "number", @id = "adultNo" })
                     <label class="col-form-label ml-md-4 mr-md-2">Children:</label>
-                    @Html.TextBoxFor(item => item.Children, new { @Value = "0", @class = "form-control col-md-1", @min = "0", @type = "number" })
+                    @Html.TextBoxFor(item => item.Children, new { @Value = "0", @class = "form-control col-md-1", @min = "0", @type = "number", @id = "childrenNo" })
                     <label class="col-form-label ml-md-4 mr-md-2">Seniors:</label>
-                    @Html.TextBoxFor(item => item.Senior, new { @Value = "0", @class = "form-control col-md-1", @min = "0", @type = "number" })
+                    @Html.TextBoxFor(item => item.Senior, new { @Value = "0", @class = "form-control col-md-1", @min = "0", @type = "number", @id = "seniorNo" })
                 </div>
                 <div class="form-group row">
                     <label class="col-form-label">Preferred Class: &nbsp;</label>
