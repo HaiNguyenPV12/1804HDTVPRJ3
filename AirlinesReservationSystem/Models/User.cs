@@ -65,7 +65,7 @@ namespace AirlinesReservationSystem.Models
         [StringLength(16,MinimumLength =16, ErrorMessage = "Credit Card number must be have 16 digits")]
         public string CCNo { get; set; }
 
-
+        [RegularExpression("[A-Z,0-9]{1}[0-9]{5,8}",ErrorMessage = "Error")]
         public string PassportNo_ { get; set; }
 
         [Required]
