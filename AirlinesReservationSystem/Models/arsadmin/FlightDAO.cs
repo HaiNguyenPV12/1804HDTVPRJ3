@@ -9,9 +9,12 @@ namespace AirlinesReservationSystem.Models.arsadmin
     {
         static AirlineDBEntities db = new AirlineDBEntities();
 
-        public static Flight GetFlight(string FNo) => ArsDB.db.Flight.Where(r => r.FNo == FNo).FirstOrDefault();
+        public static Flight GetFlight(string FNo) => db.Flight.Where(r => r.FNo == FNo).FirstOrDefault();
 
-        public static IEnumerable<Flight> GetFlightList() => db.Flight;
+        public static IEnumerable<Flight> GetFlightList() {
+            db = new AirlineDBEntities();
+            return db.Flight;
+        }
 
         public static bool IsExistInTicket(string FNo)
         {
