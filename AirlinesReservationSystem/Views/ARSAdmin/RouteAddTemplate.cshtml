@@ -8,30 +8,23 @@
 
 <tr id="routeRow-@i">
     <td>
-        @Html.DropDownListFor(model => model[i].RAirline, AirlinesReservationSystem.Models.arsadmin.Dropdowns.Airlines(), new { @class = "form-control" })
+        @Html.DropDownListFor(model => model[i].RAirline, AirlinesReservationSystem.Models.arsadmin.Dropdowns.Airlines(), new { @class = "form-control", @id = "rAirline-" + i })
     </td>
     <td>
-        @Html.DropDownListFor(model => model[i].RAircraft, AirlinesReservationSystem.Models.arsadmin.Dropdowns.Aircrafts(), new { @class = "form-control" })
+        @Html.DropDownListFor(model => model[i].RAircraft, AirlinesReservationSystem.Models.arsadmin.Dropdowns.Aircrafts(), new { @class = "form-control", @id = "RAircraft-" + i })
     </td>
     <td>
-        @Html.DropDownListFor(model => model[i].Departure, AirlinesReservationSystem.Models.arsadmin.Dropdowns.Airports(), new { @class = "form-control" })
+        @Html.DropDownListFor(model => model[i].Departure, AirlinesReservationSystem.Models.arsadmin.Dropdowns.Airports(), new { @class = "form-control", @id = "Departure-" + i })
     </td>
     <td>
-        @Html.DropDownListFor(model => model[i].Destination, AirlinesReservationSystem.Models.arsadmin.Dropdowns.Airports(), new { @class = "form-control" })
-    </td>
-    <td>
-        <button class="btn btn-danger" type="button" id="removeRow-@i" name="btnRemove">-</button>
+        @Html.DropDownListFor(model => model[i].Destination, AirlinesReservationSystem.Models.arsadmin.Dropdowns.Airports(), new { @class = "form-control", @id = "Destination-" + i })
     </td>
 </tr>
 
 <script>
-    $(document).ready(function () {
-        var rowToRemove = 'routeRow-' +@i;
-        var btnRemove = 'removeRow-' +@i;
-
-        $('#'+btnRemove).click(function (e) {
-            e.preventDefault();
-            $('#' + rowToRemove).remove();
-        });
-    });
+    // Initialize select2, script library is loaded in RouteAdd.cshtml
+    $("#rAirline-" + @i).select2();
+    $("#RAircraft-" + @i).select2();
+    $("#Departure-" + @i).select2();
+    $("#Destination-" + @i).select2();
 </script>

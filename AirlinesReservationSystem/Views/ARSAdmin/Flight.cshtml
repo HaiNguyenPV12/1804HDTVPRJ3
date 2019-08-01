@@ -3,101 +3,105 @@
 @{
     ViewBag.Title = "Flight";
 }
-
+<link href="~/Content/datatables.min.css" rel="stylesheet" />
+<script src="~/Scripts/datatables.min.js"></script>
 <h2>Flight <a href="/arsadmin/flightadd" class="btn btn-success">Add new Flight</a></h2>
+<div class="col-md-12">
+    <table class="table  table-bordered table-hover table-sm" id="flightList">
+        <thead>
+            <tr class="table-ars">
+                <th>
+                    @Html.DisplayNameFor(model => model.FNo)
+                </th>
+                <th>
+                    Basic Info
+                </th>
+                <th>
+                    From
+                </th>
+                <th>
+                    To
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FlightTime)
+                </th>
+                <th>
+                    Available Seats
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.BasePrice)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FNo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Route.Airline.AirlineName)<br />
+                        <i class="text-muted">@Html.DisplayFor(modelItem => item.Route.Aircraft.AircraftName)</i>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Route.DepartureAirport.CityName) (@Html.DisplayFor(modelItem => item.Route.DepartureAirport.Country.CountryName))
+                        <br />
+                        <i class="text-muted">
+                            @item.DepartureTime.ToShortDateString()
+                            @item.DepartureTime.ToShortTimeString()
+                        </i>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Route.DestinationAirport.CityName) (@Html.DisplayFor(modelItem => item.Route.DestinationAirport.Country.CountryName))
+                        <br />
+                        <i class="text-muted">
+                            @item.ArrivalTime.ToShortDateString()
+                            @item.ArrivalTime.ToShortTimeString()
+                        </i>
+                    </td>
+                    <td>
+                        @System.TimeSpan.FromHours(item.FlightTime).ToString(@"h\:mm")
+                    </td>
+                    <td>
+                        <ul>
+                            @if (item.AvailSeatsF != null)
+                            {
+                                <li>First Class: @Html.DisplayFor(modelItem => item.AvailSeatsF)</li>
+                            }
+                            @if (item.AvailSeatsB != null)
+                            {
+                                <li>Bussiness: @Html.DisplayFor(modelItem => item.AvailSeatsB)</li>
+                            }
+                            <li>Economy: @Html.DisplayFor(modelItem => item.AvailSeatsE)</li>
+                        </ul>
+                    </td>
 
-<table class="table  table-bordered table-hover table-sm">
-    <tr class="table-ars">
-        <th>
-            @Html.DisplayNameFor(model => model.FNo)
-        </th>
-        <th>
-            Basic Info
-        </th>
-        <th>
-            From
-        </th>
-        <th>
-            To
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FlightTime)
-        </th>
-        <th>
-            Available Seats
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.BasePrice)
-        </th>
-        <th></th>
-    </tr>
-
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FNo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Route.Airline.AirlineName)<br />
-                <i class="text-muted">@Html.DisplayFor(modelItem => item.Route.Aircraft.AircraftName)</i>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Route.DepartureAirport.CityName) (@Html.DisplayFor(modelItem => item.Route.DepartureAirport.Country.CountryName))
-                <br />
-                <i class="text-muted">
-                    @item.DepartureTime.ToShortDateString()
-                    @item.DepartureTime.ToShortTimeString()
-                </i>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Route.DestinationAirport.CityName) (@Html.DisplayFor(modelItem => item.Route.DestinationAirport.Country.CountryName))
-                <br />
-                <i class="text-muted">
-                    @item.ArrivalTime.ToShortDateString()
-                    @item.ArrivalTime.ToShortTimeString()
-                </i>
-            </td>
-            <td>
-                @System.TimeSpan.FromHours(item.FlightTime).ToString(@"h\:mm")
-            </td>
-            <td>
-                <ul>
-                    @if (item.AvailSeatsF != null)
-                    {
-                        <li>First Class: @Html.DisplayFor(modelItem => item.AvailSeatsF)</li>
-                    }
-                    @if (item.AvailSeatsB != null)
-                    {
-                        <li>Bussiness: @Html.DisplayFor(modelItem => item.AvailSeatsB)</li>
-                    }
-                    <li>Economy: @Html.DisplayFor(modelItem => item.AvailSeatsE)</li>
-                </ul>
-            </td>
 
 
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BasePrice)
+                    </td>
 
-            <td>
-                @Html.DisplayFor(modelItem => item.BasePrice)
-            </td>
+                    <td>
+                        @Html.ActionLink("Edit", "FlightEdit", new { id = item.FNo }, new { @class = "btn btn-warning" })
+                        @if (AirlinesReservationSystem.Models.arsadmin.FlightDAO.IsExistInTicket(item.FNo))
+                        {
+                            <input type="button" class="btn btn-secondary" value="Delete" data-toggle="tooltip" title="Cannot delete this Flight! (exists in Ticket)" />
+                        }
+                        else
+                        {
+                            <input type="button" class="btn btn-danger" value="Delete" data-toggle="modal" data-target="#modal" onclick="confirmDeleteFlight('@item.FNo')" />
+                        }
 
-            <td>
-                @Html.ActionLink("Edit", "FlightEdit", new { id = item.FNo }, new { @class = "btn btn-warning" })
-                @if (AirlinesReservationSystem.Models.arsadmin.FlightDAO.IsExistInTicket(item.FNo))
-                {
-                    <input type="button" class="btn btn-secondary" value="Delete" data-toggle="tooltip" title="Cannot delete this Flight! (exists in Ticket)" />
-                }
-                else
-                {
-                    <input type="button" class="btn btn-danger" value="Delete" data-toggle="modal" data-target="#modal" onclick="confirmDeleteFlight('@item.FNo')"/>
-                }
-
-            </td>
-        </tr>
-    }
-
-</table>
-
+                    </td>
+                </tr>
+            }
+        </tbody>
+        <tfoot></tfoot>
+    </table>
+</div>
 <div class="modal fade" id="modal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -127,6 +131,7 @@
 <script>
     $(document).ready(function () {
         $('[data-toggle="tooltip"]').tooltip();
+        $('#flightList').DataTable();
     });
     function confirmDeleteFlight(id) {
         $("#modalBody").html("<h3 class='text-danger'>Are you sure to delete flight \"" + id + "\"?</h3>");

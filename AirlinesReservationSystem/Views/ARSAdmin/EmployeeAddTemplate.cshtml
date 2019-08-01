@@ -54,21 +54,18 @@
 
     <div class="form-group form-inline">
         <label class="control-label col-md-2" style="text-align:right" for="Sex@(index)">Sex</label>
-        <div class="col-md-10">
-            <select name="Sex[@(index)]" id="Sex@(index)" class="form-control">
+        <div class="col-md-4">
+            <select name="Sex[@(index)]" id="Sex@(index)" class="form-control" style="width:100%">
                 <option value=true selected>Male</option>
                 <option value=false>Female</option>
             </select>
-            @*<div class="form-check-inline">
-                    <label class="form-check-label">
-                        <input type="radio" name="Sex" value=1 checked/> Male
-                    </label>
-                </div>
-                <div class="form-check-inline">
-                    <label class="form-check-label">
-                        <input type="radio" name="Sex" value=0 /> Female
-                    </label>
-                </div>*@
+        </div>
+        <label class="control-label col-md-2" style="text-align:right" for="Role@(index)">Role</label>
+        <div class="col-md-4">
+            <select name="Role[@(index)]" id="Role@(index)" class="form-control" style="width:100%">
+                <option value=1 selected>Clerk</option>
+                <option value=0>Admin</option>
+            </select>
         </div>
     </div>
 

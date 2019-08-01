@@ -26,6 +26,11 @@ namespace AirlinesReservationSystem.Controllers
             int totalPassenger = flightSearch.Adult + flightSearch.Children + flightSearch.Senior;
             int totalAdults = flightSearch.Adult + flightSearch.Senior;
             if (!flightSearch.IsRoundTrip) { ModelState.Remove("ReturnDepartureTime"); }
+            if (flightSearch.Departure == flightSearch.Destination)
+            {
+                ModelState.AddModelError("", "Destination(To) must be different than Origin(From).");
+                return View(flightSearch);
+            }
             if (ModelState.IsValid && totalPassenger > 0 && totalAdults > 0)
             {
                 //Session["searchParams0"] = flightSearch;
@@ -207,7 +212,7 @@ namespace AirlinesReservationSystem.Controllers
             Session["fid1"] = null;
             FlightSearch flightSearch = (FlightSearch)Session["searchParams"];
             ViewBag.RoundTrip = flightSearch.IsRoundTrip;
-            IEnumerable<FlightResult> firstTrips = FlightSearchDAO.GetFlightResultsWithStops(flightSearch).OrderBy(item=>item.FlightVM.BasePrice);
+            IEnumerable<FlightResult> firstTrips = FlightSearchDAO.GetFlightResultsWithStops(flightSearch).OrderBy(item => item.FlightVM.BasePrice);
             Session["firstTrips"] = firstTrips;
             if (firstTrips.Count() == 0)
             {
@@ -374,6 +379,9 @@ namespace AirlinesReservationSystem.Controllers
             objP.AdultNum = int.Parse(frmPayment["AdultNum"]);
             objP.ChildNum = int.Parse(frmPayment["ChildNum"]);
             objP.Class = frmPayment["Class"];
+            objP.Total = double.Parse(frmPayment["Total"]);
+            objP.CCNo = frmPayment["CCNo"];
+            objP.CVV = frmPayment["CVV"];
             //string[] Firstname = frmPayment["Firstname"].Split(',');
             //string[] Lastname = frmPayment["Lastname"].Split(',');
             //string[] SexStr = frmPayment["Sex"].Split(',');
@@ -458,10 +466,11 @@ namespace AirlinesReservationSystem.Controllers
 
         //---------------- ORDER PROCESS ------------------
         // PAY THE BLOCKED ORDER
-        public ActionResult BlockingPayment(Int64 id)
+        public ActionResult BlockingPayment(Int64 id, string CCNo, string CVV)
         {
-            PaymentDAO.BlockingOrderPaid(id);
-            return RedirectToAction("PaymentResult", new { id = id });
+            string s = PaymentDAO.BlockingOrderPaid(id, CCNo, CVV);
+            return Content(s);
+            //return RedirectToAction("PaymentResult", new { id = id });
         }
         // CANCELED THE PAID ORDER
         public ActionResult CancelPayment(long id)
@@ -482,7 +491,7 @@ namespace AirlinesReservationSystem.Controllers
             return Json(airports.ToArray(), JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult FlightCalendar(string Departure, string Destination, DateTime? date)
+        public ActionResult FlightCalendar(string Departure, string Destination, int? month, int? year)
         {
             var objD1 = FlightCalendarDAO.GetAirport(Departure);
             var objD2 = FlightCalendarDAO.GetAirport(Destination);
@@ -495,7 +504,14 @@ namespace AirlinesReservationSystem.Controllers
             {
                 ViewBag.ErrorM += "Destination missing ";
             }
-            ViewBag.Date = date;
+            ViewBag.Month = month;
+            ViewBag.Year = year;
+            if (objD1 != null && objD2 != null)
+            {
+                var FlightList = FlightCalendarDAO.GetFlight(Departure, Destination);
+                ViewBag.FlightList = FlightList;
+            }
+
             return View();
         }
     }

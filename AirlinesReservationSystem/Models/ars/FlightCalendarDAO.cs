@@ -10,5 +10,10 @@ namespace AirlinesReservationSystem.Models.ars
         static AirlineDBEntities db = new AirlineDBEntities();
 
         public static Airport GetAirport(string id) => db.Airport.FirstOrDefault(a => a.AirportID == id);
+
+        public static IEnumerable<Flight> GetFlight(string Departure, string Destination)
+        {
+            return db.Flight.Where(f => f.Route.Departure == Departure && f.Route.Destination == Destination);
+        }
     }
 }

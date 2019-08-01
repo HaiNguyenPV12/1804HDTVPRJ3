@@ -12,7 +12,7 @@ namespace AirlinesReservationSystem.Models.arsadmin
 
         public static Employee GetEmployee(string EmpID) => db.Employee.FirstOrDefault(e => e.EmpID == EmpID);
 
-        public static IEnumerable<Employee> GetEmployeeList() => db.Employee.OrderByDescending(e => e.IsActive);
+        public static IEnumerable<Employee> GetEmployeeList() => db.Employee.OrderByDescending(e => e.IsActive).ThenBy(e=>e.Role);
 
         public static Employee CheckLogin(string EmpID, string Password) => db.Employee.Where(e => e.EmpID.Trim() == EmpID && e.Password == Password).FirstOrDefault();
 
@@ -54,6 +54,7 @@ namespace AirlinesReservationSystem.Models.arsadmin
                 e.Firstname = updateE.Firstname;
                 e.Lastname = updateE.Lastname;
                 e.Address = updateE.Address;
+                e.Role = updateE.Role;
                 e.Phone = updateE.Phone;
                 e.Sex = updateE.Sex;
                 e.IsActive = updateE.IsActive;

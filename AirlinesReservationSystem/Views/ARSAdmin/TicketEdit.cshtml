@@ -4,7 +4,7 @@
     ViewBag.Title = "TicketEdit";
 }
 
-<h2>Ticket Edit @Html.ActionLink("Back to List", "OrderDetails", new { id= Model.OrderID }, new { @class = "btn btn-primary" })</h2>
+<h2>Ticket Edit @Html.ActionLink("Back to List", "OrderDetails", new { id = Model.OrderID }, new { @class = "btn btn-primary" })</h2>
 <div class="container">
     @using (Html.BeginForm())
     {
@@ -27,7 +27,7 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.FNo, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.FNo, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly"} })
+                    @Html.EditorFor(model => model.FNo, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
                     @Html.ValidationMessageFor(model => model.FNo, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -37,8 +37,8 @@
                 <div class="col-md-10">
                     @if (Model.Age > 14)
                     {
-                        @Html.EditorFor(model => model.PassportNo, new { htmlAttributes = new { @class = "form-control" , @required = "required"} })
-                        
+                        @Html.EditorFor(model => model.PassportNo, new { htmlAttributes = new { @class = "form-control", @required = "required" } })
+
 
                     }
                     else
@@ -94,9 +94,18 @@
 
 
             <div class="form-group">
+
                 @Html.LabelFor(model => model.Age, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.Age, new { htmlAttributes = new { @class = "form-control" }, @required = "required" })
+                    @if (Model.Age < 14)
+                    {
+                        @Html.EditorFor(model => model.Age, new { htmlAttributes = new { @class = "form-control", @required = "required", @min = 2, @max = 13 } });
+                    }
+                    else
+                    {
+                        @Html.EditorFor(model => model.Age, new { htmlAttributes = new { @class = "form-control" , @required = "required", @min = 14, @max = 200 }}); 
+                    }
+
                     @Html.ValidationMessageFor(model => model.Age, "", new { @class = "text-danger" })
                 </div>
             </div>

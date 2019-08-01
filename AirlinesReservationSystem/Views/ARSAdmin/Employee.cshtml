@@ -1,13 +1,122 @@
-﻿
+﻿@model IEnumerable<AirlinesReservationSystem.Models.Employee>
 
 @{
     ViewBag.Title = "Employee";
     string modalTitle = "";
 }
+<link href="~/Content/datatables.min.css" rel="stylesheet" />
+<script src="~/Scripts/datatables.min.js"></script>
+<h2>Employee <a href="/arsadmin/employeeadd" class="btn btn-success" @*onclick="setModal('add')"*@>Add new Employee</a></h2>
 
-<div class="col-12" id="employeeList">
+<div class="col-md-12" id="employeeList">
+    <table class="table table-bordered table-hover table-sm" id="employeeListView">
+        <thead>
+            <tr class="table-ars">
+                <th>
+                    ID
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Firstname)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Lastname)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Address)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Phone)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Email)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Sex)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DoB)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IsActive)
+                </th>
+                <th>
+                    Role
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EmpID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Firstname)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Lastname)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Address)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Phone)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td>
+                        @if (item.Sex)
+                        {
+                            @:Male
+                        }
+                        else
+                        {
+                            @:Female
+                        }
+                    </td>
+                    <td>
+                        @item.DoB.ToString("dd/MM/yyyy")
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IsActive)
+                    </td>
+                    <td>
+                        @if (item.Role == 0)
+                        {
+                            @:Admin
+                        }
+                        else
+                        {
+                            @:Clerk
+                        }
+                    </td>
+                    <td>
+                        <a class="btn btn-warning" href="/arsadmin/employeeedit?id=@item.EmpID">Edit</a>
+                        @if (item.Role == 0)
+                        {
+                            if (AirlinesReservationSystem.Models.arsadmin.EmployeeDAO.GetEmployeeList().Where(e => e.IsActive).Where(e => e.Role == 0).Count() > 1)
+                            {
 
+                                <button class="btn btn-danger" data-toggle="modal" data-target="#modal" onclick="setModal('delete','@item.EmpID')">Delete</button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-secondary" data-toggle="tooltip" title="Cannot delete because there's only one active admin" data-placement="bottom">Delete</button>
+                            }
+                        }
+                        else
+                        {
+                            <button class="btn btn-danger" data-toggle="modal" data-target="#modal" onclick="setModal('delete','@item.EmpID')">Delete</button>
+                        }
 
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>
 
 <div class="modal fade" id="modal">
@@ -36,11 +145,15 @@
 </div>
 
 <script>
-    loadEmpList();
+    //loadEmpList();
 
-    function loadEmpList() {
-        $("#employeeList").load("/arsadmin/employeelist");
-    }
+    //function loadEmpList() {
+    //    $("#employeeList").load("/arsadmin/employeelist");
+    //}
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+        $('#employeeListView').DataTable();
+    });
 
     function setModal(modalType, id) {
         if (modalType == "add") {
@@ -50,14 +163,15 @@
         } else if (modalType == "list") {
             $('#employeeList').load("/arsadmin/employeelist");
         } else if (modalType == "edit") {
-            if (id!=null) {
-                $("#employeeList").load("/arsadmin/employeeedit?id="+id);
+            if (id != null) {
+                $("#employeeList").load("/arsadmin/employeeedit?id=" + id);
             }
         } else if (modalType == "delete") {
             if (id != null) {
                 $("#modalTitle").html("Comfirm delete");
                 $("#modalBody").html("<h3 class='text-danger'>Are you sure to delete employee \"" + id + "\"?</h3>");
                 $("#btnConfirm").removeClass("text-hide");
+                $('#btnConfirm').off('click');
                 $("#btnConfirm").on("click", function () { deleteEmployee(id); });
             }
         } else if (modalType == "") {
@@ -69,13 +183,16 @@
 
     function deleteEmployee(id) {
         $.post("/arsadmin/employeedelete?id=" + id, function (result) {
-            $('#modal').modal('hide');
-            loadEmpList();
+            if (result == "ok") {
+                $('#modal').modal('hide');
+                window.location.href = "/arsadmin/employee"
+            }
         });
     }
 
     $("#modal").on("hidden.bs.modal", function () {
         setModal("");
         $("#btnConfirm").addClass("text-hide");
+        $('#btnConfirm').off('click');
     });
 </script>
