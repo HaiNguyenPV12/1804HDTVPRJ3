@@ -9,12 +9,16 @@
 
 
     $('#formDate').change(function () {
+        //initialize current date value
         var current = new Date($.now());
         var currentDateEpoch = dateToEpoch(current);
         var currentDate = new Date(currentDateEpoch);
-        console.log(currentDate);
+
+        //get value of dates
         var departureDate = new Date($('#DepartureTime').val());
         var returnDate = new Date($('#ReturnDepartureTime').val());
+
+        //check if date fields are logical, if not then disable the submit button
         if (departureDate > returnDate && $('#optionRoundTrip').is(':checked') || departureDate < currentDate) {
             if (departureDate < currentDate) { $('#dateErrorNow').show(); }
             else { $('#dateError').show(); }
