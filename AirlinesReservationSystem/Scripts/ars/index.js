@@ -9,16 +9,19 @@
 
 
     $('#formDate').change(function () {
+        var currentDate = new Date($.now());
         var departureDate = new Date($('#DepartureTime').val());
         var returnDate = new Date($('#ReturnDepartureTime').val());
-        if (departureDate > returnDate && $('#optionRoundTrip').is(':checked')) {
-            $('#dateError').show();
+        if (departureDate > returnDate && $('#optionRoundTrip').is(':checked') || departureDate < currentDate) {
+            if (departureDate < currentDate) { $('#dateErrorNow').show(); }
+            else { $('#dateError').show(); }
             $("#btnSubmit").attr("disabled", true);
         }
         else {
             var errorElement = document.getElementById("dateError");
             if (errorElement !== null) {
                 $('#dateError').hide();
+                $('#dateErrorNow').hide();
                 $("#btnSubmit").attr("disabled", false);
             }
         }

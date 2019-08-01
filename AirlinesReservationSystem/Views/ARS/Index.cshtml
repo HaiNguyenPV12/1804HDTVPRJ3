@@ -13,12 +13,14 @@
     <div class="flightSearch-content container">
         <span class="text-danger" id="errorMessage">@TempData["errorM"]</span>
         <span id='dateError' style="display:none" class="text-danger">Return date can't be earlier than departure date.</span>
+        <span id='dateErrorNow' style="display:none" class="text-danger">Departure date can't be earlier than current date.</span>
+        <span id='seatError' style="display:none" class="text-danger">Passenger numbers are invalid.</span>
 
         @using (Html.BeginForm("Index", "ARS", FormMethod.Post, new { @id = "flightSearchForm"}))
         {
             @Html.ValidationSummary(false, "", new { @class = "text-danger" })
-            <h3>
-                Search for flights
+            <div class="row col-md-12">
+                <h3 class="mr-md-3">Search for flights</h3>
                 <div class="btn-group btn-group-toggle pb-2" data-toggle="buttons" id="roundTripRadio">
                     <label class="btn btn-secondary active">
                         <input type="radio" name="IsRoundTrip" id="optionOneWay" autocomplete="off" checked value="false"> One way
@@ -27,7 +29,7 @@
                         <input type="radio" name="IsRoundTrip" id="optionRoundTrip" autocomplete="off" value="true">Roundtrip
                     </label>
                 </div>
-            </h3>
+            </div>
             <div class="container-fluid">
                 <div class="form-group form-inline">
                     <div class="col-md-1">
