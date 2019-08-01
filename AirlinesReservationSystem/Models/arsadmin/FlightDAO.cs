@@ -9,7 +9,7 @@ namespace AirlinesReservationSystem.Models.arsadmin
     {
         static AirlineDBEntities db = new AirlineDBEntities();
 
-        public static Flight GetFlight(string FNo) => db.Flight.FirstOrDefault(r => r.FNo == FNo);
+        public static Flight GetFlight(string FNo) => db.Flight.Where(r => r.FNo == FNo).FirstOrDefault();
 
         public static IEnumerable<Flight> GetFlightList() => db.Flight;
 
