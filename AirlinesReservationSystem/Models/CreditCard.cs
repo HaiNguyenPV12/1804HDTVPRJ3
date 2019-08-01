@@ -20,7 +20,7 @@ namespace AirlinesReservationSystem.Models
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Required]
         [Display(Name = "Credit card number")]
-        [StringLength(12, MinimumLength = 12)]
+        [StringLength(16, MinimumLength = 16)]
         public string CCNo { get; set; }
 
         [Required]

@@ -1,43 +1,137 @@
 ﻿
 @{
     ViewBag.Title = "FlightCalendar";
-    System.DateTime Date = System.DateTime.Now;
-    if (ViewBag.Date != null)
+    var today = DateTime.Now;
+    int Month = today.Month;
+    int Year = today.Year;
+    if (ViewBag.Month != null && ViewBag.Year != null)
     {
-        Date = ViewBag.Date;
+        Month = ViewBag.Month;
+        Year = ViewBag.Year;
     }
 
-}
 
+    int totalDate = DateTime.DaysInMonth(Year, Month);
+    int firstWeekDayInMonth = (int)DateTime.Parse(Year + "-" + Month + "-01").DayOfWeek;
+    int dayCount = 0;
+    IEnumerable<AirlinesReservationSystem.Models.Flight> FlightList = ViewBag.FlightList;
+}
+<style>
+    td {
+      text-align: center;
+    }
+</style>
 <h2>FlightCalendar</h2>
 
 <span class="text-danger">@ViewBag.ErrorM</span>
+<h4 class='text-center'>@Month/@Year</h4>
+<table class="table table-bordered">
+    <tr class="table-warning"><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th><th>Saturday</th><th>Sunday</th></tr>
+    @for (int i = 1; i < firstWeekDayInMonth; i++)
+    {
+        if (dayCount == 0)
+        {
+            <text>
+                <tr>
+            </text>
+        }
+
+        <text>
+            <td bgcolor="#c8c8c8"></td>
+        </text>
+
+        dayCount++;
+
+        if (dayCount == 7)
+        {
+        @:</tr>
+        dayCount = 0;
+    }
+}
+    @for (int i = 0; i < totalDate; i++)
+    {
+        if (dayCount == 0)
+        {
+            <text>
+                <tr>
+            </text>
+        }
+        var curDateTime = DateTime.Parse(Year + "-" + Month + "-" + (i + 1) + " 23:59:59");
+        if (curDateTime >= today)
+        {
+            <td>
+                @(i + 1)<br />
+                @if (FlightList.Where(f => f.DepartureTime.ToShortDateString() == curDateTime.ToShortDateString()).FirstOrDefault() != null)
+                {
+                    <a href="">Choose this day</a>
+                }
+            </td>
+        }
+        else
+        {
+            <td bgcolor="#b1b1b1">Not available</td>
+        }
+
+        dayCount++;
+
+        if (dayCount == 7)
+        {
+        @:</tr>
+        dayCount = 0;
+    }
+}
+    @if (dayCount > 0)
+    {
+        for (int i = dayCount; i <= 6; i++)
+        {
+            <td bgcolor="#c8c8c8"></td>
+        }
+    }
+</table>
+
 <div id="calendar">
 
 </div>
 
 <script>
-    getCalendar(@Date.Day,@Date.Month, @Date.Year);
     function getCalendar(day, month, year) {
         var dateTotal = new Date(year, month, 0).getDate();
         var s = "";
-        s += "<table>";
+        s += "<h4 class='text-center'>Month: " + month + "</h4>";
+        s += "<table class='table table-bordered'>";
         s += "<tr><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th><th>Saturday</th><th>Sunday</th></tr>";
         var firstDay = new Date(year, month - 1, 1).getDay();
-        console.log(firstDay);
-        var dayCount = 0;
-        s += "<tr>";
-        for (var i = 0; i < firstDay; i++) {
-            if (dayCount < 6) {
+        var dayCount = +0;
+        for (var i = 1; i < firstDay; i++) {
+            if (dayCount == 0) {
+                s += "<tr>";
+            }
+
+            s += "<td></td>";
+
+            dayCount++;
+
+            if (dayCount == 7) {
+                s += "</tr>";
                 dayCount = 0;
             }
-            s += "<td></td>";
-            dayCount++;
         }
+
         for (var i = 0; i < dateTotal; i++) {
+            if (dayCount == 0) {
+                s += "<tr>";
+            }
+
             s += "<td>" + (i + 1) + "</td>";
+
+            dayCount++;
+
+            if (dayCount == 7) {
+                s += "</tr>";
+                dayCount = 0;
+            }
         }
-        s += "</tr>";
+
         s += "</table>";
         $("#calendar").html(s);
     }

@@ -194,8 +194,8 @@ namespace AirlinesReservationSystem.Controllers
                         Email = frmEmployeeAdd["Email[" + i + "]"],
                         Sex = Convert.ToBoolean(frmEmployeeAdd["Sex[" + i + "]"]),
                         DoB = DateTime.Parse(frmEmployeeAdd["DoB[" + i + "]"]),
-                        IsActive = true,
-                        Role = 1
+                        Role = int.Parse(frmEmployeeAdd["Role[" + i + "]"]),
+                        IsActive = true
                     };
                     EmpList.Add(objE);
                     i++;
