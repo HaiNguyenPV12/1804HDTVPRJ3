@@ -1,7 +1,6 @@
 ﻿@model IEnumerable<AirlinesReservationSystem.Models.Employee>
 <link href="~/Content/datatables.min.css" rel="stylesheet" />
 <script src="~/Scripts/datatables.min.js"></script>
-<h2>Employee <a href="/arsadmin/employeeadd" class="btn btn-success" @*onclick="setModal('add')"*@>Add new Employee</a></h2>
 <table class="table table-bordered table-hover table-sm" id="employeeListView">
     <thead>
         <tr class="table-ars">
@@ -89,7 +88,7 @@
                 <td>
                     @if (((AirlinesReservationSystem.Models.Employee)Session["employee"]).EmpID != item.EmpID || item.Role != 0)
                     {
-                        <button class="btn btn-warning" onclick="setModal('edit','@item.EmpID')">Edit</button>
+                        <a class="btn btn-warning" href="/arsadmin/employeeedit?id=@item.EmpID">Edit</a>
                         <button class="btn btn-danger" data-toggle="modal" data-target="#modal" onclick="setModal('delete','@item.EmpID')">Delete</button>
                     }
                     else

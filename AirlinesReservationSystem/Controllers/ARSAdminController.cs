@@ -163,11 +163,11 @@ namespace AirlinesReservationSystem.Controllers
         public ActionResult Employee() => IsAdminLoggedIn() ? View() : (ActionResult)RedirectToAction("Index");
 
         // EMPLOYEE's LIST
-        public ActionResult EmployeeList(string Firstname, string Email, string Status, string Role)
+        public ActionResult EmployeeList()
         {
             if (IsAdminLoggedIn())
             {
-                PartialView(EmployeeDAO.GetEmployeeList());
+                return PartialView(EmployeeDAO.GetEmployeeList());
             }
             return Content("");
         }
