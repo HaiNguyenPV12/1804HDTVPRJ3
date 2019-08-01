@@ -54,6 +54,7 @@ namespace AirlinesReservationSystem.Models.arsadmin
                 e.Firstname = updateE.Firstname;
                 e.Lastname = updateE.Lastname;
                 e.Address = updateE.Address;
+                e.Role = updateE.Role;
                 e.Phone = updateE.Phone;
                 e.Sex = updateE.Sex;
                 e.IsActive = updateE.IsActive;

@@ -163,7 +163,14 @@ namespace AirlinesReservationSystem.Controllers
         public ActionResult Employee() => IsAdminLoggedIn() ? View() : (ActionResult)RedirectToAction("Index");
 
         // EMPLOYEE's LIST
-        public ActionResult EmployeeList() => IsAdminLoggedIn() ? PartialView(EmployeeDAO.GetEmployeeList()) : (ActionResult)Content("");
+        public ActionResult EmployeeList(string Firstname, string Email, string Status, string Role)
+        {
+            if (IsAdminLoggedIn())
+            {
+                PartialView(EmployeeDAO.GetEmployeeList());
+            }
+            return Content("");
+        }
 
         // EMPLOYEE DELETE's PROCESS
         public ActionResult EmployeeDelete(string id) => IsAdminLoggedIn() && EmployeeDAO.DeleteEmployee(id) ? Content("OK") : Content("Error");
@@ -242,7 +249,7 @@ namespace AirlinesReservationSystem.Controllers
         }
 
         // EMPLOYEE EDIT'S VIEW
-        public ActionResult EmployeeEdit(string id) => IsAdminLoggedIn() && EmployeeDAO.GetEmployee(id) != null ? PartialView(EmployeeDAO.GetEmployee(id)) : (ActionResult)RedirectToAction("Index");
+        public ActionResult EmployeeEdit(string id) => IsAdminLoggedIn() && EmployeeDAO.GetEmployee(id) != null ? View(EmployeeDAO.GetEmployee(id)) : (ActionResult)RedirectToAction("Index");
 
         // EMPLOYEE EDIT'S PROCESS
         [HttpPost]
@@ -253,11 +260,11 @@ namespace AirlinesReservationSystem.Controllers
             {
                 if (EmployeeDAO.UpdateEmployee(updateE))
                 {
-                    return Content("Success");
+                    return RedirectToAction("Employee");
                 }
                 ModelState.AddModelError("", "Error updating this employee!");
             }
-            return PartialView();
+            return View(updateE);
         }
         //================ CUSTOMER ==================
 

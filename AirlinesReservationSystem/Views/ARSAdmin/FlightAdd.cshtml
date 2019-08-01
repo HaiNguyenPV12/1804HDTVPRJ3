@@ -2,7 +2,9 @@
 
 @{
     ViewBag.Title = "FlightAdd";
-    var RouteData = (IEnumerable<AirlinesReservationSystem.Models.Route>)ViewBag.RouteData;
+
+    //var RouteDAO = AirlinesReservationSystem.Models.arsadmin.RouteDAO;
+    var RouteData = AirlinesReservationSystem.Models.arsadmin.RouteDAO.GetRouteList();
 }
 
 <h2>Flight - Add new Flight <a href="/arsadmin/flight" class="btn btn-warning">Back to list</a></h2>
