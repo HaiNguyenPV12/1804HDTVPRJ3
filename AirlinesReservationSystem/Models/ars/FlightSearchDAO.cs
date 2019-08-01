@@ -18,6 +18,7 @@ namespace AirlinesReservationSystem.Models
 
         public static IEnumerable<FlightResult> GetFlightResults(FlightSearch flightSearch)
         {
+            db = new AirlineDBEntities();
             var routes = GetRoutes();
             var flights = GetFlights();
             var airlines = GetAirlines();
@@ -30,6 +31,7 @@ namespace AirlinesReservationSystem.Models
 
         public static IEnumerable<FlightResult> GetFlightResultsWithStops(FlightSearch flightSearch)
         {
+            db = new AirlineDBEntities();
             var routes = GetRoutes();
             var flights = GetFlights();
             IEnumerable<FlightDistance> distances = GetDistances();
