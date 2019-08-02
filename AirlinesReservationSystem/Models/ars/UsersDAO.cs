@@ -12,7 +12,11 @@ namespace AirlinesReservationSystem.Models.ars
 
         public static User GetUser(string UserID) => db.User.Find(UserID);
 
-        public static IEnumerable<User> GetUserList() => db.User;
+        public static IEnumerable<User> GetUserList()
+        {
+            db = new AirlineDBEntities();
+            return db.User;
+        }
 
         public static User CheckLogin(string UserID, string Password) => db.User.Where(e => e.UserID.Trim() == UserID && e.Password == Password).FirstOrDefault();
 
