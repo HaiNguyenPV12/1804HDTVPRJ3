@@ -455,7 +455,12 @@ namespace AirlinesReservationSystem.Controllers
         // ================ ORDER ==================
         //ORDER VIEW
         public ActionResult Order() => IsLoggedIn() ? View(OrderDAO.GetOrderList()) : (ActionResult)RedirectToAction("Index");
-        public ActionResult CancelOrder(long id) => IsLoggedIn() && OrderDAO.CancelledOrder(id) ? (ActionResult)RedirectToAction("Order") : (ActionResult)RedirectToAction("Index");
+        //Cancel Order
+        public ActionResult CancelOrder(long id)
+        {
+            OrderDAO.CancelOrder(id);
+            return RedirectToAction("Order");
+        }
         //TICKET VIEW
         public ActionResult OrderDetails(long id) => IsLoggedIn() ? View(TicketDAO.GetTicketList(id)) : (ActionResult)RedirectToAction("Index");
 
