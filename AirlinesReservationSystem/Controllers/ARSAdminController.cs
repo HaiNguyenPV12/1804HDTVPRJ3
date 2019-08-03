@@ -480,7 +480,7 @@ namespace AirlinesReservationSystem.Controllers
             return RedirectToAction("Index");
         }
 
-        // SERVICE EDIT'S PROCESS
+        // TICKET EDIT'S PROCESS
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult TicketEdit(Ticket updateT)
