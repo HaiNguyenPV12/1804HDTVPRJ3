@@ -85,11 +85,11 @@ namespace AirlinesReservationSystem.Models.ars
             }
             if (o != null)
             {
-                // Check if this order blocked or not
-                bool IsBlocked = false;
+                // Check if this order is blocked or not
+                bool isBlocked = false;
                 if (o.Status == 0)
                 {
-                    IsBlocked = true;
+                    isBlocked = true;
                 }
                 // Change status
                 o.Status = 2;
@@ -98,7 +98,7 @@ namespace AirlinesReservationSystem.Models.ars
                 var TicketList = TicketDAO.GetTicketList(o.OrderID);
 
                 // If this order is not blocked one, make changes to skymiles
-                if (!IsBlocked)
+                if (!isBlocked)
                 {
                     // Calculate flight distance 
                     foreach (var item in TicketList)
@@ -138,21 +138,24 @@ namespace AirlinesReservationSystem.Models.ars
                     db.SaveChanges();
                 }
 
-                // Refund to user account
-                var firstFNo = TicketList.Where(t => t.IsReturn == false).FirstOrDefault().FNo;
-                var flight = db.Flight.FirstOrDefault(f => f.FNo == firstFNo);
-                var daysToDeparture = (flight.DepartureTime - DateTime.Now).TotalDays;
-                if (daysToDeparture >= 14)
+                // Refund to user account if this is paid order
+                if (!isBlocked)
                 {
-                    refund = Convert.ToInt32(o.Total - o.Total * 0.02);
+                    var firstFNo = TicketList.Where(t => t.IsReturn == false).FirstOrDefault().FNo;
+                    var flight = db.Flight.FirstOrDefault(f => f.FNo == firstFNo);
+                    var daysToDeparture = (flight.DepartureTime - DateTime.Now).TotalDays;
+                    if (daysToDeparture >= 14)
+                    {
+                        refund = Convert.ToInt32(o.Total - o.Total * 0.02);
+                    }
+                    else
+                    {
+                        refund = Convert.ToInt32(o.Total - o.Total * 0.02 * (14 - daysToDeparture));
+                    }
+                    var cardFinal = bank.BankDAO.GetCreditCard(db.User.FirstOrDefault(u => u.UserID == o.UserID).CCNo);
+                    cardFinal.Balance += refund;
                 }
-                else
-                {
-                    refund = Convert.ToInt32(o.Total - o.Total * 0.02 * (14 - daysToDeparture));
-                }
-                var cardFinal = bank.BankDAO.GetCreditCard(db.User.FirstOrDefault(u => u.UserID == o.UserID).CCNo);
-                cardFinal.Balance += refund;
-
+                
                 // Save changes
                 db.SaveChanges();
                 return "ok";
@@ -160,22 +163,12 @@ namespace AirlinesReservationSystem.Models.ars
             return "error";
         }
 
-
-        public static bool Test(int seat, string FNo)
-        {
-            var flight = db.Flight.Where(f => f.FNo == FNo).FirstOrDefault();
-            if (flight != null)
-            {
-                flight.AvailSeatsE = flight.AvailSeatsE - seat;
-                db.SaveChanges();
-                return true;
-            }
-            return false;
-        }
-
+        // Function that process Payment request
+        // Will return "ok:[orderid]" if success
+        // Will return any other error string when failed
         public static string ProcessPayment(Payment payment, bool isBlocked)
         {
-            // Checking creditcard
+            // Checking Creditcard
             var card = bank.BankDAO.GetCreditCard(payment.CCNo);
             if (!isBlocked)
             {
@@ -273,7 +266,7 @@ namespace AirlinesReservationSystem.Models.ars
                     ticketCount++;
                 });
 
-                // Create Oneway / First Flight/ First Stop Ticket
+                // Create Second stop's ticket (if exists)
                 Flight FInfo2 = FlightDAO.GetFlight(payment.FNo2);
                 if (FInfo2 != null)
                 {
@@ -393,8 +386,8 @@ namespace AirlinesReservationSystem.Models.ars
                         ticketCount++;
                     });
                 }
-
                 db.SaveChanges();
+
                 db.Order.FirstOrDefault(o => o.OrderID == OrderID).Total = Total;
 
                 // Seat Calculation
@@ -428,10 +421,6 @@ namespace AirlinesReservationSystem.Models.ars
                 }
                 else
                 {
-                    //if (!Test(payment.Passengers.Count(), SFInfo1.FNo))
-                    //{
-                    //    return "Error: cannot add seat";
-                    //}
                     SFInfo1.AvailSeatsE = SFInfo1.AvailSeatsE - payment.Passengers.Count();
                     if (SFInfo2 != null)
                     {
@@ -498,134 +487,134 @@ namespace AirlinesReservationSystem.Models.ars
             }
         }
 
-        public static string ConfirmPayment(Payment payment)
-        {
-            try
-            {
-                string s = "";
-                DateTime now = DateTime.Now;
-                string OrderIDStr = "" + now.Year + now.Month + now.Day + now.Hour + now.Minute + now.Second;
-                Int64 OrderID = Int64.Parse(OrderIDStr);
-                Flight FInfo = FlightDAO.GetFlight(payment.FNo1);
-                double FTotal = 0;
-                double ReFTotal = 0;
+        //public static string ConfirmPayment(Payment payment)
+        //{
+        //    try
+        //    {
+        //        string s = "";
+        //        DateTime now = DateTime.Now;
+        //        string OrderIDStr = "" + now.Year + now.Month + now.Day + now.Hour + now.Minute + now.Second;
+        //        Int64 OrderID = Int64.Parse(OrderIDStr);
+        //        Flight FInfo = FlightDAO.GetFlight(payment.FNo1);
+        //        double FTotal = 0;
+        //        double ReFTotal = 0;
 
-                s += "+ 1. ORDER: " + OrderID + "\n";
-                s += "+ Status: Booked\n";
-                s += "+ Order Date: " + now.ToString() + "\n";
-                s += "+ + + + + + + + + + +\n\n";
+        //        s += "+ 1. ORDER: " + OrderID + "\n";
+        //        s += "+ Status: Booked\n";
+        //        s += "+ Order Date: " + now.ToString() + "\n";
+        //        s += "+ + + + + + + + + + +\n\n";
 
-                s += "+ 2.TICKETS:\n";
-                int ticketCount = 1;
-                payment.Passengers.ForEach(p =>
-                {
-                    double Price = FInfo.BasePrice;
-                    double MaintainFee = FInfo.Route.Aircraft.ServiceFee;
-                    s += "++ + + + + + + + + + +\n";
-                    s += "++ Ticket " + ticketCount + "\n";
-                    s += "++ Airline: " + FInfo.Route.Airline.AirlineName + "(" + FInfo.Route.Aircraft.AircraftName + ")\n";
-                    s += "++ Flight: " + FInfo.Route.DepartureAirport.AirportID + "(" + FInfo.DepartureTime + ") => " + FInfo.Route.DestinationAirport.AirportID + "(" + FInfo.ArrivalTime + ")\n";
-                    s += "++ Passenger: " + p.Firstname + " " + p.Lastname + "\n";
-                    s += "++ Sex: " + p.Sex + ", Age: " + p.Age + "Passport No.: " + p.PassportNo + "\n";
-                    s += "++ Service: ";
-                    double ServiceFee = 0;
-                    foreach (var item in p.Service)
-                    {
-                        var service = ServiceDAO.GetService(item);
-                        s += item + ": " + service.ServiceName;
-                        ServiceFee += service.ServiceFee;
-                        if (item != p.Service.Last())
-                        {
-                            s += ", ";
-                        }
-                    }
-                    Price += ServiceFee;
-                    s += "\n";
+        //        s += "+ 2.TICKETS:\n";
+        //        int ticketCount = 1;
+        //        payment.Passengers.ForEach(p =>
+        //        {
+        //            double Price = FInfo.BasePrice;
+        //            double MaintainFee = FInfo.Route.Aircraft.ServiceFee;
+        //            s += "++ + + + + + + + + + +\n";
+        //            s += "++ Ticket " + ticketCount + "\n";
+        //            s += "++ Airline: " + FInfo.Route.Airline.AirlineName + "(" + FInfo.Route.Aircraft.AircraftName + ")\n";
+        //            s += "++ Flight: " + FInfo.Route.DepartureAirport.AirportID + "(" + FInfo.DepartureTime + ") => " + FInfo.Route.DestinationAirport.AirportID + "(" + FInfo.ArrivalTime + ")\n";
+        //            s += "++ Passenger: " + p.Firstname + " " + p.Lastname + "\n";
+        //            s += "++ Sex: " + p.Sex + ", Age: " + p.Age + "Passport No.: " + p.PassportNo + "\n";
+        //            s += "++ Service: ";
+        //            double ServiceFee = 0;
+        //            foreach (var item in p.Service)
+        //            {
+        //                var service = ServiceDAO.GetService(item);
+        //                s += item + ": " + service.ServiceName;
+        //                ServiceFee += service.ServiceFee;
+        //                if (item != p.Service.Last())
+        //                {
+        //                    s += ", ";
+        //                }
+        //            }
+        //            Price += ServiceFee;
+        //            s += "\n";
 
-                    s += "++ Airport maintainance fee: " + MaintainFee + "\n";
-                    Price += MaintainFee;
+        //            s += "++ Airport maintainance fee: " + MaintainFee + "\n";
+        //            Price += MaintainFee;
 
-                    if (payment.Class == "F")
-                    {
-                        s += "++ First Class's Fee: 20\n";
-                        Price += 20;
-                    }
-                    else if (payment.Class == "B")
-                    {
-                        s += "++ Bussiness Class's Fee: 10\n";
-                        Price += 10;
-                    }
-                    else if (payment.Class == "E")
-                    {
-                        s += "++ Economy Class's Fee: 0\n";
-                    }
+        //            if (payment.Class == "F")
+        //            {
+        //                s += "++ First Class's Fee: 20\n";
+        //                Price += 20;
+        //            }
+        //            else if (payment.Class == "B")
+        //            {
+        //                s += "++ Bussiness Class's Fee: 10\n";
+        //                Price += 10;
+        //            }
+        //            else if (payment.Class == "E")
+        //            {
+        //                s += "++ Economy Class's Fee: 0\n";
+        //            }
 
-                    s += "++ Ticket Price: " + Price + "\n";
-                    s += "++ + + + + + + + + + +\n\n";
-                    FTotal += Price;
-                    ticketCount++;
-                });
+        //            s += "++ Ticket Price: " + Price + "\n";
+        //            s += "++ + + + + + + + + + +\n\n";
+        //            FTotal += Price;
+        //            ticketCount++;
+        //        });
 
-                if (!string.IsNullOrEmpty(payment.ReFNo))
-                {
-                    Flight ReFInfo = FlightDAO.GetFlight(payment.ReFNo);
-                    s += "+ 3.RETURN FLIGHT's TICKETS:\n";
-                    payment.Passengers.ForEach(p =>
-                    {
-                        double Price = ReFInfo.BasePrice;
-                        double MaintainFee = FInfo.Route.Aircraft.ServiceFee;
-                        s += "++ + + + + + + + + + +\n";
-                        s += "++ Ticket " + ticketCount + "\n";
-                        s += "++ Airline: " + ReFInfo.Route.Airline.AirlineName + "(" + ReFInfo.Route.Aircraft.AircraftName + ")\n";
-                        s += "++ Flight: " + ReFInfo.Route.DepartureAirport.AirportID + "(" + ReFInfo.DepartureTime + ") => " + ReFInfo.Route.DestinationAirport.AirportID + "(" + ReFInfo.ArrivalTime + ")\n";
-                        s += "++ Passenger: " + p.Firstname + " " + p.Lastname + "\n";
-                        s += "++ Sex: " + p.Sex + ", Age: " + p.Age + "Passport No.: " + p.PassportNo + "\n";
-                        s += "++ Service: ";
-                        foreach (var item in p.Service)
-                        {
-                            var service = ServiceDAO.GetService(item);
-                            s += service.ServiceName;
-                            Price += service.ServiceFee;
-                            if (item != p.Service.Last())
-                            {
-                                s += ", ";
-                            }
-                        }
-                        s += "\n";
-                        s += "++ Airport maintainance fee: " + MaintainFee + "\n";
-                        Price += MaintainFee;
+        //        if (!string.IsNullOrEmpty(payment.ReFNo))
+        //        {
+        //            Flight ReFInfo = FlightDAO.GetFlight(payment.ReFNo);
+        //            s += "+ 3.RETURN FLIGHT's TICKETS:\n";
+        //            payment.Passengers.ForEach(p =>
+        //            {
+        //                double Price = ReFInfo.BasePrice;
+        //                double MaintainFee = FInfo.Route.Aircraft.ServiceFee;
+        //                s += "++ + + + + + + + + + +\n";
+        //                s += "++ Ticket " + ticketCount + "\n";
+        //                s += "++ Airline: " + ReFInfo.Route.Airline.AirlineName + "(" + ReFInfo.Route.Aircraft.AircraftName + ")\n";
+        //                s += "++ Flight: " + ReFInfo.Route.DepartureAirport.AirportID + "(" + ReFInfo.DepartureTime + ") => " + ReFInfo.Route.DestinationAirport.AirportID + "(" + ReFInfo.ArrivalTime + ")\n";
+        //                s += "++ Passenger: " + p.Firstname + " " + p.Lastname + "\n";
+        //                s += "++ Sex: " + p.Sex + ", Age: " + p.Age + "Passport No.: " + p.PassportNo + "\n";
+        //                s += "++ Service: ";
+        //                foreach (var item in p.Service)
+        //                {
+        //                    var service = ServiceDAO.GetService(item);
+        //                    s += service.ServiceName;
+        //                    Price += service.ServiceFee;
+        //                    if (item != p.Service.Last())
+        //                    {
+        //                        s += ", ";
+        //                    }
+        //                }
+        //                s += "\n";
+        //                s += "++ Airport maintainance fee: " + MaintainFee + "\n";
+        //                Price += MaintainFee;
 
-                        if (payment.Class == "F")
-                        {
-                            s += "++ First Class's Fee: 20\n";
-                            Price += 20;
-                        }
-                        else if (payment.Class == "B")
-                        {
-                            s += "++ Bussiness Class's Fee: 10\n";
-                            Price += 10;
-                        }
-                        else if (payment.Class == "E")
-                        {
-                            s += "++ Economy Class's Fee: 0\n";
-                        }
+        //                if (payment.Class == "F")
+        //                {
+        //                    s += "++ First Class's Fee: 20\n";
+        //                    Price += 20;
+        //                }
+        //                else if (payment.Class == "B")
+        //                {
+        //                    s += "++ Bussiness Class's Fee: 10\n";
+        //                    Price += 10;
+        //                }
+        //                else if (payment.Class == "E")
+        //                {
+        //                    s += "++ Economy Class's Fee: 0\n";
+        //                }
 
-                        s += "++ Ticket Price: " + Price + "\n";
-                        s += "++ + + + + + + + + + +\n\n";
-                        ReFTotal += Price;
-                        ticketCount++;
-                    });
-                }
-                s += "TOTAL: " + (FTotal + ReFTotal);
-                //Order order = new Order();
-                //order.OrderID = OrderID;
+        //                s += "++ Ticket Price: " + Price + "\n";
+        //                s += "++ + + + + + + + + + +\n\n";
+        //                ReFTotal += Price;
+        //                ticketCount++;
+        //            });
+        //        }
+        //        s += "TOTAL: " + (FTotal + ReFTotal);
+        //        //Order order = new Order();
+        //        //order.OrderID = OrderID;
 
-                return s;
-            }
-            catch (Exception e)
-            {
-                return e.StackTrace;
-            }
-        }
+        //        return s;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return e.StackTrace;
+        //    }
+        //}
     }
 }
