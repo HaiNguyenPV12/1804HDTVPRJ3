@@ -414,6 +414,8 @@ namespace AirlinesReservationSystem.Controllers
             ViewBag.RouteData = RouteDAO.GetRouteList();
             return View();
         }
+
+
         // FLIGHT EDIT'S VIEW
         public ActionResult FlightEdit(string id)
         {
