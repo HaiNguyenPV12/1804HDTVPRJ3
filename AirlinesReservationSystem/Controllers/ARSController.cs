@@ -382,18 +382,6 @@ namespace AirlinesReservationSystem.Controllers
             objP.Total = double.Parse(frmPayment["Total"]);
             objP.CCNo = frmPayment["CCNo"];
             objP.CVV = frmPayment["CVV"];
-            //string[] Firstname = frmPayment["Firstname"].Split(',');
-            //string[] Lastname = frmPayment["Lastname"].Split(',');
-            //string[] SexStr = frmPayment["Sex"].Split(',');
-            //string[] PassportNo = frmPayment["PassportNo"].Split(',');
-
-            //bool[] Sex = new bool[objP.PeopleNum];
-            //int a = 0;
-            //foreach (var item in SexStr)
-            //{
-            //    Sex[a++] = Convert.ToBoolean(int.Parse(item));
-            //}
-            //string[] Age = frmPayment["Age"].Split(',');
 
             for (int i = 0; i < objP.PeopleNum; i++)
             {
@@ -427,7 +415,6 @@ namespace AirlinesReservationSystem.Controllers
             {
                 s = PaymentDAO.ProcessPayment(objP, true);
             }
-
             return Content(s);
         }
 
@@ -453,6 +440,7 @@ namespace AirlinesReservationSystem.Controllers
             }
             return RedirectToAction("PaymentSearch");
         }
+
         // BOOKING DETAIL's VIEW
         public ActionResult PaymentSearch()
         {
@@ -470,7 +458,6 @@ namespace AirlinesReservationSystem.Controllers
         {
             string s = PaymentDAO.BlockingOrderPaid(id, CCNo, CVV);
             return Content(s);
-            //return RedirectToAction("PaymentResult", new { id = id });
         }
         // CANCELED THE PAID ORDER
         public ActionResult CancelPayment(long id)
