@@ -196,9 +196,13 @@
                 {
                     if (Session["user"].ToString() == Model.UserID)
                     {
-                        @*@Html.ActionLink("Pay this order", "BlockingPayment", new { @id = Model.OrderID }, new { @class = "btn btn-lg btn-success text-center" })*@
-                        <input type="button" class="btn btn-lg btn-success" value="Pay this order" data-toggle="modal" data-target="#modal" onclick="confirmPayBlocking(@Model.OrderID)" />
-                        <input type="button" class="btn btn-lg btn-danger" value="Cancel this order" data-toggle="modal" data-target="#modal" onclick="confirmCancelOrder(@Model.OrderID)" />
+                        var DepartureTime = AirlinesReservationSystem.Models.arsadmin.TicketDAO.GetTicket(TicketList.Where(t => t.IsReturn == false).FirstOrDefault().TicketID).Flight.DepartureTime;
+                        if (System.DateTime.Now < DepartureTime.AddDays(-14))
+                        {
+                            <input type="button" class="btn btn-lg btn-success" value="Pay this order" data-toggle="modal" data-target="#modal" onclick="confirmPayBlocking(@Model.OrderID)" />
+                            <input type="button" class="btn btn-lg btn-danger" value="Cancel this order" data-toggle="modal" data-target="#modal" onclick="confirmCancelOrder(@Model.OrderID)" />
+                        }
+
                     }
 
                 }
@@ -214,9 +218,10 @@
                     if (Session["user"].ToString() == Model.UserID)
                     {
                         var flight = AirlinesReservationSystem.Models.arsadmin.FlightDAO.GetFlight(TicketList.Where(t => t.IsReturn == false).FirstOrDefault().FNo);
-                        if (DateTime.Now <= flight.DepartureTime)
+                        if (DateTime.Now <= flight.DepartureTime.AddHours(2))
                         {
                             <input type="button" class="btn btn-lg btn-danger" value="Cancel this order" data-toggle="modal" data-target="#modal" onclick="confirmCancelOrder(@Model.OrderID)" />
+                            <a href="" class="btn btn-ars-light">Re-schedule</a>
                         }
 
                     }
@@ -256,8 +261,6 @@ else
 {
     <h4 class="">You cannot view this order.</h4>
 }
-
-
 
 <script>
 
