@@ -1,0 +1,38 @@
+﻿@model List<AirlinesReservationSystem.Models.Flight>
+@{
+    ViewBag.Title = "FlightAddTemplate";
+    int i = ViewBag.Index;
+    Layout = null;
+}
+<tr id="flightRow-@i">
+    <td>
+        @Html.TextBoxFor(model => model[i].FNo, new { @class = "form-control", @id = "fNo-" + i })
+    </td>
+    <td>
+        @Html.DropDownListFor(model => model[i].RNo, AirlinesReservationSystem.Models.arsadmin.Dropdowns.Routes(), new { @class = "form-control", @id = "fRoute-" + i })
+    </td>
+    <td>
+        @Html.TextBoxFor(model => model[i].DepartureTime, new { @class = "form-control", @type = "datetime-local", @id = "fDepart-" + i })
+    </td>
+    <td>
+        @Html.TextBoxFor(model => model[i].ArrivalTime, new { @class = "form-control", @type = "datetime-local", @id = "fArrive-" + i })
+    </td>
+    <td>
+        @Html.TextBoxFor(model => model[i].BasePrice, new { @class = "form-control" })
+    </td>
+</tr>
+
+
+<script>
+    $("#fRoute-" + @i).select2();
+    $("#flightRow-" + @i).change(function () {
+        var departure = $("#fDepart-" +@i).val();
+        var arrival = $("#fArrive-" +@i).val();
+        if (arrival <= departure) {
+            $('#btnSubmit').attr('disabled', 'disabled');
+        }
+        else {
+            $('#btnSubmit').removeAttr('disabled');
+        }
+    });
+</script>

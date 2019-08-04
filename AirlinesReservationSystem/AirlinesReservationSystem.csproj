@@ -343,6 +343,7 @@
     <Content Include="Views\Bank\EditCard.cshtml" />
     <Content Include="Views\ARSAdmin\RouteAddTemplate.cshtml" />
     <Content Include="Views\ARS\FlightCalendar.cshtml" />
+    <Content Include="Views\ARSAdmin\FlightAddTemplate.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
