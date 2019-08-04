@@ -12,6 +12,12 @@
     </td>
     <td>
         @Html.DropDownListFor(model => model[i].RAircraft, AirlinesReservationSystem.Models.arsadmin.Dropdowns.Aircrafts(), new { @class = "form-control", @id = "RAircraft-" + i })
+        <span style="display:none" class="text-danger" id="rangeError-@i">
+            <br />
+            Aircraft range: <span id="aircraftRange-@i"></span>
+            <br />
+            Flight distance: <span id="flightDistance-@i"></span>
+        </span>
     </td>
     <td>
         @Html.DropDownListFor(model => model[i].Departure, AirlinesReservationSystem.Models.arsadmin.Dropdowns.Airports(), new { @class = "form-control", @id = "Departure-" + i })
@@ -27,4 +33,31 @@
     $("#RAircraft-" + @i).select2();
     $("#Departure-" + @i).select2();
     $("#Destination-" + @i).select2();
+    $("#routeRow-" + @i).change(function () {
+        var range_@i;
+        var distance_@i;
+        var id = $("#RAircraft-" + @i).val();
+        var ap1 = $("#Departure-" + @i).val();
+        var ap2 = $("#Destination-" + @i).val();
+
+        $.post("/arsadmin/GetAircraftRange?id=" + id, function (result) {
+            range_@i = result;
+            $('#aircraftRange-' + @i).html(range_@i);
+        });
+
+        $.post("/arsadmin/GetFlightDistance?airport1=" + ap1 + "&airport2=" + ap2, function (result) {
+            distance_@i  = result;
+            $('#flightDistance-' + @i).html(distance_@i);
+            var range = parseInt($('#aircraftRange-' + @i).html(range_@i));
+            var distance = parseInt(result);
+            if (range < distance || distance == 0) {
+                $('#rangeError-' + @i).show();
+                $('#btnSubmit').attr('disabled', 'disabled');
+            }
+            else {
+                $('#rangeError-' + @i).hide();
+                $('#btnSubmit').removeAttr('disabled');
+            }
+        });
+    });
 </script>

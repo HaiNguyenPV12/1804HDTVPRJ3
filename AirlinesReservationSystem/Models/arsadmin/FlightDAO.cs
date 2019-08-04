@@ -41,6 +41,7 @@ namespace AirlinesReservationSystem.Models.arsadmin
             return false;
         }
 
+        //Add
         public static string AddFlight(Flight newF)
         {
             try

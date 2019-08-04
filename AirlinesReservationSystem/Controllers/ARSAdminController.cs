@@ -516,6 +516,18 @@ namespace AirlinesReservationSystem.Controllers
             return false;
         }
 
+        //===Get aircraft range for route adding===
+        public int GetAircraftRange(string id)
+        {
+            var a = RouteDAO.GetAircraft(id);
+            return a.Range;
+        }
 
+        //===Get distance between two airports===
+        public int GetFlightDistance(string airport1, string airport2)
+        {
+            var d = FlightDistanceDAO.GetFlightDistance(airport1, airport2);
+            return d == null ? 0 : d.Distance;
+        }
     }
 }

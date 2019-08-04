@@ -39,7 +39,7 @@
             </tr>
             <tbody id="RouteAddList"></tbody>
         </table>
-        <button type="submit" class="btn btn-ars-light">Add Route(s)</button>
+        <button type="submit" class="btn btn-ars-light" id="btnSubmit">Add Route(s)</button>
     }
 </div>
 
@@ -47,18 +47,17 @@
     $(document).ready(function () {
         var i = 0;
         appendForm();
-        i = i + 1;
 
         function appendForm() {
             $.post("/arsadmin/RouteAddTemplate?index=" + i, function (result) {
                 $("#RouteAddList").append(result);
+                i = i + 1;
             });
         }
 
         $('#btnAppend').click(function (e) {
             e.preventDefault();
             appendForm();
-            i = i + 1;
         });
 
         $('#btnDeappend').click(function (e) {
