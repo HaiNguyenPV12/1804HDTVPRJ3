@@ -122,22 +122,6 @@ namespace AirlinesReservationSystem.Controllers
             return RedirectToAction("Index");
         }
 
-
-        //Passing search parameters into view
-        //public ActionResult FlightList(FlightSearch flightSearch, bool? isReselect)
-        //{
-        //    Session["fid1"] = null;
-
-        //    //get original search parameters and rerun search query
-        //    if (isReselect == true)
-        //        flightSearch = (FlightSearch)Session["searchParams"];
-
-        //    ViewBag.RoundTrip = flightSearch.IsRoundTrip;
-        //    var model = FlightSearchDAO.GetFlightResults(flightSearch);
-        //    Session["searchResultsFirstTrip"] = model;
-        //    return View(model);
-        //}
-
         public ActionResult FlightList(FlightSearch flightSearch, bool? isReselect, int? page)
         {
             Session["fid1"] = null;
