@@ -26,7 +26,7 @@
             if (departureDate < currentDate) { $('#dateErrorNow').show(); }
             else { $('#dateError').show(); }
             invalidDate = true;
-            console.log(invalidDate);
+            //console.log(invalidDate);
         }
         else {
             var errorElement = document.getElementById("dateError");
@@ -55,7 +55,7 @@
         if (totalPassenger <= 0) {
             $('#seatError').show();
             invalidSeat = true;
-            console.log(invalidSeat);
+            //console.log(invalidSeat);
         }
         else {
             $('#seatError').hide();
@@ -86,7 +86,7 @@
 
     $('#flightSearchForm').change(function () {
         setTimeout(function () {
-            console.log('waiting');
+            //console.log('waiting');
         }, 150);
         if (invalidSeat || invalidDate) {
             $('#btnSubmit').attr('disabled', true);

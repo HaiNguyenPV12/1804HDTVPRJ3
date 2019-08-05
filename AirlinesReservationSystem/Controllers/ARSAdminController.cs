@@ -10,7 +10,7 @@ using AirlinesReservationSystem.Models.ars;
 
 namespace AirlinesReservationSystem.Controllers
 {
-    public class ARSAdminController : Controller
+    public partial class ARSAdminController : Controller
     {
         // GET: ARSAdmin
         public ActionResult Index() => IsLoggedIn() ? View() : (ActionResult)RedirectToAction("Login");
@@ -52,111 +52,7 @@ namespace AirlinesReservationSystem.Controllers
             return RedirectToAction("Index");
         }
 
-        // ================ ROUTE ==================
-        // ROUTE's VIEW
-        public ActionResult Route()
-        {
-            if (IsLoggedIn())
-            {
-                return View(RouteDAO.GetRouteList());
-            }
-            return RedirectToAction("Index");
-        }
-
-        // ROUTE DELETE's PROCESS
-        public ActionResult RouteDelete(int id) => IsLoggedIn() && RouteDAO.DeleteRoute(id) ? Content("OK") : Content("Error");
-
-        // ROUTE ADD'S VIEW
-        public ActionResult RouteAdd() => IsLoggedIn() ? View() : (ActionResult)RedirectToAction("Index");
-
-        //ROUTE ADD TEMPLATE
-        public ActionResult RouteAddTemplate(int index)
-        {
-            ViewBag.Index = index;
-            return View();
-        }
-
-        // ROUTE ADD'S PROCESS
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult RouteAdd(List<Route> newRoutes)
-        {
-            //init variables for validation purposes
-            bool invalid = false, invalid2 = false;
-            List<Route> routeToSkip = new List<Route>();
-            int total = newRoutes.Count;
-            List<string> added = new List<string>();
-
-            //check list for any invalid routes (if departure = destination)
-            foreach (var item in newRoutes)
-            {
-                if (item.Departure == item.Destination)
-                {
-                    ModelState.AddModelError("", string.Format("Error at: {0} with plane {1}. Arrival must be different than Departure", item.RAirline, item.RAircraft));
-                    invalid2 = true;
-                    //assign route as invalid
-                    routeToSkip.Add(item);
-                }
-            }
-            if (ModelState.IsValid || invalid == false)
-            {
-                bool skip = false;
-                foreach (var item in newRoutes)
-                {
-                    foreach (var itemToSkip in routeToSkip)
-                    {
-                        if (item.Equals(itemToSkip)) { skip = true; }
-                    }
-
-                    //skip if item in original list equals to any in designated invalid routes, reset skip check
-                    if (skip) { skip = false; continue; }
-
-                    //perform add procedure. If route is invalid, add feedback message as validation error,
-                    if (!RouteDAO.AddRoute(item))
-                    {
-                        ModelState.AddModelError("", string.Format("Could not add {0} with plane {1} going from {2} to {3}", item.RAirline, item.RAircraft, item.Departure, item.Destination));
-                        invalid = true;
-                        total--;
-                    }
-                    //else add to success strings to display in case invalid validation occurs
-                    else
-                        added.Add(string.Format("{0}({1}) : {2} - {3}", item.RAirline, item.RAircraft, item.Departure, item.Destination));
-                }
-
-                //if everything is inserted successfully, return to list
-                if (!invalid && !invalid2)
-                    return RedirectToAction("Route");
-
-                //if there were errors, resets page and notify any inserted routes
-                if (added.Count > 0)
-                {
-                    ModelState.AddModelError("", "Routes Added: ");
-                    foreach (var item in added) { ModelState.AddModelError("", item); }
-                }
-            }
-            return View();
-        }
-
-
-        // ROUTE EDIT'S VIEW
-        public ActionResult RouteEdit(int id) => IsLoggedIn() && RouteDAO.GetRoute(id) != null ? View(RouteDAO.GetRoute(id)) : (ActionResult)RedirectToAction("Index");
-
-        // ROUTE EDIT'S PROCESS
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult RouteEdit(Route updateR)
-        {
-            if (ModelState.IsValid)
-            {
-                var editResult = RouteDAO.UpdateRoute(updateR);
-                if (editResult == "ok")
-                {
-                    return RedirectToAction("Route");
-                }
-                ModelState.AddModelError("", editResult);
-            }
-            return View();
-        }
+        
 
         // ================ EMPLOYEE ==================
         // EMPLOYEE's VIEW
@@ -365,146 +261,7 @@ namespace AirlinesReservationSystem.Controllers
             return View(updateS);
         }
 
-        // ================ FLIGHT ==================
-        // FLIGHT's VIEW
-        public ActionResult Flight()
-        {
-            if (IsLoggedIn())
-            {
-                return View(FlightDAO.GetFlightList());
-            }
-            return RedirectToAction("Index");
-        }
-
-        // FLIGHT DELETE's PROCESS
-        public ActionResult FlightDelete(string id) => IsLoggedIn() && FlightDAO.DeleteFlight(id) ? Content("OK") : Content("Error");
-
-        // FLIFHT ADD'S VIEW
-        public ActionResult FlightAdd()
-        {
-            if (IsLoggedIn())
-            {
-                //ViewBag.RouteData = RouteDAO.GetRouteList();
-                return View();
-            }
-            return RedirectToAction("Index");
-        }
-
-
-        //public ActionResult FlightAdd(List<Flight> newF)
-        //{
-        //    ModelState.Remove("AvailSeatsF");
-        //    ModelState.Remove("AvailSeatsE");
-        //    ModelState.Remove("AvailSeatsB");
-        //    ModelState.Remove("FlightTime");
-        //    if (ModelState.IsValid)
-        //    {
-        //        string addResult = FlightDAO.AddFlight(newF);
-        //        if (addResult == "ok")
-        //        {
-        //            return RedirectToAction("Flight");
-        //        }
-        //        else
-        //        {
-        //            ModelState.AddModelError("", addResult);
-        //        }
-        //    }
-        //    ViewBag.RouteData = RouteDAO.GetRouteList();
-        //    return View();
-        //}
-
-        public ActionResult FlightAddTemplate(int index)
-        {
-            ViewBag.Index = index;
-            return View();
-        }
-
-        // FLIGHT ADD'S PROCESS
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult FlightAdd(List<Flight> newFlights)
-        {
-            //init validation variables
-            bool invalid = false;
-            int total = newFlights.Count;
-            List<string> added = new List<string>();
-
-            ModelState.Remove("AvailSeatsF");
-            ModelState.Remove("AvailSeatsE");
-            ModelState.Remove("AvailSeatsB");
-            ModelState.Remove("FlightTime");
-            if (ModelState.IsValid)
-            {
-                foreach (var item in newFlights)
-                {
-                    item.AvailSeatsF = item.Route.Aircraft.FirstClassSeats;
-                    item.AvailSeatsB = item.Route.Aircraft.BussinessSeats;
-                    item.AvailSeatsE = item.Route.Aircraft.EconomySeats;
-                    var diff = item.ArrivalTime.Hour - item.DepartureTime.Hour;
-                    item.FlightTime = int.Parse(diff.ToString());
-                    if (!FlightDAO.AddFlight(item))
-                    {
-                        ModelState.AddModelError("", string.Format("Could not add flight {0}", item.FNo));
-                        invalid = true;
-                        total--;
-                    }
-                    else
-                        added.Add(string.Format("{0}", item.FNo));
-                }
-            }
-
-            if (!invalid)
-            {
-                return RedirectToAction("Flight");
-            }
-
-            if (added.Count > 0)
-            {
-                ModelState.AddModelError("", "Flights Added: ");
-                foreach (var item in added) { ModelState.AddModelError("", item); }
-            }
-
-            return View();
-        }
-
-        // FLIGHT EDIT'S VIEW
-        public ActionResult FlightEdit(string id)
-        {
-            if (IsLoggedIn())
-            {
-                var f = FlightDAO.GetFlight(id);
-                if (f != null)
-                {
-                    ViewBag.RouteData = RouteDAO.GetRouteList();
-                    return View(f);
-                }
-            }
-            return RedirectToAction("Index");
-        }
-
-        // FLIGHT EDIT'S PROCESS
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult FlightEdit(Flight updateF)
-        {
-            ModelState.Remove("AvailSeatsF");
-            ModelState.Remove("AvailSeatsE");
-            ModelState.Remove("AvailSeatsB");
-            ModelState.Remove("FlightTime");
-            if (ModelState.IsValid)
-            {
-                var editResult = FlightDAO.UpdateFlight(updateF);
-                if (editResult == "ok")
-                {
-                    return RedirectToAction("Flight");
-                }
-                ModelState.AddModelError("", editResult);
-            }
-            ViewBag.RouteData = RouteDAO.GetRouteList();
-            return View(updateF);
-        }
-
-
+        
         // ================ ORDER ==================
         //ORDER VIEW
         public ActionResult Order() => IsLoggedIn() ? View(OrderDAO.GetOrderList()) : (ActionResult)RedirectToAction("Index");
@@ -565,20 +322,6 @@ namespace AirlinesReservationSystem.Controllers
                 }
             }
             return false;
-        }
-
-        //===Get aircraft range for route adding===
-        public int GetAircraftRange(string id)
-        {
-            var a = RouteDAO.GetAircraft(id);
-            return a.Range;
-        }
-
-        //===Get distance between two airports===
-        public int GetFlightDistance(string airport1, string airport2)
-        {
-            var d = FlightDistanceDAO.GetFlightDistance(airport1, airport2);
-            return d == null ? 0 : d.Distance;
         }
     }
 }

@@ -100,6 +100,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\arsAdmin\flightAdd.css" />
     <Content Include="Content\ars\FlightList.css" />
     <Content Include="Content\ars\index.css" />
     <Content Include="Content\ars\layoutadmin.css" />
@@ -165,6 +166,7 @@
     </Content>
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-ui.js" />
+    <Content Include="Scripts\select2.full.min.js" />
     <Content Include="Scripts\select2.min.js" />
     <Content Include="Scripts\typeahead.bundle.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
@@ -195,6 +197,8 @@
     <Compile Include="Controllers\ARSController.cs" />
     <Compile Include="Controllers\ARSFlightList.cs" />
     <Compile Include="Controllers\BankController.cs" />
+    <Compile Include="Controllers\FlightManager.cs" />
+    <Compile Include="Controllers\RouteManager.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
