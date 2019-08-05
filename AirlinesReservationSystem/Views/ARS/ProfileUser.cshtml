@@ -3,117 +3,162 @@
 @{
     ViewBag.Title = "ProfileUser";
 }
+<link href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" type="text/css" rel="stylesheet" />
+<div class="container">
+    <div class="card">
+        <div class="card-body">
 
-    <div class="container">
-        <div class="card">
-            <div class="card-body">
-
-                <div class="form-horizontal" style="margin-left:200px">
-                    <h4>Profile User</h4>
-                    <hr />
-                    <table class="table table-hover table-sm">
-                        <tr class="col-6">
-                            <th>
+            <div class="form-horizontal" style="margin-left:200px">
+                <h4>Profile User</h4>
+                <hr />
+                <table class="table table-hover table-sm">
+                    <tr class="col-6">
+                        <th>
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> <i class="fas fa-users" style='font-size:17px'></i> </span>
+                                &nbsp;
                                 @Html.DisplayNameFor(model => model.UserID)
-                            </th>
-                            <th>
-                                @Html.DisplayFor(model => model.UserID)
-                            </th>
+                            </div>
+                        </th>
+                        <th>
+                            @Html.DisplayFor(model => model.UserID)
+                        </th>
 
-                        </tr>
-                        <tr class="col-6">
-                            <th>
+                    </tr>
+                    <tr class="col-6">
+                        <th>
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> <i class="fa fa-user" style='font-size:22px'></i> </span>
+                                &nbsp;
                                 @Html.DisplayNameFor(model => model.FirstName)
-                            </th>
-                            <th>
-                                @Html.DisplayFor(model => model.FirstName)
-                            </th>
-                        </tr>
-                        <tr class="col-6">
-                            <th>
+                            </div>
+                        </th>
+                        <th>
+                            @Html.DisplayFor(model => model.FirstName)
+                        </th>
+                    </tr>
+                    <tr class="col-6">
+                        <th>
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> <i class="fa fa-user" style='font-size:22px'></i> </span>
+                                &nbsp;
                                 @Html.DisplayNameFor(model => model.LastName)
-                            </th>
-                            <th>
-                                @Html.DisplayFor(model => model.LastName)
-                            </th>
-                        </tr>
-                        <tr class="col-6">
-                            <th>
+                            </div>
+                        </th>
+                        <th>
+                            @Html.DisplayFor(model => model.LastName)
+                        </th>
+                    </tr>
+                    <tr class="col-6">
+                        <th>
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> <i class="fa fa-address-book" style='font-size:21px'></i> </span>
+                                &nbsp;
                                 @Html.DisplayNameFor(model => model.Address)
-                            </th>
-                            <th>
-                                @Html.DisplayFor(model => model.Address)
-                            </th>
-                        </tr>
-                        <tr class="col-6">
-                            <th>
+                            </div>
+                        </th>
+                        <th>
+                            @Html.DisplayFor(model => model.Address)
+                        </th>
+                    </tr>
+                    <tr class="col-6">
+                        <th>
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> <i class="fa fa-phone" style='font-size:20px'></i> </span>
+                                &nbsp;
                                 @Html.DisplayNameFor(model => model.Phone)
-                            </th>
-                            <th>
-                                @Html.DisplayFor(model => model.Phone)
-                            </th>
-                        </tr>
-                        <tr class="col-6">
-                            <th>
+                            </div>
+                        </th>
+                        <th>
+                            @Html.DisplayFor(model => model.Phone)
+                        </th>
+                    </tr>
+                    <tr class="col-6">
+                        <th>
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> <i class="fa fa-envelope" style='font-size:20px'></i> </span>
+                                &nbsp;
                                 @Html.DisplayNameFor(model => model.Email)
-                            </th>
-                            <th>
-                                @Html.DisplayFor(model => model.Email)
-                            </th>
-                        </tr>
-                        <tr class="col-6">
-                            <th>
+                            </div>
+                        </th>
+                        <th>
+                            @Html.DisplayFor(model => model.Email)
+                        </th>
+                    </tr>
+                    <tr class="col-6">
+                        <th>
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> <i class="fa fa-genderless" style='font-size:20px'></i> </span>
+                                &nbsp;&nbsp;&nbsp;
                                 @Html.DisplayNameFor(model => model.Sex)
-                            </th>
-                            <th>
-                                @if (Model.Sex)
-                                {
-                                    @:Male
-                                }
-                                else
-                                {
-                                    @:Female
-                                }
-                            </th>
-                        </tr>
-                        <tr class="col-6">
-                            <th>
+                            </div>
+                        </th>
+                        <th>
+                            @if (Model.Sex)
+                            {
+                                @:Male
+                            }
+                            else
+                            {
+                                @:Female
+                            }
+                        </th>
+                    </tr>
+                    <tr class="col-6">
+                        <th>
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> <i class="fas fa-birthday-cake" style='font-size:22px'></i> </span>
+                                &nbsp;
                                 @Html.DisplayNameFor(model => model.Age)
-                            </th>
-                            <th>
-                                @Html.DisplayFor(model => model.Age)
-                            </th>
-                        </tr>
-                        <tr class="col-6">
-                            <th>
+                            </div>
+                        </th>
+                        <th>
+                            @Html.DisplayFor(model => model.Age)
+                        </th>
+                    </tr>
+                    <tr class="col-6">
+                        <th>
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> <i class='fas fa-credit-card' style='font-size:20px'></i> </span>
+                                &nbsp;
                                 @Html.DisplayNameFor(model => model.CCNo)
-                            </th>
-                            <th>
-                                @Html.DisplayFor(model => model.CCNo)
-                            </th>
-                        </tr>
-                        <tr class="col-6">
-                            <th>
+                            </div>
+                        </th>
+                        <th>
+                            @Html.DisplayFor(model => model.CCNo)
+                        </th>
+                    </tr>
+                    <tr class="col-6">
+                        <th>
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> <i class='fas fa-passport' style='font-size:24px'></i> </span>
+                                &nbsp;
                                 @Html.DisplayNameFor(model => model.PassportNo_)
-                            </th>
-                            <th>
-                                @Html.DisplayFor(model => model.PassportNo_)
-                            </th>
-                        </tr>
-                        <tr class="col-6">
-                            <th>
+                            </div>
+                        </th>
+                        <th>
+                            @Html.DisplayFor(model => model.PassportNo_)
+                        </th>
+                    </tr>
+                    <tr class="col-6">
+                        <th>
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> <i class="fa fa-plane" style='font-size:20px'></i> </span>
+                                &nbsp;
                                 @Html.DisplayNameFor(model => model.Skymiles)
-                            </th>
-                            <th>
-                                @Html.DisplayFor(model => model.Skymiles)
-                            </th>
-                        </tr>
-                    </table>
-                    <p>
-                        @Html.ActionLink("Edit", "EditUser", null, new { @class = "btn btn-success" })
-                        @Html.ActionLink("Back to Index", "Index", null, new { @class = "btn btn-dark" })
-                    </p>
-                </div>
+                            </div>
+
+                        </th>
+                        <th>
+                            @Html.DisplayFor(model => model.Skymiles)
+                        </th>
+                    </tr>
+                </table>
+                <p>
+                    @Html.ActionLink("Edit", "EditUser", null, new { @class = "btn btn-success" })
+                    @Html.ActionLink("Back to Index", "Index", null, new { @class = "btn btn-dark" })
+                </p>
             </div>
         </div>
     </div>
+</div>

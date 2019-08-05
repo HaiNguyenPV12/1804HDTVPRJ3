@@ -49,6 +49,7 @@ namespace AirlinesReservationSystem.Controllers
             return View(flightSearch);
         }
 
+        //LOGIN VIEW
         public ActionResult Login()
         {
             if (Session["user"] == null)
@@ -73,6 +74,7 @@ namespace AirlinesReservationSystem.Controllers
             return View();
         }
 
+        //LOGIN PROCESS
         [HttpPost]
         public ActionResult Login(User login)
         {
@@ -257,9 +259,10 @@ namespace AirlinesReservationSystem.Controllers
         //public ActionResult TypeAheadDemo() => View();
         //public ActionResult JqueryUIDemo() => View();
 
-        //Sign up view
+        //REGISTER VIEW
         public ActionResult Register() => View();
 
+        //REGISTER PROCESS
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Register(User newU)
@@ -277,7 +280,7 @@ namespace AirlinesReservationSystem.Controllers
         }
 
 
-        //User Details View
+        //PROFILE USER VIEW
         public ActionResult ProfileUser()
         {
             if (Session["user"] != null)
@@ -292,7 +295,7 @@ namespace AirlinesReservationSystem.Controllers
         }
 
 
-        //Edit User details view
+        //EDIT USER VIEW
         public ActionResult EditUser()
         {
             if (Session["user"] != null)
@@ -306,14 +309,14 @@ namespace AirlinesReservationSystem.Controllers
             return RedirectToAction("Index");
         }
 
-
+        //EDIT USER PROCESS
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult EditUser(User updateU)
         {
             if (ModelState.IsValid)
             {
-                //if edit was successful
+                //IF EDIT WAS SUCCESSFUL
                 if (UsersDAO.UpdateUser(updateU))
                 {
                     return RedirectToAction("ProfileUser");

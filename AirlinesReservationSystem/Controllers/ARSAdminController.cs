@@ -189,12 +189,16 @@ namespace AirlinesReservationSystem.Controllers
             return View(updateE);
         }
         //================ CUSTOMER ==================
-
+        //CUSTOMER VIEW
         public ActionResult Customer() => IsLoggedIn() ? View() : (ActionResult)RedirectToAction("Index");
+
+        //CUSTOMER LIST
         public ActionResult CustomerList() => IsLoggedIn() ? PartialView(UsersDAO.GetUserList()) : (ActionResult)Content("");
 
+        //CUSTOMER EDIT
         public ActionResult CustomerEdit(string id) => IsLoggedIn() && UsersDAO.GetUser(id) != null ? PartialView(UsersDAO.GetUser(id)) : (ActionResult)RedirectToAction("Index");
 
+        //CUSTOMER EDIT'S PROCESS
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult CustomerEdit(User updateU)
@@ -291,13 +295,15 @@ namespace AirlinesReservationSystem.Controllers
         // ================ ORDER ==================
         //ORDER VIEW
         public ActionResult Order() => IsLoggedIn() ? View(OrderDAO.GetOrderList()) : (ActionResult)RedirectToAction("Index");
-        //Cancel Order
+
+
+        //CANCELLED ORDER
         public ActionResult CancelOrder(long id)
         {
             OrderDAO.CancelOrder(id);
             return RedirectToAction("Order");
         }
-        //TICKET VIEW
+        //ORDER DETAILS VIEW
         public ActionResult OrderDetails(long id) => IsLoggedIn() ? View(TicketDAO.GetTicketList(id)) : (ActionResult)RedirectToAction("Index");
 
 
@@ -316,6 +322,7 @@ namespace AirlinesReservationSystem.Controllers
             return RedirectToAction("Index");
         }
 
+        // TICKETEDIT'S PROCESS
         // TICKET EDIT'S PROCESS
         [HttpPost]
         [ValidateAntiForgeryToken]
