@@ -429,36 +429,89 @@ namespace AirlinesReservationSystem.Controllers
         {
             if (IsLoggedIn())
             {
-                ViewBag.RouteData = RouteDAO.GetRouteList();
+                //ViewBag.RouteData = RouteDAO.GetRouteList();
                 return View();
             }
             return RedirectToAction("Index");
         }
 
+
+        //public ActionResult FlightAdd(List<Flight> newF)
+        //{
+        //    ModelState.Remove("AvailSeatsF");
+        //    ModelState.Remove("AvailSeatsE");
+        //    ModelState.Remove("AvailSeatsB");
+        //    ModelState.Remove("FlightTime");
+        //    if (ModelState.IsValid)
+        //    {
+        //        string addResult = FlightDAO.AddFlight(newF);
+        //        if (addResult == "ok")
+        //        {
+        //            return RedirectToAction("Flight");
+        //        }
+        //        else
+        //        {
+        //            ModelState.AddModelError("", addResult);
+        //        }
+        //    }
+        //    ViewBag.RouteData = RouteDAO.GetRouteList();
+        //    return View();
+        //}
+
+        public ActionResult FlightAddTemplate(int index)
+        {
+            ViewBag.Index = index;
+            return View();
+        }
+
         // FLIGHT ADD'S PROCESS
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult FlightAdd(Flight newF)
+        public ActionResult FlightAdd(List<Flight> newFlights)
         {
+            //init validation variables
+            bool invalid = false;
+            int total = newFlights.Count;
+            List<string> added = new List<string>();
+
             ModelState.Remove("AvailSeatsF");
             ModelState.Remove("AvailSeatsE");
             ModelState.Remove("AvailSeatsB");
             ModelState.Remove("FlightTime");
             if (ModelState.IsValid)
             {
-                string addResult = FlightDAO.AddFlight(newF);
-                if (addResult == "ok")
+                foreach (var item in newFlights)
                 {
-                    return RedirectToAction("Flight");
-                }
-                else
-                {
-                    ModelState.AddModelError("", addResult);
+                    item.AvailSeatsF = item.Route.Aircraft.FirstClassSeats;
+                    item.AvailSeatsB = item.Route.Aircraft.BussinessSeats;
+                    item.AvailSeatsE = item.Route.Aircraft.EconomySeats;
+                    var diff = item.ArrivalTime.Hour - item.DepartureTime.Hour;
+                    item.FlightTime = int.Parse(diff.ToString());
+                    if (!FlightDAO.AddFlight(item))
+                    {
+                        ModelState.AddModelError("", string.Format("Could not add flight {0}", item.FNo));
+                        invalid = true;
+                        total--;
+                    }
+                    else
+                        added.Add(string.Format("{0}", item.FNo));
                 }
             }
-            ViewBag.RouteData = RouteDAO.GetRouteList();
+
+            if (!invalid)
+            {
+                return RedirectToAction("Flight");
+            }
+
+            if (added.Count > 0)
+            {
+                ModelState.AddModelError("", "Flights Added: ");
+                foreach (var item in added) { ModelState.AddModelError("", item); }
+            }
+
             return View();
         }
+
         // FLIGHT EDIT'S VIEW
         public ActionResult FlightEdit(string id)
         {
@@ -559,6 +612,18 @@ namespace AirlinesReservationSystem.Controllers
             return false;
         }
 
+        //===Get aircraft range for route adding===
+        public int GetAircraftRange(string id)
+        {
+            var a = RouteDAO.GetAircraft(id);
+            return a.Range;
+        }
 
+        //===Get distance between two airports===
+        public int GetFlightDistance(string airport1, string airport2)
+        {
+            var d = FlightDistanceDAO.GetFlightDistance(airport1, airport2);
+            return d == null ? 0 : d.Distance;
+        }
     }
 }
