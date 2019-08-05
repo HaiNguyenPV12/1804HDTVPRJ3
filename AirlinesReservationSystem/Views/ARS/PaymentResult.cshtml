@@ -221,7 +221,7 @@
                         if (DateTime.Now <= flight.DepartureTime.AddHours(2))
                         {
                             <input type="button" class="btn btn-lg btn-danger" value="Cancel this order" data-toggle="modal" data-target="#modal" onclick="confirmCancelOrder(@Model.OrderID)" />
-                            <a href="" class="btn btn-lg btn-ars-light">Re-schedule</a>
+                            <a href="/ars/reschedule?id=@Model.OrderID" class="btn btn-lg btn-ars-light">Re-schedule</a>
                         }
 
                     }

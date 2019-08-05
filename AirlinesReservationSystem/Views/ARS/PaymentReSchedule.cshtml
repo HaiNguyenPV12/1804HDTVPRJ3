@@ -1,0 +1,627 @@
+﻿
+@{
+    ViewBag.Title = "Payment";
+
+    // Initialize variables
+    int AdultNum = ViewBag.AdultNum;
+    int ChildNum = ViewBag.ChildNum;
+    int PeopleNum = AdultNum + ChildNum;
+    string SeatClass = ViewBag.Class;
+    string SeatName = "";
+    double F1Fee = 0;
+    double F2Fee = 0;
+    double ReFFee = 0;
+
+    if (SeatClass == "F")
+    {
+        SeatName = "First Class";
+    }
+    else if (SeatClass == "B")
+    {
+        SeatName = "Bussiness Class";
+    }
+    else
+    {
+        SeatName = "Economy Class";
+    }
+
+    int count = 0;
+    int FNoCount = 0;
+
+    // Initialize Flight objects
+    // FInfo = Oneway/First trip/First stop's Flight object
+    // FInfo2 = Second stop's Flight object
+    // ReFInfo = Return trip's Flight object
+    List<string> FNos = ViewBag.FNos;
+    AirlinesReservationSystem.Models.Flight FInfo1 = AirlinesReservationSystem.Models.arsadmin.FlightDAO.GetFlight(FNos[0]);
+    F1Fee = AirlinesReservationSystem.Models.ars.PaymentDAO.GetFlightServiceFee(FInfo1.RNo);
+
+    AirlinesReservationSystem.Models.Flight FInfo2 = null;
+    if (FNos.Count() > 1)
+    {
+        FInfo2 = AirlinesReservationSystem.Models.arsadmin.FlightDAO.GetFlight(FNos[1]);
+        F2Fee = AirlinesReservationSystem.Models.ars.PaymentDAO.GetFlightServiceFee(FInfo2.RNo);
+    }
+    AirlinesReservationSystem.Models.Flight ReFInfo = null;
+    if (!string.IsNullOrEmpty(ViewBag.ReFNo))
+    {
+        ReFInfo = AirlinesReservationSystem.Models.arsadmin.FlightDAO.GetFlight(ViewBag.ReFNo);
+        ReFFee = AirlinesReservationSystem.Models.ars.PaymentDAO.GetFlightServiceFee(ReFInfo.RNo);
+    }
+
+    // Get logged in user's information
+    var user = AirlinesReservationSystem.Models.ars.UsersDAO.GetUser(Session["user"].ToString());
+    // Get current serving services list
+    var serviceList = AirlinesReservationSystem.Models.arsadmin.ServiceDAO.GetServiceList().Where(s => s.IsServing == true);
+
+    var oldTicketList = AirlinesReservationSystem.Models.ars.PaymentDAO.GetTicketList(long.Parse(Session["reschedule"].ToString()));
+}
+
+<h2>Payment</h2>
+
+<div class="row container-fluid" id="paymentMainDiv">
+    @* ----- MAIN ----- *@
+    <div class="col-8">
+        @* ----- START FORM ----- *@
+        <form id="frmPayment" name="frmPayment">
+            @Html.AntiForgeryToken()
+
+            @* ----- INITIALIZE VARIABLEs ----- *@
+            <input type="hidden" name="OldOrderID" id="OldOrderID" value="@Session["reschedule"].ToString()" />
+            <input type="hidden" id="PeopleNum" name="PeopleNum" value="@PeopleNum" />
+            <input type="hidden" name="AdultNum" value="@AdultNum" />
+            <input type="hidden" name="ChildNum" value="@ChildNum" />
+            <input type="hidden" name="Total" id="Total" value="" />
+            @* ----- INITIALIZE ONEWAY/FIRST TRIP/FIRST STOP ----- *@
+            <input type="hidden" name="FNo[1]" value="@FInfo1.FNo" />
+            <input type="hidden" id="FPrice[1]" value="@FInfo1.BasePrice" />
+            @* ----- INITIALIZE SECOND STOP ----- *@
+            @if (FInfo2 != null)
+            {
+                <input type="hidden" name="FNo[2]" value="@FInfo2.FNo" />
+                <input type="hidden" id="FPrice[2]" value="@FInfo2.BasePrice" />
+            }
+            @* ----- INITIALIZE RETURN TRIP ----- *@
+            @if (ReFInfo != null)
+            {
+                <input type="hidden" name="ReFNo" id="ReFNo" value="@ReFInfo.FNo" />
+                <input type="hidden" id="ReFPrice" value="@ReFInfo.BasePrice" />
+            }
+            <input type="hidden" name="Class" value="@SeatClass" />
+            @* ----- INITIALIZE END ----- *@
+
+            <div class="card">
+                <div class="card-header">
+                    <h4>Passenger Information</h4>
+                </div>
+                <div class="card-body">
+                    <div id="adultSection">
+                        @{int i = 1;}
+                        @* ----- ADULT INFO ----- *@
+                        @foreach (var item in oldTicketList.Where(t => t.IsReturn == false && t.Age >= 14).GroupBy(t => t.Firstname))
+                        {
+                            int sex = item.FirstOrDefault().Sex ? 1 : 0;
+                            string sexStr = item.FirstOrDefault().Sex ? "Male" : "Female";
+                            <h5>Adult @i</h5>
+                            <div class="form-group form-inline">
+                                <h6 class="col-md-4">
+                                    Firstname
+                                </h6>
+                                <h6 class="col-md-4">
+                                    Lastname
+                                </h6>
+                                <h6 class="col-md-2">
+                                    Gender
+                                </h6>
+                                <h6 class="col-md-2">
+                                    Age
+                                </h6>
+                                <div class="col-md-4">
+                                    <input type="text" name="Firstname@(count)" class="form-control" style="width:100%" value="@item.FirstOrDefault().Firstname" readonly />
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" name="Lastname@(count)" class="form-control" style="width:100%" value="@item.FirstOrDefault().Lastname" readonly />
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="text" class="form-control" value="@sexStr" style="width:100%" readonly />
+                                    <input type="hidden" name="Sex@(count)" class="form-control" value="@sex" />
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="number" name="Age@(count)" class="form-control" style="width:100%" value="@item.FirstOrDefault().Age" readonly />
+                                </div>
+                            </div>
+                            <div class="form-group form-inline">
+                                <h6 class="col-md-4">
+                                    Passport No.
+                                </h6>
+                                <h6 class="col-md-4">
+                                    Seat Class
+                                </h6>
+                                <div class="col-md-4"></div>
+                                <div class="col-md-4">
+                                    <input type="text" name="PassportNo@(count)" class="form-control" style="width:100%" value="@item.FirstOrDefault().PassportNo" readonly />
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" value="@SeatName" readonly class="form-control" style="width:100%" />
+                                </div>
+                            </div>
+
+                            var itemServiceList = AirlinesReservationSystem.Models.ars.ReScheduleDAO.GetServiceList(item.FirstOrDefault().TicketID);
+                            if (itemServiceList.Count() > 0)
+                            {
+                                <div class="card ml-3 mb-3">
+                                    <div class="card-header">
+                                        <a class="card-link">Service for Adult @i</a>
+                                    </div>
+                                    <div>
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                @{
+                                                    foreach (var itemService in itemServiceList)
+                                                    {
+
+                                                        @:<p> @serviceList.FirstOrDefault(s => s.ServiceID == itemService.ServiceID).ServiceName </p>
+                                                        double itemServiceFee = serviceList.FirstOrDefault(s => s.ServiceID == itemService.ServiceID).ServiceFee;
+                                                        <input type="hidden" name="Service@(count)" value="@itemService.ServiceID" value2="@itemServiceFee" />
+                                                    }
+                                                }
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            count++;
+                            i++;
+                            <hr />
+                        }
+                    </div>
+
+                    <div id="childSection">
+                        @{i = 1;}
+                        @* ----- CHILDREN INFO ----- *@
+                        @foreach (var item in oldTicketList.Where(t => t.IsReturn == false && t.Age < 14).GroupBy(t => t.Firstname))
+                        {
+                            int sex = item.FirstOrDefault().Sex ? 1 : 0;
+                            string sexStr = item.FirstOrDefault().Sex ? "Male" : "Female";
+                            <h5>Children @i</h5>
+                            <div class="form-group form-inline">
+                                <h6 class="col-md-4">
+                                    Firstname
+                                </h6>
+                                <h6 class="col-md-4">
+                                    Lastname
+                                </h6>
+                                <h6 class="col-md-2">
+                                    Gender
+                                </h6>
+                                <h6 class="col-md-2">
+                                    Age
+                                </h6>
+                                <div class="col-md-4">
+                                    <input type="text" name="Firstname@(count)" class="form-control" style="width:100%" value="@item.FirstOrDefault().Firstname" readonly />
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" name="Lastname@(count)" class="form-control" style="width:100%" value="@item.FirstOrDefault().Lastname" readonly />
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="text" class="form-control" value="@sexStr" style="width:100%" readonly />
+                                    <input type="hidden" name="Sex@(count)" class="form-control" value="@sex" />
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="number" name="Age@(count)" class="form-control" style="width:100%" value="@item.FirstOrDefault().Age" readonly />
+                                </div>
+                            </div>
+                            <div class="form-group form-inline">
+                                <h6 class="col-md-4">
+                                    Passport No.
+                                </h6>
+                                <h6 class="col-md-4">
+                                    Seat Class
+                                </h6>
+                                <div class="col-md-4"></div>
+                                <div class="col-md-4">
+                                    <input type="text" name="PassportNo@(count)" class="form-control" style="width:100%" value="@item.FirstOrDefault().PassportNo" readonly />
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" value="@SeatName" readonly class="form-control" style="width:100%" />
+                                </div>
+                            </div>
+
+                            var itemServiceList = AirlinesReservationSystem.Models.ars.ReScheduleDAO.GetServiceList(item.FirstOrDefault().TicketID);
+                            if (itemServiceList.Count() > 0)
+                            {
+                                <div class="card ml-3 mb-3">
+                                    <div class="card-header">
+                                        <a class="card-link">Service for Children @i</a>
+                                    </div>
+                                    <div>
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                @{
+                                                    foreach (var itemService in itemServiceList)
+                                                    {
+
+                                                        @:<p> @serviceList.FirstOrDefault(s => s.ServiceID == itemService.ServiceID).ServiceName </p>
+                                                        double itemServiceFee = serviceList.FirstOrDefault(s => s.ServiceID == itemService.ServiceID).ServiceFee;
+                                                        <input type="hidden" name="Service@(count)" value="@itemService.ServiceID" value2="@itemServiceFee" />
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            count++;
+                            i++;
+                            <hr />
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-2">
+                <div class="card-header">
+                    <h4>Booking User</h4>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-5 text-right">Name</dt>
+                        <dd class="col-7">@user.FirstName @user.LastName</dd>
+                        <dt class="col-5 text-right">Email</dt>
+                        <dd class="col-7">@user.Email</dd>
+                        <dt class="col-5 text-right">Phone</dt>
+                        <dd class="col-7">@user.Phone</dd>
+                        <dt class="col-5 text-right">Credit Card No.</dt>
+                        <dd class="col-7">
+                            <input type="text" name="CCNo" id="CCNo" value="@user.CCNo" class="form-control" />
+                        </dd>
+                        <dt class="col-5 text-right">CVV</dt>
+                        <dd class="col-7">
+                            <input type="text" name="CVV" id="CVV" class="form-control" />
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+            <div class="row container-fluid text-danger" id="paymentConfirmDiv">
+
+            </div>
+            <div class="text-center mt-2">
+                <button type="button" class="btn btn-success" onclick="validatePayment('book')">
+                    <h2>Confirm Re-schedule</h2>
+                    <i>Confirm choosing this will cancel past order and create new one</i>
+                </button>
+                <input type="submit" name="name" value="" class="text-hide" />
+
+            </div>
+        </form>
+    </div>
+
+    @* ----- PAYMENT DETAIL ----- *@
+    <div class="col-4">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="text-center">Payment's detail</h4>
+            </div>
+            <div class="card-body" id="paymentDiv">
+
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+
+
+
+<script>
+    var fprice = $("#FPrice").val();
+    var refprice = null;
+    if ($("#FPrice").length) {
+        refprice = $("#ReFPrice").val();
+    }
+
+    refreshPayment();
+
+    // Function for Blocking and Booking buttons
+    function validatePayment(type) {
+        if ($('#frmPayment')[0].checkValidity()) {
+            var form = $("#frmPayment").serialize();
+            if (type=="block") {
+                form += "&IsBlock=''";
+            }
+
+            $.post("/ars/paymentreschedule", form, function (result) {
+                if (result.substring(0, 2) == "ok") {
+                    window.location.href = "/ars/paymentresult?id=" + result.substring(3, result.length);
+                } else {
+                    $('#paymentConfirmDiv').html(result);
+                }
+
+                console.log(result);
+            });
+        } else {
+            var form = $("#frmPayment").serialize();
+            console.log(form);
+            $('#frmPayment').find(':submit').click();
+        }
+    }
+
+    // Function for refreshing passport number
+    // If children exists, it's passport list will refresh as you type in adult's passport
+    function refreshPassport() {
+        if (@ChildNum > 0) {
+            var insertStr = "";
+            $("#adultSection input[name^='PassportNo']").each(function () {
+                if ($(this).val().trim()!="") {
+                    insertStr += "<option value='" + $(this).val() + "'>" + $(this).val() + "</option>";
+                }
+            });
+            if (insertStr.trim() == "") {
+                insertStr = "<option value=''>Enter adult's passport first</option>";
+            }
+            $("#childSection select[name^='PassportNo']").each(function () {
+                $(this).html(insertStr);
+            });
+        }
+    }
+
+
+    // Function for showing payment details
+    // It also refresh payment details as you make changes to services
+    function refreshPayment() {
+        // init variables
+        //$("#paymentDiv").html("");
+        var f2Exists = false;
+        var reFExists = false;
+        // Initialize re-schedule fee
+        var reschedulefee = +0;
+        // Calculate re-schedule fee
+        @{
+            var oldOrder = AirlinesReservationSystem.Models.ars.ReScheduleDAO.GetOrder(long.Parse(Session["reschedule"].ToString()));
+            var daysToDeparture = (FInfo1.DepartureTime - DateTime.Now).TotalDays;
+            if (daysToDeparture >= 14)
+            {
+                @: reschedulefee += @( Convert.ToInt32(oldOrder.Total * 0.02));
+            }
+            else
+            {
+                @: reschedulefee += @(Convert.ToInt32(oldOrder.Total * 0.02 * (14 - daysToDeparture)));
+            }
+        }
+        // Initialize variables for oneway / first trip / first stop
+        var daysToDeparture1 = @((FInfo1.DepartureTime - System.DateTime.Now).TotalDays);
+        var adultTotalPrice1 = @(FInfo1.BasePrice * AdultNum);
+        var childTotalPrice1 = @(FInfo1.BasePrice * ChildNum * 70/100);
+        var serviceTotalPrice1 = @(F1Fee * PeopleNum);
+        // Add price as order date close to departure day (within 14 days)
+        if (daysToDeparture1 <= 14) {
+            adultTotalPrice1 += adultTotalPrice1 * 0.02 * (14 - daysToDeparture1);
+            childTotalPrice1 += childTotalPrice1 * 0.02 * (14 - daysToDeparture1);
+            }
+
+        // Initialize variables for second stop
+        var daysToDeparture2 = 0;
+        var adultTotalPrice2 = 0;
+        var childTotalPrice2 = 0;
+        var serviceTotalPrice2 = 0;
+        @if (FInfo2!=null)
+        {
+            <text>
+            f2Exists = true;
+            daysToDeparture2 = @((FInfo2.DepartureTime - System.DateTime.Now).TotalDays);
+            adultTotalPrice2 = @(FInfo2.BasePrice * AdultNum);
+            childTotalPrice2 = @(FInfo2.BasePrice * ChildNum * 70/100);
+            serviceTotalPrice2 = @(F2Fee * PeopleNum);
+                if (daysToDeparture2 <= 14) {
+                    adultTotalPrice2 += adultTotalPrice2 * 0.02 * (14 - daysToDeparture2);
+                    childTotalPrice2 += childTotalPrice2 * 0.02 * (14 - daysToDeparture2);
+                }
+            </text>
+        }
+
+        // Initialize variables for return trip
+        var daysToReDeparture = 0;
+        var reAdultTotalPrice = 0;
+        var reChildTotalPrice = 0;
+        var reServiceTotalPrice = 0;
+        @if (ReFInfo!=null)
+        {
+            <text>
+            reFExists = true;
+            daysToReDeparture = @((ReFInfo.DepartureTime - System.DateTime.Now).TotalDays);
+            reAdultTotalPrice = @(ReFInfo.BasePrice * AdultNum);
+            reChildTotalPrice = @(ReFInfo.BasePrice * ChildNum * 70/100);
+            reServiceTotalPrice = @(ReFFee * PeopleNum);
+                if (daysToReDeparture <= 14) {
+                    reAdultTotalPrice += reAdultTotalPrice * 0.02 * (14 - daysToReDeparture);
+                    reChildTotalPrice += reChildTotalPrice * 0.02 * (14 - daysToReDeparture);
+                }
+            </text>
+        }
+
+        // Initialize Seat fee
+        var classTotalFee = 0;
+
+        var seatClass = "@SeatClass";
+        var seatName = "";
+        if (seatClass == "F")
+        {
+            seatName = "First Class";
+        }
+        else if (seatClass == "B")
+        {
+            seatName = "Bussiness Class";
+        }
+        else
+        {
+            seatName = "Economy Class";
+        }
+        var seatFee = 0;
+        if (seatClass == "F") {
+            seatFee = 20;
+        } else if (seatClass == "B") {
+            seatFee = 10;
+        }
+
+
+        // Start calculate and generate payment detail
+        var result = "";
+        var total = +0;
+        // -- Oneway / First Flight / First Stop
+        result += "<dl class='row' style='background-color:#bababa'>";
+        result += "<dt class='col-6'>";
+        if (f2Exists == false && reFExists == false) {
+            result += "Flight:";
+        }
+        if (f2Exists == false && reFExists == true) {
+            result += "Flight:";
+        }
+        if (f2Exists == true && reFExists == false) {
+            result += "First Stop:";
+        }
+        if (f2Exists == true && reFExists == true) {
+            result += "First Flight's 1st Stop:";
+        }
+        result += "</dt>";
+        result += "<dd class='col-6 text-right'>@AirlinesReservationSystem.Models.ars.PaymentDAO.GetFlightDeparture(FInfo1.RNo).AirportID => @AirlinesReservationSystem.Models.ars.PaymentDAO.GetFlightDestination(FInfo1.RNo).AirportID </dd>";
+        result += "<dt class=''></dt>";
+        result += "<dd class='col-12 text-right'>@FInfo1.DepartureTime <br>=> @FInfo1.ArrivalTime</dd>";
+        result += "</dl>";
+
+        result += "<dl class='row'>";
+        result += "<dt class='col-7 text-right'>@AdultNum x adult(s)</dt>";
+        result += "<dd class='col-5 text-right'>" + adultTotalPrice1 + "$</dd>";
+        @if (ChildNum>0)
+        {
+            @:result += "<dt class='col-7 text-right'>@ChildNum x child(s)</dt>";
+            @:result += "<dd class='col-5 text-right'>" + childTotalPrice1 + "$</dd>";
+        }
+        for (var i = 0; i < @PeopleNum; i++) {
+            $("input[name='Service" + i + "']").each(function () {
+                serviceTotalPrice1 += +$(this).attr('value2');
+                @if (FInfo2 != null)
+                {
+                    @:serviceTotalPrice2 += +$(this).attr('value2');
+                }
+                @if (ReFInfo!=null)
+                {
+                    @:reServiceTotalPrice += +$(this).attr('value2');
+                }
+
+            });
+        }
+        if (serviceTotalPrice1>0) {
+            result += "<dt class='col-7 text-right'>Services's fee</dt>";
+            result += "<dd class='col-5 text-right'>" + serviceTotalPrice1 + "$</dd>";
+        }
+
+        result += "<dt class='col-7 text-right'>" + seatName + " ";
+        if (@PeopleNum > 1) {
+            result += "x @PeopleNum";
+        }
+        result += "</dt>";
+        result += "<dd class='col-5 text-right'>" + seatFee*@PeopleNum + "$</dd>";
+        classTotalFee += (+seatFee * @PeopleNum);
+        result += "</dl>";
+
+        // --Second Stop
+        @if (FInfo2 != null) {
+            <text>
+            result += "<dl class='row' style='background-color:#bababa'>";
+            result += "<dt class='col-6'>";
+            if (reFExists == false) {
+                result += "Second Stop:";
+            } else {
+                result += "First Flight's 2nd Stop:";
+            }
+
+            result += "</dt>";
+            result += "<dd class='col-6 text-right'>@AirlinesReservationSystem.Models.ars.PaymentDAO.GetFlightDeparture(FInfo2.RNo).AirportID => @AirlinesReservationSystem.Models.ars.PaymentDAO.GetFlightDestination(FInfo2.RNo).AirportID </dd>";
+            result += "<dt class=''></dt>";
+            result += "<dd class='col-12 text-right'>@FInfo2.DepartureTime <br>=> @FInfo2.ArrivalTime</dd>";
+            result += "</dl>";
+
+            result += "<dl class='row'>";
+            result += "<dt class='col-7 text-right'>@AdultNum x adult(s)</dt>";
+            result += "<dd class='col-5 text-right'>" + adultTotalPrice2 + "$</dd>";
+            @if (ChildNum > 0)
+            {
+                @:result += "<dt class='col-7 text-right'>@ChildNum x child(s)</dt>";
+                @:result += "<dd class='col-5 text-right'>" + childTotalPrice2 + "$</dd>";
+            }
+
+            if (serviceTotalPrice2>0) {
+                result += "<dt class='col-7 text-right'>Services's fee</dt>";
+                result += "<dd class='col-5 text-right'>" + serviceTotalPrice2 + "$</dd>";
+            }
+
+            result += "<dt class='col-7 text-right'>" + seatName + " ";
+            if (@PeopleNum > 1) {
+                result += "x @PeopleNum";
+            }
+            result += "</dt>";
+            result += "<dd class='col-5 text-right'>" + seatFee*@PeopleNum + "$</dd>";
+            classTotalFee += (+seatFee * @PeopleNum);
+            result += "</dl>";
+            </text>
+        }
+
+
+        // --Return Flight
+        @if (ReFInfo != null) {
+            <text>
+            result += "<dl class='row' style='background-color:#bababa'>";
+            result += "<dt class='col-6'>Return Flight</dt>";
+            result += "<dd class='col-6 text-right'>@AirlinesReservationSystem.Models.ars.PaymentDAO.GetFlightDeparture(ReFInfo.RNo).AirportID => @AirlinesReservationSystem.Models.ars.PaymentDAO.GetFlightDestination(ReFInfo.RNo).AirportID </dd>";
+            result += "<dt class=''></dt>";
+            result += "<dd class='col-12 text-right'>@ReFInfo.DepartureTime <br>=> @ReFInfo.ArrivalTime</dd>";
+            result += "</dl>";
+
+            result += "<dl class='row'>";
+            result += "<dt class='col-7 text-right'>@AdultNum x adult(s)</dt>";
+            result += "<dd class='col-5 text-right'>" + reAdultTotalPrice + "$</dd>";
+            @if (ChildNum > 0)
+            {
+                @:result += "<dt class='col-7 text-right'>@ChildNum x child(s)</dt>";
+                @:result += "<dd class='col-5 text-right'>" + reChildTotalPrice + "$</dd>";
+            }
+            if (reServiceTotalPrice > 0) {
+                result += "<dt class='col-7 text-right'>Services's fee</dt>";
+                result += "<dd class='col-5 text-right'>" + reServiceTotalPrice + "$</dd>";
+            }
+
+            result += "<dt class='col-7 text-right'>" + seatName + " ";
+            if (@PeopleNum > 1) {
+                result += "x @PeopleNum";
+            }
+            result += "</dt>";
+            result += "<dd class='col-5 text-right'>" + seatFee*@PeopleNum + "$</dd>";
+            classTotalFee += (+seatFee * @PeopleNum);
+            result += "</dl>";
+            </text>
+        }
+        result += "<dl class='row'>";
+        result += "<dt class='col-7 text-right'>Re-Schedule Fee</dt>";
+        result += "<dd class='col-5 text-right'>" + reschedulefee + "$</dd>";
+        result += "</dl>";
+        // Show total
+        result += "<hr style='background-color:#d7d7d7;height:2px'/>";
+        result += "<dl class='row'>";
+        result += "<dt class='col-6'>Flights fee</dt>";
+        total = adultTotalPrice1 + childTotalPrice1 + serviceTotalPrice1 + adultTotalPrice2 + childTotalPrice2 + serviceTotalPrice2 + reAdultTotalPrice + reChildTotalPrice + reServiceTotalPrice + classTotalFee + reschedulefee;
+        result += "<dd class='col-6 text-right'>" + total + "$</dd>";
+        var refund = @oldOrder.Total;
+        result += "<dt class='col-6'>Refunded</dt>";
+        result += "<dd class='col-6 text-right'>" + refund + "$</dd>";
+        result += "</dl>";
+        result += "<dl class='row'>";
+        result += "<hr style='background-color:#d7d7d7;height:2px'/>";
+        result += "<dt class='col-6'>Total</dt>";
+        result += "<dd class='col-6 text-right'>" + (total - refund) + "$</dd>";
+        result += "</dl>";
+        $("#paymentDiv").html(result);
+        $("#Total").val(total);
+    }
+</script>
