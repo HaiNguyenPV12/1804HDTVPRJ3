@@ -112,6 +112,7 @@ namespace AirlinesReservationSystem.Controllers
             // Prepare model object
             Payment objP = new Payment();
             List<Passenger> objPaList = new List<Passenger>();
+            objP.OldOrderID = long.Parse(frmPayment["OldOrderID"].ToString());
             objP.FNo1 = frmPayment["FNo[1]"];
             objP.FNo2 = frmPayment["FNo[2]"];
             objP.ReFNo = frmPayment["ReFNo"];
@@ -147,14 +148,7 @@ namespace AirlinesReservationSystem.Controllers
 
             // Send to DAO to process data
             string s = "";
-            if (string.IsNullOrEmpty(frmPayment["IsBlock"]))
-            {
-                s = PaymentDAO.ProcessPayment(objP, false);
-            }
-            else
-            {
-                s = PaymentDAO.ProcessPayment(objP, true);
-            }
+            s = ReScheduleDAO.ProcessReschedule(objP);
             return Content(s);
         }
 

@@ -9,7 +9,10 @@ namespace AirlinesReservationSystem.Models.bank
     {
         static AirlineDBEntities db = new AirlineDBEntities();
 
-        public static IEnumerable<CreditCard> GetCreditCards() => db.CreditCard;
+        public static IEnumerable<CreditCard> GetCreditCards() {
+            db = new AirlineDBEntities();
+            return db.CreditCard;
+        }
 
 
 

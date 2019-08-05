@@ -80,7 +80,7 @@ namespace AirlinesReservationSystem.Models.ars
                 else
                 {
                     // In case there's no return flight, continue to check if this have stops or not
-                    var ticketGroupList = ticketList.Where(t => t.IsReturn == false).GroupBy(t => t.Firstname);
+                    var ticketGroupList = ticketList.Where(t => t.IsReturn == false).GroupBy(t => new { t.Firstname, t.Lastname, t.Age, t.PassportNo });
                     if (ticketGroupList.FirstOrDefault().Count() > 1)
                     {
                         s += "have stops\n";
@@ -140,6 +140,17 @@ namespace AirlinesReservationSystem.Models.ars
                 }
             }
             return searchParams;
+        }
+
+        static public string ProcessReschedule(Payment payment)
+        {
+            var s = PaymentDAO.CancelOrder(payment.OldOrderID);
+            if (s != "ok")
+            {
+                return s;
+            }
+            s = PaymentDAO.ProcessPayment(payment, false);
+            return s;
         }
     }
 }

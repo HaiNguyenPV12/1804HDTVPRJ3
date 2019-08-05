@@ -32,5 +32,6 @@ namespace AirlinesReservationSystem.Models.ars
         public string CCNo { get; set; }
         public string CVV { get; set; }
         public double Total { get; set; }
+        public long OldOrderID { get; set; }
     }
 }
