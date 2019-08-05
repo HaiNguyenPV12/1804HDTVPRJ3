@@ -11,7 +11,7 @@ namespace AirlinesReservationSystem.Models.arsadmin
 
         public static Order GetOrder(long orderID) => db.Order.FirstOrDefault(s => s.OrderID == orderID);
 
-        public static Order GetOrderbyUser(string userID) => db.Order.Where(item => item.UserID == userID).FirstOrDefault();
+        public static IEnumerable<Order> GetOrderListbyUser(string userID) => db.Order.Where(item => item.UserID == userID);
         public static IEnumerable<Order> GetOrderList() => db.Order.OrderByDescending(s => s.Status);
 
         public static string CancelOrder(long id)

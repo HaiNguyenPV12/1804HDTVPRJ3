@@ -6,13 +6,10 @@
 
 <h2>UserOrder</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.UserID)
+            @Html.DisplayNameFor(model => model.OrderID)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.OrderDate)
@@ -29,7 +26,7 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.UserID)
+            @Html.DisplayFor(modelItem => item.OrderID)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.OrderDate)
@@ -40,10 +37,8 @@
         <td>
             @Html.DisplayFor(modelItem => item.Status)
         </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.OrderID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.OrderID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.OrderID })
+        <td>            
+            @Html.ActionLink("Details", "PaymentResult", new { id=item.OrderID })
         </td>
     </tr>
 }

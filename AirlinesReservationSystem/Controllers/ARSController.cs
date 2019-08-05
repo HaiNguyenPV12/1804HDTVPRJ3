@@ -300,7 +300,7 @@ namespace AirlinesReservationSystem.Controllers
         {
             if (Session["user"] != null)
             {
-                var model = OrderDAO.GetOrderbyUser(Session["user"].ToString());
+                var model = OrderDAO.GetOrderListbyUser(Session["user"].ToString());
                 if (model != null)
                 {
                     return View(model);
