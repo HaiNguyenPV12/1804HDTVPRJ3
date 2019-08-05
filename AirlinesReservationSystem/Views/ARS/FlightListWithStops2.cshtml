@@ -127,7 +127,15 @@
                 }
                 else
                 {
-                    @Html.ActionLink("Select", "Payment", new { FNo = firstTrip.FlightVM.FNo + "," + item.FlightVM.FNo }, new { @class = "btn btn-ars-light mb-md-1 btn-ars-list" })
+                    if (Session["reschedule"] != null)
+                    {
+                        @Html.ActionLink("Select", "PaymentReSchedule", new { FNo = firstTrip.FlightVM.FNo + "," + item.FlightVM.FNo }, new { @class = "btn btn-ars-light mb-md-1 btn-ars-list" })
+                    }
+                    else
+                    {
+                        @Html.ActionLink("Select", "Payment", new { FNo = firstTrip.FlightVM.FNo + "," + item.FlightVM.FNo }, new { @class = "btn btn-ars-light mb-md-1 btn-ars-list" })
+                    }
+
                 }
             </div>
         </div>

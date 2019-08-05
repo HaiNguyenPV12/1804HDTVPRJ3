@@ -1,0 +1,190 @@
+﻿@model AirlinesReservationSystem.Models.Order
+@{
+    ViewBag.Title = "ReSchedule";
+    AirlinesReservationSystem.Models.ars.FlightSearch searchParams = AirlinesReservationSystem.Models.ars.ReScheduleDAO.GetSearchParamByOrder(Model.OrderID);
+    Session["searchParams"] = searchParams;
+    IEnumerable<AirlinesReservationSystem.Models.Ticket> ticketList = AirlinesReservationSystem.Models.ars.PaymentDAO.GetTicketList(Model.OrderID);
+}
+
+<h2>Re-Schedule</h2>
+<form name="frmReschedule" id="frmReschedule">
+    <input type="hidden" name="OrderID" value="@Model.OrderID" />
+
+    <div class="container row text-center">
+
+        <div class="col-md-5">
+            <h4>@AirlinesReservationSystem.Models.ars.ReScheduleDAO.GetAirport(searchParams.Departure).CityName</h4>
+        </div>
+        <div class="col-md-2">
+            <h4>&rArr;</h4>
+        </div>
+        <div class="col-md-5">
+            <h4>@AirlinesReservationSystem.Models.ars.ReScheduleDAO.GetAirport(searchParams.Destination).CityName</h4>
+        </div>
+        <div class="col-md-5 text-muted">
+            @AirlinesReservationSystem.Models.ars.ReScheduleDAO.GetAirport(searchParams.Departure).AirportName
+        </div>
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-5 text-muted">
+            @AirlinesReservationSystem.Models.ars.ReScheduleDAO.GetAirport(searchParams.Destination).AirportName
+        </div>
+    </div>
+
+
+    <table class="table table-hover table-bordered">
+        <tr>
+            <th>Name</th>
+            <th>Sex</th>
+            <th>Age</th>
+            <th>Passport No.</th>
+        </tr>
+        @if (searchParams.IsRoundTrip)
+        {
+            foreach (var people in ticketList.Where(t => t.IsReturn == false))
+            {
+                <tr>
+                    <td>@people.Firstname / @people.Lastname</td>
+                    <td>
+                        @if (people.Sex)
+                        {
+                            @:Male
+                        }
+                        else
+                        {
+                            @:Female
+                        }
+                    </td>
+                    <td>@people.Age</td>
+                    <td>@people.PassportNo</td>
+                </tr>
+            }
+        }
+        else
+        {
+            foreach (var people in ticketList.GroupBy(t => t.Firstname))
+            {
+                <tr>
+                    <td>@people.FirstOrDefault().Firstname / @people.FirstOrDefault().Lastname</td>
+                    <td>
+                        @if (people.FirstOrDefault().Sex)
+                        {
+                            @:Male
+                        }
+                        else
+                        {
+                            @:Female
+                        }
+                    </td>
+                    <td>@people.FirstOrDefault().Age</td>
+                    <td>@people.FirstOrDefault().PassportNo</td>
+                </tr>
+            }
+        }
+    </table>
+
+    <div class="form-group form-inline">
+        @if (searchParams.IsRoundTrip)
+        {
+            <label class="col-md-5 font-weight-bold">First trip</label>
+            <div class="col-md-2"></div>
+            <label class="col-md-5 font-weight-bold">Return trip</label>
+            <input type="date" class="form-control col-md-5" name="DepartureTime" id="DepartureTime" required onchange="checkDate()" min="Date.now()" />
+            <div class="col-md-2"></div>
+            <input type="date" class="form-control col-md-5" name="ReturnDepartureTime" id="ReturnDepartureTime" required onchange="checkDate()" />
+        }
+        else
+        {
+            <div class="col-md-3"></div>
+            <label class="col-md-6 font-weight-bold">Departing</label>
+            <div class="col-md-3"></div>
+            <div class="col-md-3"></div>
+            <input type="date" class="form-control col-md-6" name="DepartureTime" id="DepartureTime" required onchange="checkDate()" />
+            <div class="col-md-3"></div>
+        }
+
+    </div>
+
+    <div class="text-center">
+        <h5 class="text-danger" id="errorM"></h5>
+        <input type="submit" name="name" value="" class="text-hide" />
+        <input type="button" name="name" value="Re-schedule this order" class="btn btn-lg btn-ars-light" onclick="formValidate()" />
+    </div>
+</form>
+
+<script>
+    setCalendar();
+    function checkDate() {
+        if ($("#DepartureTime").val() == "") {
+            $("#errorM").html("Invalid date! Please choose again.");
+            return false;
+        }
+        var d = Date.parse($("#DepartureTime").val());
+        var now = Date.now();
+        if (d < now) {
+            $("#errorM").html("Invalid date! Please choose again.");
+            return false;
+        }
+        setCalendar();
+        if ($("#ReturnDepartureTime").length) {
+            if ($("#ReturnDepartureTime").val() != "") {
+                var d2 = Date.parse($("#ReturnDepartureTime").val());
+                if (d2 < d) {
+                    $("#errorM").html("Invalid date! Please choose again.");
+                    return false;
+                }
+            } else {
+                $("#errorM").html("Please choose returning date.");
+                return false;
+            }
+        }
+
+        $("#errorM").html("");
+        return true;
+    }
+
+    function formValidate() {
+        if ($('#frmReschedule')[0].checkValidity()) {
+            var check = checkDate();
+            if (check) {
+                var form = $("#frmReschedule").serialize();
+                $.post("/ars/reschedule", form, function (result) {
+                    //if (result.substring(0, 2) == "ok") {
+                    //    window.location.href = "/ars/paymentresult?id=" + result.substring(3, result.length);
+                    //} else {
+                    //    $('#paymentConfirmDiv').html(result);
+                    //}
+                    window.location.href = "/ars/FlightList";
+                });
+                
+                $('#frmReschedule').find(':submit').click();
+            }
+        } else {
+            $('#frmReschedule').find(':submit').click();
+        }
+    }
+
+    function setCalendar() {
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; //January is 0!
+        var yyyy = today.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd
+        }
+        if (mm < 10) {
+            mm = '0' + mm
+        }
+
+        today = yyyy + '-' + mm + '-' + dd;
+        $("#DepartureTime").attr("min", today);
+        if ($("#ReturnDepartureTime").length) {
+            $("#ReturnDepartureTime").attr("min", today);
+            if ($("#DepartureTime").val() != "") {
+                $("#ReturnDepartureTime").attr("min", $("#DepartureTime").val());
+            }
+        }
+    }
+
+
+</script>

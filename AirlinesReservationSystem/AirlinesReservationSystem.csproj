@@ -209,6 +209,7 @@
     <Compile Include="Controllers\ARSAdminController.cs" />
     <Compile Include="Controllers\ARSController.cs" />
     <Compile Include="Controllers\ARSFlightList.cs" />
+    <Compile Include="Controllers\ARSReSchedule.cs" />
     <Compile Include="Controllers\BankController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\FlightManager.cs" />
@@ -256,6 +257,7 @@
     <Compile Include="Models\ars\FlightSearchDetails.cs" />
     <Compile Include="Models\ars\Payment.cs" />
     <Compile Include="Models\ars\PaymentDAO.cs" />
+    <Compile Include="Models\ars\ReScheduleDAO.cs" />
     <Compile Include="Models\ars\TicketServiceDAO.cs" />
     <Compile Include="Models\ars\UsersDAO.cs" />
     <Compile Include="Models\bank\BankDAO.cs" />
@@ -363,6 +365,8 @@
     <Content Include="Views\ARS\FlightCalendar.cshtml" />
     <Content Include="Views\ARSAdmin\FlightAddTemplate.cshtml" />
     <Content Include="Views\Error\Error404.cshtml" />
+    <Content Include="Views\ARS\ReSchedule.cshtml" />
+    <Content Include="Views\ARS\PaymentReSchedule.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
