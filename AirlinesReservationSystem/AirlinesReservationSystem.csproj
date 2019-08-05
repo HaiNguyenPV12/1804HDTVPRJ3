@@ -210,6 +210,7 @@
     <Compile Include="Controllers\ARSController.cs" />
     <Compile Include="Controllers\ARSFlightList.cs" />
     <Compile Include="Controllers\BankController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\FlightManager.cs" />
     <Compile Include="Controllers\RouteManager.cs" />
     <Compile Include="Global.asax.cs">
