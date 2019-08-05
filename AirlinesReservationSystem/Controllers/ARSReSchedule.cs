@@ -105,6 +105,59 @@ namespace AirlinesReservationSystem.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult PaymentReSchedule(FormCollection frmPayment)
+        {
+            // Prepare model object
+            Payment objP = new Payment();
+            List<Passenger> objPaList = new List<Passenger>();
+            objP.FNo1 = frmPayment["FNo[1]"];
+            objP.FNo2 = frmPayment["FNo[2]"];
+            objP.ReFNo = frmPayment["ReFNo"];
+            objP.PeopleNum = int.Parse(frmPayment["PeopleNum"]);
+            objP.AdultNum = int.Parse(frmPayment["AdultNum"]);
+            objP.ChildNum = int.Parse(frmPayment["ChildNum"]);
+            objP.Class = frmPayment["Class"];
+            objP.Total = double.Parse(frmPayment["Total"]);
+            objP.CCNo = frmPayment["CCNo"];
+            objP.CVV = frmPayment["CVV"];
+
+            for (int i = 0; i < objP.PeopleNum; i++)
+            {
+                Passenger objPa = new Passenger();
+                objPa.Firstname = frmPayment["Firstname" + i];
+                objPa.Lastname = frmPayment["Lastname" + i];
+                objPa.Sex = Convert.ToBoolean(int.Parse(frmPayment["Sex" + i]));
+                objPa.Age = int.Parse(frmPayment["Age" + i]);
+                objPa.PassportNo = frmPayment["PassportNo" + i];
+                if (frmPayment["Service" + i] != null)
+                {
+                    objPa.Service = frmPayment["Service" + i].Split(',');
+                }
+                else
+                {
+                    objPa.Service = new string[0];
+                }
+
+                objPaList.Add(objPa);
+            }
+            objP.Passengers = objPaList;
+            objP.UserID = Session["user"].ToString();
+
+            // Send to DAO to process data
+            string s = "";
+            if (string.IsNullOrEmpty(frmPayment["IsBlock"]))
+            {
+                s = PaymentDAO.ProcessPayment(objP, false);
+            }
+            else
+            {
+                s = PaymentDAO.ProcessPayment(objP, true);
+            }
+            return Content(s);
+        }
+
         bool isLoggedIn()
         {
             if (Session["user"] != null)
