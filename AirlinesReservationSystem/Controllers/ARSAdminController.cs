@@ -17,8 +17,19 @@ namespace AirlinesReservationSystem.Controllers
 
         // ================ LOGIN ==================
         // LOGIN VIEW
-        public ActionResult Login() => !IsLoggedIn() ? View() : (ActionResult)RedirectToAction("Index");
+        // Check in Session if user is not logged in, allow to go to Login page. If logged in, redirect to index.
+        public ActionResult Login()
+        {
+            if (!IsLoggedIn())
+            {
+                return View();
+            }
+            return RedirectToAction("Index");
+        }
+
         // LOGIN PROCESS
+        // Temporarily remove any validation other than ID and Password's validation. 
+        // Then check if user exist or not in database. If exists, save to Session and redirect to index. If not, show error message. 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Login(Employee emp)
@@ -38,6 +49,12 @@ namespace AirlinesReservationSystem.Controllers
                 if (e != null)
                 {
                     Session["employee"] = e;
+                    if (Session["preUrl"] != null)
+                    {
+                        string preUrl = Session["preUrl"].ToString();
+                        Session["preUrl"] = null;
+                        return Redirect(preUrl);
+                    }
                     return RedirectToAction("Index");
                 }
                 ModelState.AddModelError("", "Invalid account!");
@@ -46,6 +63,7 @@ namespace AirlinesReservationSystem.Controllers
         }
 
         // ================ LOGOUT ==================
+        // First, remove session and then redirect to index.
         public ActionResult Logout()
         {
             Session["employee"] = null;
@@ -54,20 +72,31 @@ namespace AirlinesReservationSystem.Controllers
 
         // ================ ROUTE ==================
         // ROUTE's VIEW
+        // Check in Session if user is logged in, allow to go to Route page. If not, redirect to login page.
         public ActionResult Route()
         {
             if (IsLoggedIn())
             {
                 return View(RouteDAO.GetRouteList());
             }
-            return RedirectToAction("Index");
+            Session["preUrl"] = "/arsadmin/route";
+            return RedirectToAction("Login");
         }
 
         // ROUTE DELETE's PROCESS
+        // First check if user is logged in and Route ID is exists in database, allow to delete.
         public ActionResult RouteDelete(int id) => IsLoggedIn() && RouteDAO.DeleteRoute(id) ? Content("OK") : Content("Error");
 
         // ROUTE ADD'S VIEW
-        public ActionResult RouteAdd() => IsLoggedIn() ? View() : (ActionResult)RedirectToAction("Index");
+        public ActionResult RouteAdd()
+        {
+            if (IsLoggedIn())
+            {
+                return View();
+            }
+            Session["preUrl"] = "/arsadmin/routeadd";
+            return RedirectToAction("Login");
+        }
 
         //ROUTE ADD TEMPLATE
         public ActionResult RouteAddTemplate(int index)
@@ -139,7 +168,15 @@ namespace AirlinesReservationSystem.Controllers
 
 
         // ROUTE EDIT'S VIEW
-        public ActionResult RouteEdit(int id) => IsLoggedIn() && RouteDAO.GetRoute(id) != null ? View(RouteDAO.GetRoute(id)) : (ActionResult)RedirectToAction("Index");
+        public ActionResult RouteEdit(int id)
+        {
+            if (IsLoggedIn() && RouteDAO.GetRoute(id) != null)
+            {
+                return View(RouteDAO.GetRoute(id));
+            }
+            Session["preUrl"] = "/arsadmin/routeedit?id=" + id;
+            return RedirectToAction("Login");
+        }
 
         // ROUTE EDIT'S PROCESS
         [HttpPost]
@@ -160,7 +197,15 @@ namespace AirlinesReservationSystem.Controllers
 
         // ================ EMPLOYEE ==================
         // EMPLOYEE's VIEW
-        public ActionResult Employee() => IsAdminLoggedIn() ? View(EmployeeDAO.GetEmployeeList()) : (ActionResult)RedirectToAction("Index");
+        public ActionResult Employee()
+        {
+            if (IsAdminLoggedIn())
+            {
+                return View(EmployeeDAO.GetEmployeeList());
+            }
+            Session["preUrl"] = "/arsadmin/employee";
+            return RedirectToAction("Index");
+        }
 
         // EMPLOYEE's LIST
         public ActionResult EmployeeList()
