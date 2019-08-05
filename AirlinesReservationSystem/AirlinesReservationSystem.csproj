@@ -24,7 +24,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <TypeScriptToolsVersion>3.4</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -34,6 +34,19 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptJSXEmit>React</TypeScriptJSXEmit>
+    <TypeScriptModuleKind />
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+    <TypeScriptOutFile />
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptSourceMap>True</TypeScriptSourceMap>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -100,6 +113,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\arsAdmin\flightAdd.css" />
     <Content Include="Content\ars\FlightList.css" />
     <Content Include="Content\ars\index.css" />
     <Content Include="Content\ars\layoutadmin.css" />
@@ -165,6 +179,7 @@
     </Content>
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-ui.js" />
+    <Content Include="Scripts\select2.full.min.js" />
     <Content Include="Scripts\select2.min.js" />
     <Content Include="Scripts\typeahead.bundle.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
@@ -194,7 +209,11 @@
     <Compile Include="Controllers\ARSAdminController.cs" />
     <Compile Include="Controllers\ARSController.cs" />
     <Compile Include="Controllers\ARSFlightList.cs" />
+    <Compile Include="Controllers\ARSReSchedule.cs" />
     <Compile Include="Controllers\BankController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\FlightManager.cs" />
+    <Compile Include="Controllers\RouteManager.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -212,6 +231,7 @@
     <Compile Include="Models\arsadmin\AirportDAO.cs" />
     <Compile Include="Models\arsadmin\Dropdowns.cs" />
     <Compile Include="Models\arsadmin\FlightDAO.cs" />
+    <Compile Include="Models\arsadmin\FlightDistanceDAO.cs" />
     <Compile Include="Models\arsadmin\OrderDAO.cs" />
     <Compile Include="Models\arsadmin\TicketDAO.cs" />
     <Compile Include="Models\ArsDBModel.Context.cs">
@@ -237,6 +257,7 @@
     <Compile Include="Models\ars\FlightSearchDetails.cs" />
     <Compile Include="Models\ars\Payment.cs" />
     <Compile Include="Models\ars\PaymentDAO.cs" />
+    <Compile Include="Models\ars\ReScheduleDAO.cs" />
     <Compile Include="Models\ars\TicketServiceDAO.cs" />
     <Compile Include="Models\ars\UsersDAO.cs" />
     <Compile Include="Models\bank\BankDAO.cs" />
@@ -342,6 +363,10 @@
     <Content Include="Views\Bank\EditCard.cshtml" />
     <Content Include="Views\ARSAdmin\RouteAddTemplate.cshtml" />
     <Content Include="Views\ARS\FlightCalendar.cshtml" />
+    <Content Include="Views\ARSAdmin\FlightAddTemplate.cshtml" />
+    <Content Include="Views\Error\Error404.cshtml" />
+    <Content Include="Views\ARS\ReSchedule.cshtml" />
+    <Content Include="Views\ARS\PaymentReSchedule.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -65,7 +65,15 @@
                 <h3>$@item.FlightVM.BasePrice</h3>
             </div>
             <div class="col-md-8 text-md-left">
-                @Html.ActionLink("Select", "Payment", new { FNo = firstTrip.FlightVM.FNo, ReFNo = item.FlightVM.FNo, PeopleNum = totalPassenger }, new { @class = "btn btn-ars-light btn-ars-list" })
+                @if (Session["reschedule"] != null)
+                {
+                    @Html.ActionLink("Select", "PaymentReSchedule", new { FNo = firstTrip.FlightVM.FNo, ReFNo = item.FlightVM.FNo, PeopleNum = totalPassenger }, new { @class = "btn btn-ars-light btn-ars-list" })
+                }
+                else
+                {
+                    @Html.ActionLink("Select", "Payment", new { FNo = firstTrip.FlightVM.FNo, ReFNo = item.FlightVM.FNo, PeopleNum = totalPassenger }, new { @class = "btn btn-ars-light btn-ars-list" })
+                }
+
             </div>
         </div>
     </div>

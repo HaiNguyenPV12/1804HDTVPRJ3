@@ -29,6 +29,7 @@ namespace AirlinesReservationSystem.Models
         public string FNo { get; set; }
 
         [Required]
+        [Display(Name = "Route")]
         public int RNo { get; set; }
 
         public Nullable<int> AvailSeatsF { get; set; }
@@ -41,18 +42,22 @@ namespace AirlinesReservationSystem.Models
         [Required]
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString ="{0:dd-MM-yyyy HH:mm}")]
+        [Display(Name = "Departure Time")]
         public System.DateTime DepartureTime { get; set; }
 
         [Required]
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy HH:mm}")]
+        [Display(Name = "Arrival Time")]
         public System.DateTime ArrivalTime { get; set; }
 
         [Required]
+        [Display(Name = "Flight Time")]
         public double FlightTime { get; set; }
 
         [Required]
         [Range(1,50000)]
+        [Display(Name = "Base Price")]
         public double BasePrice { get; set; }
 
         public virtual Route Route { get; set; }

@@ -13,6 +13,7 @@ namespace AirlinesReservationSystem.Controllers
         // GET: Home
         public ActionResult Index()
         {
+            Session["reschedule"] = null;
             if (Session["fid1"] != null) Session["fid1"] = null;
             if (Session["fid2"] != null) Session["fid2"] = null;
             return View();

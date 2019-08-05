@@ -12,11 +12,11 @@
 <div class="row flightSearch">
     <div class="flightSearch-content container">
         <span class="text-danger" id="errorMessage">@TempData["errorM"]</span>
-        <span id='dateError' style="display:none" class="text-danger">Return date can't be earlier than departure date.</span>
-        <span id='dateErrorNow' style="display:none" class="text-danger">Departure date can't be earlier than current date.</span>
-        <span id='seatError' style="display:none" class="text-danger">Passenger numbers are invalid.</span>
+        <span id='dateError' style="display:none" class="text-danger row">Return date can't be earlier than departure date.</span>
+        <span id='dateErrorNow' style="display:none" class="text-danger row">Departure date can't be earlier than current date.</span>
+        <span id='seatError' style="display:none" class="text-danger row">Passenger numbers are invalid.</span>
 
-        @using (Html.BeginForm("Index", "ARS", FormMethod.Post, new { @id = "flightSearchForm"}))
+        @using (Html.BeginForm("Index", "ARS", FormMethod.Post, new { @id = "flightSearchForm" }))
         {
             @Html.ValidationSummary(false, "", new { @class = "text-danger" })
             <div class="row col-md-12">
@@ -35,8 +35,6 @@
                     <div class="col-md-1 text-md-left">
                         From:
                     </div>
-                    
-                    @*@Html.TextBoxFor(item => item.Departure, new { @class = "form-control col-md" })*@
                     <div class="col-md-4">
                         <div class="ui-widget">
                             <select id="combobox" name="Departure">
@@ -50,14 +48,13 @@
                         <button id="toggle" hidden>Show underlying select</button>
                     </div>
                     <!--reverse button-->
-                    <div class="col-md-2">
-                        <button type="button" class="btn btn-light mx-auto" tabindex="99" id="btnSwap">@*Swap*@&#8644;</button>
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-light mx-auto" tabindex="99" id="btnSwap">&#8644;</button>
                     </div>
 
                     <div class="col-md-1 text-md-left">
                         To:
                     </div>
-                    @*@Html.TextBoxFor(item => item.Destination, new { @class = "form-control col-md" })*@
                     <div class="col-md-4">
                         <div class="ui-widget">
                             <select id="combobox1" name="Destination">
@@ -71,18 +68,18 @@
                         <button id="toggle" hidden>Show underlying select</button>
                     </div>
                 </div>
-                <div class="form-group row" id="formDate">
-                    <div class="col-md-6 row">
+                <div class="form-group form-inline" id="formDate">
+                    <div class="col-md-6 row ml-md-0">
                         <label class="col-form-label">Departing: &nbsp;</label>
                         @Html.TextBoxFor(item => item.DepartureTime, "{0:yyyy-MM-dd}", new { @type = "date", @class = "form-control col-md-6" })
                     </div>
-                    <div id="returnDate" class="col-md-6 row">
+                    <div id="returnDate" class="col-md-6 row ml-md-0">
                         <label class="col-form-label">Returning: &nbsp;</label>
                         @Html.TextBoxFor(item => item.ReturnDepartureTime, "{0:yyyy-MM-dd}", new { @type = "date", @class = "form-control col-md-6" })
                     </div>
                 </div>
                 <h5 class="row">Travelers:</h5>
-                <div class="form-group row" id="formPassengers">
+                <div class="form-group form-inline" id="formPassengers">
                     <label class="col-form-label mr-md-2">Adults:</label>
                     @Html.TextBoxFor(item => item.Adult, new { @Value = "1", @class = "form-control col-md-1", @min = "0", @type = "number", @id = "adultNo" })
                     <label class="col-form-label ml-md-4 mr-md-2">Children:</label>
@@ -103,5 +100,3 @@
 </div>
 
 <script src="~/Scripts/ars/index.js"></script>
-<script>
-</script>

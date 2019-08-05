@@ -41,56 +41,73 @@ namespace AirlinesReservationSystem.Models.arsadmin
             return false;
         }
 
-        public static string AddFlight(Flight newF)
+        //Add
+        //public static string AddFlight(Flight newF)
+        //{
+        //    try
+        //    {
+        //        string s = "";
+        //        if (GetFlight(newF.FNo) != null)
+        //        {
+        //            s += "Flight Number (existed)";
+        //        }
+        //        var route = db.Route.FirstOrDefault(r => r.RNo == newF.RNo);
+        //        if (route == null)
+        //        {
+        //            if (s != "")
+        //                s += ", ";
+
+        //            s += "Route";
+        //        }
+        //        else
+        //        {
+
+        //            newF.AvailSeatsF = route.Aircraft.FirstClassSeats;
+        //            newF.AvailSeatsB = route.Aircraft.BussinessSeats;
+        //            newF.AvailSeatsE = route.Aircraft.EconomySeats;
+        //        }
+
+        //        if (newF.DepartureTime > newF.ArrivalTime)
+        //        {
+        //            if (s != "")
+        //                s += ", ";
+
+        //            s += "Departure Time and Arrival Time";
+        //        }
+        //        else
+        //        {
+        //            newF.FlightTime = (newF.ArrivalTime - newF.DepartureTime).TotalHours;
+        //        }
+
+        //        if (s != "")
+        //        {
+        //            throw new Exception("Please choose valid " + s + ".");
+        //        }
+
+        //        db.Flight.Add(newF);
+        //        db.SaveChanges();
+        //        return "ok";
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return e.Message;
+        //    }
+        //}
+
+        public static bool AddFlight(Flight newF)
         {
             try
             {
-                string s = "";
-                if (GetFlight(newF.FNo) != null)
+                var f = GetFlight(newF.FNo);
+                if (f == null)
                 {
-                    s += "Flight Number (existed)";
+                    db.Flight.Add(newF);
+                    db.SaveChanges();
+                    return true;
                 }
-                var route = db.Route.FirstOrDefault(r => r.RNo == newF.RNo);
-                if (route == null)
-                {
-                    if (s != "")
-                        s += ", ";
-
-                    s += "Route";
-                }
-                else
-                {
-
-                    newF.AvailSeatsF = route.Aircraft.FirstClassSeats;
-                    newF.AvailSeatsB = route.Aircraft.BussinessSeats;
-                    newF.AvailSeatsE = route.Aircraft.EconomySeats;
-                }
-
-                if (newF.DepartureTime > newF.ArrivalTime)
-                {
-                    if (s != "")
-                        s += ", ";
-
-                    s += "Departure Time and Arrival Time";
-                }
-                else
-                {
-                    newF.FlightTime = (newF.ArrivalTime - newF.DepartureTime).TotalHours;
-                }
-
-                if (s != "")
-                {
-                    throw new Exception("Please choose valid " + s + ".");
-                }
-
-                db.Flight.Add(newF);
-                db.SaveChanges();
-                return "ok";
+                return false;
             }
-            catch (Exception e)
-            {
-                return e.Message;
-            }
+            catch (Exception) { return false; }
         }
 
         public static string UpdateFlight(Flight updateF)

@@ -149,11 +149,26 @@ else
                     }
                     else if (roundTrip && Session["fid1"] != null)
                     {
-                        @Html.ActionLink("Select", "Payment", new { FNo = firstTrip.FlightVM.FNo, ReFNo = item.FlightVM.FNo, PeopleNum = totalPassenger }, new { @class = "btn btn-ars-light btn-ars-list", @id = "hey it's me" })
+                        if (Session["reschedule"] != null)
+                        {
+                            @Html.ActionLink("Select", "PaymentReSchedule", new { FNo = firstTrip.FlightVM.FNo, ReFNo = item.FlightVM.FNo, PeopleNum = totalPassenger }, new { @class = "btn btn-ars-light btn-ars-list", @id = "hey it's me" })
+                        }
+                        else
+                        {
+                            @Html.ActionLink("Select", "Payment", new { FNo = firstTrip.FlightVM.FNo, ReFNo = item.FlightVM.FNo, PeopleNum = totalPassenger }, new { @class = "btn btn-ars-light btn-ars-list", @id = "hey it's me" })
+                        }
                     }
                     else
                     {
-                        @Html.ActionLink("Select", "Payment", new { FNo = item.FlightVM.FNo }, new { @class = "btn btn-ars-dark btn-ars-list" })
+                        if (Session["reschedule"] != null)
+                        {
+                            @Html.ActionLink("Select", "PaymentReSchedule", new { FNo = item.FlightVM.FNo }, new { @class = "btn btn-ars-dark btn-ars-list" })
+                        }
+                        else
+                        {
+                            @Html.ActionLink("Select", "Payment", new { FNo = item.FlightVM.FNo }, new { @class = "btn btn-ars-dark btn-ars-list" })
+                        }
+
                     }
                 </div>
             </div>

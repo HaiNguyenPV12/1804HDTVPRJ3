@@ -1,4 +1,7 @@
 ﻿$(document).ready(function () {
+    var invalidDate = false;
+    var invalidSeat = false;
+
     $('#returnDate').hide();
     $('#roundTripRadio').change(function () {
         if ($('#optionRoundTrip').is(':checked')) {
@@ -22,14 +25,15 @@
         if (departureDate > returnDate && $('#optionRoundTrip').is(':checked') || departureDate < currentDate) {
             if (departureDate < currentDate) { $('#dateErrorNow').show(); }
             else { $('#dateError').show(); }
-            $("#btnSubmit").attr("disabled", true);
+            invalidDate = true;
+            //console.log(invalidDate);
         }
         else {
             var errorElement = document.getElementById("dateError");
             if (errorElement !== null) {
                 $('#dateError').hide();
                 $('#dateErrorNow').hide();
-                $("#btnSubmit").attr("disabled", false);
+                invalidDate = false;
             }
         }
     });
@@ -50,11 +54,12 @@
         var totalPassenger = adultNo + childrenNo + seniorNo;
         if (totalPassenger <= 0) {
             $('#seatError').show();
-            $("#btnSubmit").attr("disabled", true);
+            invalidSeat = true;
+            //console.log(invalidSeat);
         }
         else {
             $('#seatError').hide();
-            $("#btnSubmit").attr("disabled", false);
+            invalidSeat = false;
         }
     });
 
@@ -77,6 +82,18 @@
         var destinationInput = document.getElementsByName("autoComplete")[1];
         destinationInput.value = departureText;
         //console.log("--> " + $("#combobox").val() + " - " + $("#combobox1").val());
+    });
+
+    $('#flightSearchForm').change(function () {
+        setTimeout(function () {
+            //console.log('waiting');
+        }, 150);
+        if (invalidSeat || invalidDate) {
+            $('#btnSubmit').attr('disabled', true);
+        }
+        else {
+            $('#btnSubmit').attr('disabled', false);
+        }
     });
 });
 
