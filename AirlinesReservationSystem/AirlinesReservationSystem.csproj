@@ -361,6 +361,7 @@
     <Content Include="Views\ARSAdmin\RouteAddTemplate.cshtml" />
     <Content Include="Views\ARS\FlightCalendar.cshtml" />
     <Content Include="Views\ARSAdmin\FlightAddTemplate.cshtml" />
+    <Content Include="Views\Error\Error404.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
