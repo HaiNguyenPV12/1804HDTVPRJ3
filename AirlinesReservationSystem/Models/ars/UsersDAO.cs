@@ -10,7 +10,11 @@ namespace AirlinesReservationSystem.Models.ars
     {
         static AirlineDBEntities db = new AirlineDBEntities();
 
-        public static User GetUser(string UserID) => db.User.Find(UserID);
+        public static User GetUser(string UserID)
+        {
+            db = new AirlineDBEntities();
+            return db.User.FirstOrDefault(u=>u.UserID==UserID);
+        }
 
         public static IEnumerable<User> GetUserList()
         {
