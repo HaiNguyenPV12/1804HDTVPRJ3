@@ -327,6 +327,9 @@
     refreshPayment();
 
     refreshPassport();
+    $('form input').on('keypress', function (e) {
+        return e.which !== 13;
+    });
 
     // Function for Blocking and Booking buttons
     function validatePayment(type) {
