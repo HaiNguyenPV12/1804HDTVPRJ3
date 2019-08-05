@@ -6,19 +6,19 @@
 }
 <tr id="flightRow-@i">
     <td>
-        @Html.TextBoxFor(model => model[i].FNo, new { @class = "form-control", @id = "fNo-" + i })
+        @Html.TextBoxFor(model => model[i].FNo, new { @class = "form-control", @id = "fNo-" + i, @required = "required" })
     </td>
     <td>
         @Html.DropDownListFor(model => model[i].RNo, AirlinesReservationSystem.Models.arsadmin.Dropdowns.Routes(), new { @class = "form-control", @id = "fRoute-" + i })
     </td>
     <td>
-        @Html.TextBoxFor(model => model[i].DepartureTime, new { @class = "form-control", @type = "datetime-local", @id = "fDepart-" + i, @style = "width:14.5rem" })
+        @Html.TextBoxFor(model => model[i].DepartureTime, new { @class = "form-control", @type = "datetime-local", @id = "fDepart-" + i, @style = "width:14.5rem", @required = "required" })
     </td>
     <td>
-        @Html.TextBoxFor(model => model[i].ArrivalTime, new { @class = "form-control", @type = "datetime-local", @id = "fArrive-" + i, @style = "width:14.5rem" })
+        @Html.TextBoxFor(model => model[i].ArrivalTime, new { @class = "form-control", @type = "datetime-local", @id = "fArrive-" + i, @style = "width:14.5rem", @required = "required" })
     </td>
     <td>
-        @Html.TextBoxFor(model => model[i].BasePrice, new { @class = "form-control" })
+        @Html.TextBoxFor(model => model[i].BasePrice, new { @class = "form-control", @required = "required", @min = 0, @max = 500000 })
     </td>
 </tr>
 

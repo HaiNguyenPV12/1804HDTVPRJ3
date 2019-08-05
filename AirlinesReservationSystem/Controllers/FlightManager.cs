@@ -47,7 +47,7 @@ namespace AirlinesReservationSystem.Controllers
         public ActionResult FlightAdd(List<Flight> newFlights)
         {
             //init validation variables
-            bool invalid = false;
+            bool invalid = false, invalid2 = false;
             int total = newFlights.Count;
             List<string> added = new List<string>();
             ModelState.Remove("AvailSeatsF");
@@ -80,8 +80,12 @@ namespace AirlinesReservationSystem.Controllers
                         added.Add(string.Format("{0}", item.FNo));
                 }
             }
-
-            if (!invalid)
+            else
+            {
+                ModelState.AddModelError("", "Please enter required fields");
+                invalid2 = true;
+            }
+            if (!invalid && !invalid2)
             {
                 return RedirectToAction("Flight");
             }
