@@ -1,5 +1,6 @@
 ﻿using AirlinesReservationSystem.Models;
 using AirlinesReservationSystem.Models.ars;
+using AirlinesReservationSystem.Models.arsadmin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -286,6 +287,20 @@ namespace AirlinesReservationSystem.Controllers
             if (Session["user"] != null)
             {
                 var model = UsersDAO.GetUser(Session["user"].ToString());
+                if (model != null)
+                {
+                    return View(model);
+                }
+            }
+            return RedirectToAction("Index");
+        }
+
+        //ORDER USER VIEW
+        public ActionResult UserOrder()
+        {
+            if (Session["user"] != null)
+            {
+                var model = OrderDAO.GetOrderbyUser(Session["user"].ToString());
                 if (model != null)
                 {
                     return View(model);
