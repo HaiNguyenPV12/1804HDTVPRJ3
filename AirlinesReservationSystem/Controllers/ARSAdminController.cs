@@ -359,7 +359,9 @@ namespace AirlinesReservationSystem.Controllers
 
         public ActionResult AddDB()
         {
-            InsertDAO.InsertRoutes();
+            //InsertDAO.InsertRoutes();
+            InsertDAO.InsertFlight();
+
             return RedirectToAction("Index");
         }
     }
