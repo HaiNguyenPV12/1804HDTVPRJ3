@@ -370,6 +370,7 @@
     <Content Include="Views\Error\Error404.cshtml" />
     <Content Include="Views\ARS\ReSchedule.cshtml" />
     <Content Include="Views\ARS\PaymentReSchedule.cshtml" />
+    <Content Include="Views\ARS\UserOrder.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
