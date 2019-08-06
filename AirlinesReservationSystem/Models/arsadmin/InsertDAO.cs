@@ -98,7 +98,7 @@ namespace AirlinesReservationSystem.Models.arsadmin
         {
             var randgen = new Random();
             double basePrice = distance * 0.07 + randgen.Next(-5, 5);
-            return basePrice;
+            return Math.Round(basePrice,2);
         }
 
         static string RandomFNo(string AirlineID)

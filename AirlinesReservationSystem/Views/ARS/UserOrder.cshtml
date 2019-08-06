@@ -35,7 +35,18 @@
             @Html.DisplayFor(modelItem => item.Total)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Status)
+            @if (item.Status == 1)
+            {
+                @:<p class="text-success">Booked</p>
+            }
+            else if (item.Status == 0)
+            {
+                @:<p class="text-warning">Blocked</p>
+            }
+            else
+            {
+                @:<p class="text-danger">Canceled</p>
+            }
         </td>
         <td>            
             @Html.ActionLink("Details", "PaymentResult", new { id=item.OrderID })
