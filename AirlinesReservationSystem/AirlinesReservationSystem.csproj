@@ -130,7 +130,17 @@
     <Content Include="Content\Site.css" />
     <Content Include="Content\typeahead.css" />
     <Content Include="Global.asax" />
+    <Content Include="img\ars\AXM.png" />
+    <Content Include="img\ars\CEB.png" />
+    <Content Include="img\ars\GIA.png" />
+    <Content Include="img\ars\GMR.png" />
+    <Content Include="img\ars\HVN.png" />
+    <Content Include="img\ars\JSA.png" />
+    <Content Include="img\ars\LNI.png" />
     <Content Include="img\ars\Logo.png" />
+    <Content Include="img\ars\NOK.png" />
+    <Content Include="img\ars\TGW.png" />
+    <Content Include="img\ars\VJC.png" />
     <Content Include="Models\ArsDBModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ArsDBModel.Context.cs</LastGenOutput>
@@ -177,6 +187,7 @@
     <Content Include="Models\ArsDBModel.edmx.diagram">
       <DependentUpon>ArsDBModel.edmx</DependentUpon>
     </Content>
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-ui.js" />
     <Content Include="Scripts\select2.full.min.js" />
