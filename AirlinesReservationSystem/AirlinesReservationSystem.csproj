@@ -232,6 +232,7 @@
     <Compile Include="Models\arsadmin\Dropdowns.cs" />
     <Compile Include="Models\arsadmin\FlightDAO.cs" />
     <Compile Include="Models\arsadmin\FlightDistanceDAO.cs" />
+    <Compile Include="Models\arsadmin\InsertDAO.cs" />
     <Compile Include="Models\arsadmin\OrderDAO.cs" />
     <Compile Include="Models\arsadmin\TicketDAO.cs" />
     <Compile Include="Models\ArsDBModel.Context.cs">
