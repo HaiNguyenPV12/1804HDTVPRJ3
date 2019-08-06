@@ -133,7 +133,7 @@ namespace AirlinesReservationSystem.Models.arsadmin
         {
             var randgen = new Random();
             int year = 2019;
-            int month = randgen.Next(8, 10);
+            int month = randgen.Next(8, 11);
             string monthStr = month < 10 ? "0" + month : month.ToString();
             var date = randgen.Next(1, DateTime.DaysInMonth(year, month) + 1);
             string dateStr = date < 10 ? "0" + date : date.ToString();
