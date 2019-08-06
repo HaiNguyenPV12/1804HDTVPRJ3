@@ -96,6 +96,10 @@
 
 @foreach (var item in Model)
 {
+    if (item.RouteVM.Departure != firstTrip.RouteVM.Destination)
+    {
+        continue;
+    }
     if (classToSearch == "E") { if (item.FlightVM.AvailSeatsE < totalPassenger) { continue; } }
     else if (classToSearch == "B") { if (item.FlightVM.AvailSeatsB < totalPassenger || item.FlightVM.AvailSeatsB == null) { continue; } }
     else if (classToSearch == "F") { if (item.FlightVM.AvailSeatsF < totalPassenger || item.FlightVM.AvailSeatsF == null) { continue; } }

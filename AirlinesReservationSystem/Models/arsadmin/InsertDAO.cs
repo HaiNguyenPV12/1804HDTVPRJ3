@@ -65,7 +65,7 @@ namespace AirlinesReservationSystem.Models.arsadmin
                         seatF = int.Parse(aircraft.FirstClassSeats.ToString());
                     }
 
-                    for (int i = 0; i < 5; i++)
+                    for (int i = 0; i < 20; i++)
                     {
                         var dist = int.Parse(distance.Distance.ToString());
                         Flight f = new Flight();
@@ -77,17 +77,21 @@ namespace AirlinesReservationSystem.Models.arsadmin
                         f.BasePrice = RandomBasePrice(dist);
                         var departureTime = RandomDepartureTime();
                         f.DepartureTime = departureTime;
-                        f.ArrivalTime = departureTime.AddHours(HoursToAdd(distance.Distance));
-                        f.FlightTime = HoursToAdd(distance.Distance);
+                        var arrivalTime = DateTime.Parse(departureTime.ToString());
+                        f.ArrivalTime = arrivalTime.AddMinutes(MinutesToAdd(dist));
+                        f.FlightTime = (f.ArrivalTime - f.DepartureTime).TotalHours;
                         FlightDAO.AddFlight(f);
                     }
                 }
             }
         }
 
-        static int HoursToAdd(int distance)
+        static double MinutesToAdd(int distance)
         {
-            return distance / 578;
+            double m,d=distance;
+            
+            m = d / 578 * 60;
+            return m;
         }
 
         static double RandomBasePrice(int distance)
