@@ -6,7 +6,22 @@
 
 <h2>Index Admin</h2>
 
-<a class="btn btn-ars-dark" href="/arsadmin/adddb">Insert Route + Flight</a>
+<div class="col-md-12">
+    <a class="btn btn-ars-dark" href="/arsadmin/AddDBRoute">Insert Routes</a>
+    <a href="/arsadmin/AddDBFlight">Insert Flights</a>
+    <p></p>
+    <a href="/arsadmin/AddDBFlightToRoute?RNo=&month=8">Insert SGN->HAN Aug</a>
+    <a href="/arsadmin/AddDBFlightToRoute?RNo=&month=8">Insert SGN->DAD Aug</a>
+    <a href="/arsadmin/AddDBFlightToRoute?RNo=&month=8">Insert DAD->HAN Aug</a>
+    <a href="/arsadmin/AddDBFlightToRoute?RNo=&month=8">Insert HAN->DAD Aug</a>
+    <a href="/arsadmin/AddDBFlightToRoute?RNo=&month=8">Insert HAN->SGN Aug</a>
+    <p></p>
+    <a href="/arsadmin/AddDBFlightToRoute?RNo=&month=9">Insert SGN->HAN Sep</a>
+    <a href="/arsadmin/AddDBFlightToRoute?RNo=&month=9">Insert SGN->DAD Sep</a>
+    <a href="/arsadmin/AddDBFlightToRoute?RNo=&month=9">Insert DAD->HAN Sep</a>
+    <a href="/arsadmin/AddDBFlightToRoute?RNo=&month=9">Insert HAN->DAD Sep</a>
+    <a href="/arsadmin/AddDBFlightToRoute?RNo=&month=9">Insert HAN->SGN Sep</a>
+</div>
 
 <ul>
     @foreach (var item in errors)

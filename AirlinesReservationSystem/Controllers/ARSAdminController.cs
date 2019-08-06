@@ -368,5 +368,11 @@ namespace AirlinesReservationSystem.Controllers
             InsertDAO.InsertFlight();
             return RedirectToAction("Index");
         }
+
+        public ActionResult AddDBFlightToRoute(int RNo, int month)
+        {
+            InsertDAO.InsertFlightsIntoRoute(RNo, month);
+            return RedirectToAction("Index");
+        }
     }
 }
