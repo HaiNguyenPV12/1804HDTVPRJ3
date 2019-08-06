@@ -255,7 +255,8 @@ else
                         }
                         else
                         {
-                            @Html.ActionLink(i.ToString(), "FlightList", new { page = i }, new { @class = "page-link" })}
+                            @Html.ActionLink(i.ToString(), "FlightList", new { page = i }, new { @class = "page-link" })
+                        }
                     </li>
                 }
             }
@@ -263,13 +264,22 @@ else
     </ul>
 </div>
 
-@if (Model.Count() == 0 || ViewBag.PageIndex == totalPages && !roundTrip)
+@if (Model.Count() == 0 || ViewBag.PageIndex == totalPages)
 {
-    <div class="row">
-        <p class="mx-auto">
-            @Html.ActionLink("Click", "FlightListWithStops", null, new { @class = "btn btn-ars-light" })
-            to find flights to @destination with additional stops <br />
-            <span class="text-danger">(Note that prices will be higher as you're taking multiple flights)</span>
+    if (roundTrip == false)
+    {
+        <div class="row">
+            <p class="mx-auto text-md-center">
+                End Of List <br />
+                @Html.ActionLink("Click", "FlightListWithStops", null, new { @class = "btn btn-ars-light" })
+                to find flights to @destination with additional stops <br />
+                <span class="text-danger">(Note that prices will be higher as you're taking multiple flights)</span>
+        </div>
+    }
+    else
+    {
+        <p class="text-md-center col-md-12">
+            End Of List
         </p>
-    </div>
+    }
 }
