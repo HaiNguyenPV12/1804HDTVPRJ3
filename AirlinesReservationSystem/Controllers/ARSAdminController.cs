@@ -356,5 +356,11 @@ namespace AirlinesReservationSystem.Controllers
             }
             return false;
         }
+
+        public ActionResult AddDB()
+        {
+            InsertDAO.InsertRoutes();
+            return RedirectToAction("Index");
+        }
     }
 }

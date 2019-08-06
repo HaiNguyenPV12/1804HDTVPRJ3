@@ -98,7 +98,7 @@
                     <div id="adultSection">
                         @{int i = 1;}
                         @* ----- ADULT INFO ----- *@
-                        @foreach (var item in oldTicketList.Where(t => t.IsReturn == false && t.Age >= 14).GroupBy(t => t.Firstname))
+                        @foreach (var item in oldTicketList.Where(t => t.IsReturn == false && t.Age >= 14).GroupBy(t => new { t.Firstname, t.Lastname, t.Age, t.PassportNo}))
                         {
                             int sex = item.FirstOrDefault().Sex ? 1 : 0;
                             string sexStr = item.FirstOrDefault().Sex ? "Male" : "Female";
@@ -180,7 +180,7 @@
                     <div id="childSection">
                         @{i = 1;}
                         @* ----- CHILDREN INFO ----- *@
-                        @foreach (var item in oldTicketList.Where(t => t.IsReturn == false && t.Age < 14).GroupBy(t => t.Firstname))
+                        @foreach (var item in oldTicketList.Where(t => t.IsReturn == false && t.Age < 14).GroupBy(t => new{ t.Firstname, t.Lastname, t.Age, t.PassportNo}))
                         {
                             int sex = item.FirstOrDefault().Sex ? 1 : 0;
                             string sexStr = item.FirstOrDefault().Sex ? "Male" : "Female";
@@ -287,7 +287,7 @@
 
             </div>
             <div class="text-center mt-2">
-                <button type="button" class="btn btn-success" onclick="validatePayment('book')">
+                <button type="button" class="btn btn-success" onclick="validatePayment()">
                     <h2>Confirm Re-schedule</h2>
                     <i>Confirm choosing this will cancel past order and create new one</i>
                 </button>
@@ -323,19 +323,18 @@
     }
 
     refreshPayment();
-
+    $('form input').on('keypress', function (e) {
+        return e.which !== 13;
+    });
     // Function for Blocking and Booking buttons
-    function validatePayment(type) {
+    function validatePayment() {
         if ($('#frmPayment')[0].checkValidity()) {
             var form = $("#frmPayment").serialize();
-            if (type=="block") {
-                form += "&IsBlock=''";
-            }
-
             $.post("/ars/paymentreschedule", form, function (result) {
                 if (result.substring(0, 2) == "ok") {
                     window.location.href = "/ars/paymentresult?id=" + result.substring(3, result.length);
                 } else {
+                    console.log(result);
                     $('#paymentConfirmDiv').html(result);
                 }
 
@@ -609,18 +608,25 @@
         // Show total
         result += "<hr style='background-color:#d7d7d7;height:2px'/>";
         result += "<dl class='row'>";
-        result += "<dt class='col-6'>Flights fee</dt>";
+        result += "<dt class='col-6'>New order's total</dt>";
         total = adultTotalPrice1 + childTotalPrice1 + serviceTotalPrice1 + adultTotalPrice2 + childTotalPrice2 + serviceTotalPrice2 + reAdultTotalPrice + reChildTotalPrice + reServiceTotalPrice + classTotalFee + reschedulefee;
         result += "<dd class='col-6 text-right'>" + total + "$</dd>";
         var refund = @oldOrder.Total;
-        result += "<dt class='col-6'>Refunded</dt>";
+        result += "<dt class='col-6'>Old order's refund</dt>";
         result += "<dd class='col-6 text-right'>" + refund + "$</dd>";
         result += "</dl>";
-        result += "<dl class='row'>";
         result += "<hr style='background-color:#d7d7d7;height:2px'/>";
-        result += "<dt class='col-6'>Total</dt>";
+        result += "<dl class='row'>";
+        result += "<dt class='col-6'>Total pay</dt>";
         result += "<dd class='col-6 text-right'>" + (total - refund) + "$</dd>";
         result += "</dl>";
+        if (total - refund >= 0) {
+            result += "<p class='text-center'>(We will charge you <b>" + (total - refund) + "$</b>)</p>";
+        } else {
+            result += "<p class='text-center'>(We will return you <b>" + (refund - total) + "$</b>)</p>";
+        }
+
+        
         $("#paymentDiv").html(result);
         $("#Total").val(total);
     }

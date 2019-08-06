@@ -62,7 +62,7 @@
         }
         else
         {
-            foreach (var people in ticketList.GroupBy(t => t.Firstname))
+            foreach (var people in ticketList.GroupBy(t => new { t.Firstname, t.Lastname, t.Age, t.PassportNo}))
             {
                 <tr>
                     <td>@people.FirstOrDefault().Firstname / @people.FirstOrDefault().Lastname</td>
@@ -156,7 +156,7 @@
                     //}
                     window.location.href = "/ars/FlightList";
                 });
-                
+
                 $('#frmReschedule').find(':submit').click();
             }
         } else {

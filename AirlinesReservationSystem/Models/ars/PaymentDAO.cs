@@ -11,7 +11,10 @@ namespace AirlinesReservationSystem.Models.ars
     {
         static AirlineDBEntities db = new AirlineDBEntities();
 
-        public static Order GetOrder(Int64 id) => db.Order.FirstOrDefault(o => o.OrderID == id);
+        public static Order GetOrder(Int64 id) {
+            db = new AirlineDBEntities();
+            return db.Order.FirstOrDefault(o => o.OrderID == id);
+        }
 
         public static IEnumerable<Ticket> GetTicketList(Int64 id) => db.Ticket.Where(t => t.OrderID == id);
 
@@ -30,8 +33,9 @@ namespace AirlinesReservationSystem.Models.ars
 
         public static string BlockingOrderPaid(long id, string CCNo, string CVV)
         {
+            db = new AirlineDBEntities();
             var o = GetOrder(id);
-            var card = bank.BankDAO.GetCreditCard(CCNo);
+            CreditCard card = db.CreditCard.FirstOrDefault(c => c.CCNo == CCNo);
             if (card == null || card.CVV != CVV)
             {
                 return "Error: Credit Card is not valid.";
@@ -72,10 +76,11 @@ namespace AirlinesReservationSystem.Models.ars
             return "Error: Order ID not valid.";
         }
 
-        public static string CancelOrder(long id)
+        public static string CancelOrder(long id, string CCNo)
         {
+            db = new AirlineDBEntities();
             var o = GetOrder(id);
-            var card = bank.BankDAO.GetCreditCard(db.User.FirstOrDefault(u => u.UserID == o.UserID).CCNo);
+            CreditCard card = db.CreditCard.FirstOrDefault(c => c.CCNo == CCNo);
             if (o.Status == 1)
             {
                 if (card == null)
@@ -152,10 +157,10 @@ namespace AirlinesReservationSystem.Models.ars
                     {
                         refund = Convert.ToInt32(o.Total - o.Total * 0.02 * (14 - daysToDeparture));
                     }
-                    var cardFinal = bank.BankDAO.GetCreditCard(db.User.FirstOrDefault(u => u.UserID == o.UserID).CCNo);
+                    var cardFinal = db.CreditCard.FirstOrDefault(c => c.CCNo == CCNo);
                     cardFinal.Balance += refund;
                 }
-                
+
                 // Save changes
                 db.SaveChanges();
                 return "ok";
@@ -168,8 +173,9 @@ namespace AirlinesReservationSystem.Models.ars
         // Will return any other error string when failed
         public static string ProcessPayment(Payment payment, bool isBlocked)
         {
+            db = new AirlineDBEntities();
             // Checking Creditcard
-            var card = bank.BankDAO.GetCreditCard(payment.CCNo);
+            CreditCard card = db.CreditCard.FirstOrDefault(c => c.CCNo == payment.CCNo);
             if (!isBlocked)
             {
                 if (card == null || card.CVV != payment.CVV)

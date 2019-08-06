@@ -479,12 +479,12 @@ namespace AirlinesReservationSystem.Controllers
             return Content(s);
         }
         // CANCELED THE PAID ORDER
-        public ActionResult CancelPayment(long id)
+        [HttpPost]
+        public ActionResult CancelPayment(long id, string CCNo)
         {
-            PaymentDAO.CancelOrder(id);
-            return RedirectToAction("PaymentResult", new { id = id });
+            var s = PaymentDAO.CancelOrder(id, CCNo);
+            return Content(s);
         }
-
 
         public ActionResult GetAirports()
         {

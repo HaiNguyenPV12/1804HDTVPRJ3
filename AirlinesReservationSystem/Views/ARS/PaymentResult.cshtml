@@ -307,7 +307,14 @@ else
                 @: s+= "Cancel this order, we will refund @(Convert.ToInt32(Model.Total - Model.Total * 0.02 * (14 - daysToDeparture))) to your account.";
             }
         }
-        s+="Are you sure to cancel order: \"#" + id + "\"?</h3>";
+        s+="</h3>"
+        //s+="Are you sure to cancel order: \"#" + id + "\"?</h3>";
+        s += "<div class='container row form-inline text-center'>";
+        s += "<div class='col-md-4 text-right'>Credit Card Number</div><input name='CCNo' id='CCNo' class='form-control col-md-4' value='@AirlinesReservationSystem.Models.ars.UsersDAO.GetUser(Model.UserID).CCNo'/>";
+        s += "<div class='col-md-4'></div>";
+        s += "<div class='col-md-4'></div>";
+        s += "<div class='col-md-4 text-danger' id='errorM'></div>";
+        s += "</div>";
         $("#modalBody").html(s);
         $("#modalTitle").html("Cancel confirm");
         $("#btnConfirm").off("click");
@@ -315,6 +322,13 @@ else
     }
 
     function cancelOrder(id) {
-        window.location.href = "/ars/CancelPayment?id=" + id;
+        var CCNo = $("#CCNo").val();
+        $.post("/ars/CancelPayment?id=" + id + "&CCNo=" + CCNo , function (result) {
+            if (result == "ok") {
+                window.location.reload();
+            } else {
+                $('#errorM').html(result);
+            }
+        });
     }
 </script>
