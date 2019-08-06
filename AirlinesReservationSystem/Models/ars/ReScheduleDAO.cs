@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using AirlinesReservationSystem.Models.arsadmin;
+
 
 namespace AirlinesReservationSystem.Models.ars
 {
@@ -144,7 +146,7 @@ namespace AirlinesReservationSystem.Models.ars
 
         static public string ProcessReschedule(Payment payment)
         {
-            var s = PaymentDAO.CancelOrder(payment.OldOrderID);
+            var s = PaymentDAO.CancelOrder(payment.OldOrderID, payment.CCNo);
             if (s != "ok")
             {
                 return s;

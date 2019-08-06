@@ -76,12 +76,11 @@ namespace AirlinesReservationSystem.Models.ars
             return "Error: Order ID not valid.";
         }
 
-        public static string CancelOrder(long id)
+        public static string CancelOrder(long id, string CCNo)
         {
-            var o = GetOrder(id);
             db = new AirlineDBEntities();
-            var userfromid = db.User.FirstOrDefault(u => u.UserID == o.UserID);
-            CreditCard card = db.CreditCard.FirstOrDefault(c => c.CCNo == userfromid.CCNo);
+            var o = GetOrder(id);
+            CreditCard card = db.CreditCard.FirstOrDefault(c => c.CCNo == CCNo);
             if (o.Status == 1)
             {
                 if (card == null)
@@ -158,7 +157,7 @@ namespace AirlinesReservationSystem.Models.ars
                     {
                         refund = Convert.ToInt32(o.Total - o.Total * 0.02 * (14 - daysToDeparture));
                     }
-                    var cardFinal = db.CreditCard.FirstOrDefault(c => c.CCNo == userfromid.CCNo);
+                    var cardFinal = db.CreditCard.FirstOrDefault(c => c.CCNo == CCNo);
                     cardFinal.Balance += refund;
                 }
 

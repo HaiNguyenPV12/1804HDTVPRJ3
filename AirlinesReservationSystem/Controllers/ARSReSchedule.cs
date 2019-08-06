@@ -47,17 +47,7 @@ namespace AirlinesReservationSystem.Controllers
             {
                 searchParams.ReturnDepartureTime = DateTime.Parse(frmReschedule["ReturnDepartureTime"].ToString());
             }
-            //var s = "";
-            //s += searchParams.Departure + "\n";
-            //s += searchParams.Destination + "\n";
-            //s += searchParams.Class + "\n";
-            //s += searchParams.Adult + "\n";
-            //s += searchParams.Children + "\n";
-            //s += searchParams.DepartureTime + "\n";
-            //if (frmReschedule["ReturnDepartureTime"] != null)
-            //{
-            //    s += searchParams.ReturnDepartureTime + "\n";
-            //}
+
             Session["reschedule"] = long.Parse(frmReschedule["OrderID"].ToString());
             int totalPassenger = searchParams.Adult + searchParams.Children;
             Session["totalPassenger"] = totalPassenger;
