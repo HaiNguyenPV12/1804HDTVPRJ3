@@ -1,6 +1,8 @@
 ﻿@model AirlinesReservationSystem.Models.ars.FlightSearch
 @{
     ViewBag.Title = "Index";
+    var mostTravelRoute = AirlinesReservationSystem.Models.ars.StatisticDAO.TravelRoutes();
+    var mostTravelAirline = AirlinesReservationSystem.Models.ars.StatisticDAO.TravelAirlines();
 }
 
 <link href="~/Content/ars/index.css" rel="stylesheet" />
@@ -98,5 +100,28 @@
         }
     </div>
 </div>
+@*<div class="row mt-5">
+    <div class="col-md-4">
+        Top 3 Travel Place:
+        <ul>
+
+            @foreach (var item in mostTravelRoute.Take(3))
+            {
+                <li>@AirlinesReservationSystem.Models.arsadmin.RouteDAO.GetRoute(item.RNo).DestinationAirport.CityName (@item.Count)</li>
+            }
+        </ul>
+    </div>
+    <div class="col-md-4">
+        Top 3 Airline:
+        <ul>
+
+            @foreach (var item in mostTravelAirline.Take(3))
+            {
+                <li>@AirlinesReservationSystem.Models.arsadmin.AirlineDAO.GetAirline(item.AirlineID).AirlineName (@item.Count)</li>
+            }
+        </ul>
+    </div>
+
+</div>*@
 
 <script src="~/Scripts/ars/index.js"></script>

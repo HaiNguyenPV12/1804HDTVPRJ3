@@ -48,6 +48,7 @@ namespace AirlinesReservationSystem.Models.arsadmin
         public static IEnumerable<SelectListItem> Routes()
         {
             var list = new List<SelectListItem>();
+            routetDB = RouteDAO.GetRouteList();
             foreach (var item in routetDB)
             {
                 var newItem = new SelectListItem() { Value = item.RNo.ToString(), Text = string.Format("{0}-{1}: {2}({3}) -> {4}({5})", item.RAirline, item.RAircraft, item.DepartureAirport.AirportName, item.Departure, item.DestinationAirport.AirportName, item.Destination) };

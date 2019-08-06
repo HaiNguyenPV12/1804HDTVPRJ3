@@ -13,6 +13,7 @@ namespace AirlinesReservationSystem.Models.arsadmin
 
         public static IEnumerable<Route> GetRouteList()
         {
+            db = new AirlineDBEntities();
             return db.Route;
         }
 

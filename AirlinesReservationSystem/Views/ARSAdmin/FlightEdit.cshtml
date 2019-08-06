@@ -3,7 +3,13 @@
 @{
     ViewBag.Title = "FlightEdit";
     var RouteData = (IEnumerable<AirlinesReservationSystem.Models.Route>)ViewBag.RouteData;
+    var airlineList = AirlinesReservationSystem.Models.arsadmin.AirlineDAO.GetAirlineList();
+    var aircraftList = AirlinesReservationSystem.Models.arsadmin.AircraftDAO.GetAircraftList();
+    var airportList = AirlinesReservationSystem.Models.arsadmin.AirportDAO.GetAirlineList();
+
 }
+<link href="~/Content/select2.min.css" rel="stylesheet" />
+<script src="~/Scripts/select2.full.min.js"></script>
 @helper routeSelect(int RNo)
 {
     if (Model.RNo == RNo)
@@ -34,7 +40,12 @@
                     <select class="form-control" style="width:100%" id="RNo" name="RNo">
                         @foreach (var route in RouteData)
                         {
-                            <option value="@route.RNo" @routeSelect(route.RNo)>@route.Airline.AirlineName (@route.Aircraft.AircraftName): @route.DepartureAirport.AirportName => @route.DestinationAirport.AirportName</option>
+                            <option value="@route.RNo" @routeSelect(route.RNo)>
+                                @airlineList.FirstOrDefault(al => al.AirlineID == route.RAirline).AirlineName
+                                (@aircraftList.FirstOrDefault(ac => ac.AircraftID == route.RAircraft).AircraftName):
+                                @airportList.FirstOrDefault(al => al.AirportID == route.Departure).AirportName =>
+                                @airportList.FirstOrDefault(al => al.AirportID == route.Destination).AirportName
+                            </option>
                         }
                     </select>
                 </div>
@@ -47,11 +58,11 @@
             <div class="form-group form-inline">
                 @Html.LabelFor(model => model.DepartureTime, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-4">
-                    @Html.TextBoxFor(model => model.DepartureTime,"{0:s}" ,new { @class = "form-control", @style = "width:100%", @type = "datetime-local" })
+                    @Html.TextBoxFor(model => model.DepartureTime, "{0:s}", new { @class = "form-control", @style = "width:100%", @type = "datetime-local" })
                 </div>
                 @Html.LabelFor(model => model.ArrivalTime, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-4">
-                    @Html.TextBoxFor(model => model.ArrivalTime,"{0:s}" ,new { @class = "form-control", @style = "width:100%", @type = "datetime-local" })
+                    @Html.TextBoxFor(model => model.ArrivalTime, "{0:s}", new { @class = "form-control", @style = "width:100%", @type = "datetime-local" })
                 </div>
                 <div class="col-md-2">
                 </div>
@@ -88,3 +99,7 @@
         </div>
     }
 </div>
+
+<script>
+    $('#RNo').select2();
+</script>

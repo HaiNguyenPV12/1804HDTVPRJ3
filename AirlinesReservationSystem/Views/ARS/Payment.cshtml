@@ -327,6 +327,9 @@
     refreshPayment();
 
     refreshPassport();
+    $('form input').on('keypress', function (e) {
+        return e.which !== 13;
+    });
 
     // Function for Blocking and Booking buttons
     function validatePayment(type) {
@@ -420,7 +423,7 @@
             <text>
             reFExists = true;
             daysToReDeparture = @((ReFInfo.DepartureTime - System.DateTime.Now).TotalDays);
-            reAdultTotalPrice = @(ReFInfo.BasePrice * AdultNum);
+            reAdultTotalPrice = @(Math.Round(ReFInfo.BasePrice,2) * AdultNum);
             reChildTotalPrice = @(ReFInfo.BasePrice * ChildNum * 70/100);
             reServiceTotalPrice = @(ReFFee * PeopleNum);
                 if (daysToReDeparture <= 14) {
@@ -481,11 +484,11 @@
 
         result += "<dl class='row'>";
         result += "<dt class='col-7 text-right'>@AdultNum x adult(s)</dt>";
-        result += "<dd class='col-5 text-right'>" + adultTotalPrice1 + "$</dd>";
+        result += "<dd class='col-5 text-right'>" + parseFloat(adultTotalPrice1).toFixed(2) + "$</dd>";
         @if (ChildNum>0)
         {
             @:result += "<dt class='col-7 text-right'>@ChildNum x child(s)</dt>";
-            @:result += "<dd class='col-5 text-right'>" + childTotalPrice1 + "$</dd>";
+            @:result += "<dd class='col-5 text-right'>" + parseFloat(childTotalPrice1).toFixed(2) + "$</dd>";
         }
         for (var i = 0; i < @PeopleNum; i++) {
             $("#div_service_" + i + " input[name='Service" + i + "']:checked").each(function () {
@@ -503,7 +506,7 @@
         }
         if (serviceTotalPrice1>0) {
             result += "<dt class='col-7 text-right'>Services's fee</dt>";
-            result += "<dd class='col-5 text-right'>" + serviceTotalPrice1 + "$</dd>";
+            result += "<dd class='col-5 text-right'>" + parseFloat(serviceTotalPrice1).toFixed(2) + "$</dd>";
         }
 
         result += "<dt class='col-7 text-right'>" + seatName + " ";
@@ -534,16 +537,16 @@
 
             result += "<dl class='row'>";
             result += "<dt class='col-7 text-right'>@AdultNum x adult(s)</dt>";
-            result += "<dd class='col-5 text-right'>" + adultTotalPrice2 + "$</dd>";
+            result += "<dd class='col-5 text-right'>" + parseFloat(adultTotalPrice2).toFixed(2) + "$</dd>";
             @if (ChildNum > 0)
             {
                 @:result += "<dt class='col-7 text-right'>@ChildNum x child(s)</dt>";
-                @:result += "<dd class='col-5 text-right'>" + childTotalPrice2 + "$</dd>";
+                @:result += "<dd class='col-5 text-right'>" + parseFloat(childTotalPrice2).toFixed(2) + "$</dd>";
             }
 
             if (serviceTotalPrice2>0) {
                 result += "<dt class='col-7 text-right'>Services's fee</dt>";
-                result += "<dd class='col-5 text-right'>" + serviceTotalPrice2 + "$</dd>";
+                result += "<dd class='col-5 text-right'>" + parseFloat(serviceTotalPrice2).toFixed(2) + "$</dd>";
             }
 
             result += "<dt class='col-7 text-right'>" + seatName + " ";
@@ -570,15 +573,15 @@
 
             result += "<dl class='row'>";
             result += "<dt class='col-7 text-right'>@AdultNum x adult(s)</dt>";
-            result += "<dd class='col-5 text-right'>" + reAdultTotalPrice + "$</dd>";
+            result += "<dd class='col-5 text-right'>" + parseFloat(reAdultTotalPrice).toFixed(2) + "$</dd>";
             @if (ChildNum > 0)
             {
                 @:result += "<dt class='col-7 text-right'>@ChildNum x child(s)</dt>";
-                @:result += "<dd class='col-5 text-right'>" + reChildTotalPrice + "$</dd>";
+                @:result += "<dd class='col-5 text-right'>" + parseFloat(reChildTotalPrice).toFixed(2) + "$</dd>";
             }
             if (reServiceTotalPrice > 0) {
                 result += "<dt class='col-7 text-right'>Services's fee</dt>";
-                result += "<dd class='col-5 text-right'>" + reServiceTotalPrice + "$</dd>";
+                result += "<dd class='col-5 text-right'>" + parseFloat(reServiceTotalPrice).toFixed(2) + "$</dd>";
             }
 
             result += "<dt class='col-7 text-right'>" + seatName + " ";
@@ -597,7 +600,7 @@
         result += "<dl class='row'>";
         result += "<dt class='col-6'>Total</dt>";
         total = adultTotalPrice1 + childTotalPrice1 + serviceTotalPrice1 + adultTotalPrice2 + childTotalPrice2 + serviceTotalPrice2 + reAdultTotalPrice + reChildTotalPrice + reServiceTotalPrice + classTotalFee;
-        result += "<dd class='col-6 text-right'>" + total + "$</dd>";
+        result += "<dd class='col-6 text-right'>" + parseFloat(total).toFixed(2) + "$</dd>";
 
         $("#paymentDiv").html(result);
         $("#Total").val(total);

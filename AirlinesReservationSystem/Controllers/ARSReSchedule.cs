@@ -47,17 +47,7 @@ namespace AirlinesReservationSystem.Controllers
             {
                 searchParams.ReturnDepartureTime = DateTime.Parse(frmReschedule["ReturnDepartureTime"].ToString());
             }
-            //var s = "";
-            //s += searchParams.Departure + "\n";
-            //s += searchParams.Destination + "\n";
-            //s += searchParams.Class + "\n";
-            //s += searchParams.Adult + "\n";
-            //s += searchParams.Children + "\n";
-            //s += searchParams.DepartureTime + "\n";
-            //if (frmReschedule["ReturnDepartureTime"] != null)
-            //{
-            //    s += searchParams.ReturnDepartureTime + "\n";
-            //}
+
             Session["reschedule"] = long.Parse(frmReschedule["OrderID"].ToString());
             int totalPassenger = searchParams.Adult + searchParams.Children;
             Session["totalPassenger"] = totalPassenger;
@@ -112,6 +102,7 @@ namespace AirlinesReservationSystem.Controllers
             // Prepare model object
             Payment objP = new Payment();
             List<Passenger> objPaList = new List<Passenger>();
+            objP.OldOrderID = long.Parse(frmPayment["OldOrderID"].ToString());
             objP.FNo1 = frmPayment["FNo[1]"];
             objP.FNo2 = frmPayment["FNo[2]"];
             objP.ReFNo = frmPayment["ReFNo"];
@@ -147,14 +138,7 @@ namespace AirlinesReservationSystem.Controllers
 
             // Send to DAO to process data
             string s = "";
-            if (string.IsNullOrEmpty(frmPayment["IsBlock"]))
-            {
-                s = PaymentDAO.ProcessPayment(objP, false);
-            }
-            else
-            {
-                s = PaymentDAO.ProcessPayment(objP, true);
-            }
+            s = ReScheduleDAO.ProcessReschedule(objP);
             return Content(s);
         }
 

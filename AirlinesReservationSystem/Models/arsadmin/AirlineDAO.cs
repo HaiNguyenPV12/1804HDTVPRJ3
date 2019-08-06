@@ -9,5 +9,6 @@ namespace AirlinesReservationSystem.Models.arsadmin
     {
         static AirlineDBEntities db = new AirlineDBEntities();
         public static IEnumerable<Airline> GetAirlineList() => db.Airline;
+        public static Airline GetAirline(string AirlineID) => db.Airline.FirstOrDefault(a => a.AirlineID == AirlineID);
     }
 }

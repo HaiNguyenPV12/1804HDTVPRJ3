@@ -1,7 +1,16 @@
 ﻿
 @{
     ViewBag.Title = "Index Admin";
+    var errors = AirlinesReservationSystem.Models.arsadmin.InsertDAO.error;
 }
 
 <h2>Index Admin</h2>
 
+<a class="btn btn-ars-dark" href="/arsadmin/adddb">Insert Route + Flight</a>
+
+<ul>
+    @foreach (var item in errors)
+    {
+        <li>@item.Error</li>
+    }
+</ul>
