@@ -36,3 +36,9 @@
     .footer-link:hover, .footer-link:focus {
         text-decoration: underline;
     }
+
+
+/*#departureTime, #returnDepartureTime {
+    min-width: 200px;
+    max-width: 200px;
+}*/

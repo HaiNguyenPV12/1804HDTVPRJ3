@@ -36,7 +36,7 @@
             </div>
             <div class="container-fluid">
                 <div class="form-group form-inline">
-                    <div class="col-md-1 text-md-left">
+                    <div class="col-md-1 text-md-left ml-md-2">
                         From:
                     </div>
                     <div class="col-md-4">
@@ -75,11 +75,15 @@
                 <div class="form-group form-inline" id="formDate">
                     <div class="col-md-6 row ml-md-0">
                         <label class="col-form-label">Departing: &nbsp;</label>
-                        @Html.TextBoxFor(item => item.DepartureTime, "{0:yyyy-MM-dd}", new { @type = "date", @class = "form-control col-md-6" })
+                        <div class="col-md-6">
+                            @Html.TextBoxFor(item => item.DepartureTime, "{0:yyyy-MM-dd}", new { @type = "date", @class = "form-control" })
+                        </div>
                     </div>
                     <div id="returnDate" class="col-md-6 row ml-md-0">
                         <label class="col-form-label">Returning: &nbsp;</label>
-                        @Html.TextBoxFor(item => item.ReturnDepartureTime, "{0:yyyy-MM-dd}", new { @type = "date", @class = "form-control col-md-6" })
+                        <div class="col-md-6 ml-md-3">
+                            @Html.TextBoxFor(item => item.ReturnDepartureTime, "{0:yyyy-MM-dd}", new { @type = "date", @class = "form-control" })
+                        </div>
                     </div>
                 </div>
                 <h5 class="row">Travelers:</h5>
@@ -131,27 +135,26 @@
 </div>
 
 <div class="row mt-5">
-        <div class="col-md-4">
-            Top 3 Travel Place:
-            <ul class="list-unstyled">
+    <div class="col-md-4">
+        Top 3 Travel Place:
+        <ul class="list-unstyled">
 
-                @foreach (var item in mostTravelRoute.Take(3))
-                {
-                    <li>@AirlinesReservationSystem.Models.arsadmin.RouteDAO.GetRoute(item.RNo).DestinationAirport.CityName (@item.Count)</li>
-                }
-            </ul>
-        </div>
-        <div class="col-md-4">
-            Top 3 Airline:
-            <ul class="list-unstyled">
-
-                @foreach (var item in mostTravelAirline.Take(3))
-                {
-                    <li>@AirlinesReservationSystem.Models.arsadmin.AirlineDAO.GetAirline(item.AirlineID).AirlineName (@item.Count)</li>
-                }
-            </ul>
-        </div>
-
+            @foreach (var item in mostTravelRoute.Take(3))
+            {
+                <li>@AirlinesReservationSystem.Models.arsadmin.RouteDAO.GetRoute(item.RNo).DestinationAirport.CityName (@item.Count)</li>
+            }
+        </ul>
     </div>
+    <div class="col-md-4">
+        Top 3 Airline:
+        <ul class="list-unstyled">
+
+            @foreach (var item in mostTravelAirline.Take(3))
+            {
+                <li>@AirlinesReservationSystem.Models.arsadmin.AirlineDAO.GetAirline(item.AirlineID).AirlineName (@item.Count)</li>
+            }
+        </ul>
+    </div>
+</div>
 
 <script src="~/Scripts/ars/index.js"></script>
