@@ -247,7 +247,13 @@ namespace AirlinesReservationSystem.Controllers
 
         //---------------- USER ------------------
         //REGISTER VIEW
-        public ActionResult Register() => View();
+        public ActionResult Register() {
+            if (isLoggedIn())
+            {
+                return RedirectToAction("Index");
+            }
+            return View();
+        }
 
         //REGISTER PROCESS
         [HttpPost]
