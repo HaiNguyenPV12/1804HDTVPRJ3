@@ -155,8 +155,7 @@ else
                         }
                         else
                         {
-                            @Html.ActionLink("Select", "PaymentDetail", new { FNo = firstTrip.FlightVM.FNo, ReFNo = item.FlightVM.FNo, PeopleNum = totalPassenger }, new { @class = "btn btn-ars-light btn-ars-list", @id = "hey it's me" })
-                            <input type="button" value="SelectT" data-toggle="modal" data-target="#modal" class="btn btn-ars-dark btn-ars-list" onclick="getPaymentDetail('@firstTrip.FlightVM.FNo', '@item.FlightVM.FNo')" />
+                            <input type="button" value="Select" data-toggle="modal" data-target="#modal" class="btn btn-ars-dark btn-ars-list" onclick="getPaymentDetail('@firstTrip.FlightVM.FNo', '@item.FlightVM.FNo')" />
                             @*@Html.ActionLink("Select", "Payment", new { FNo = firstTrip.FlightVM.FNo, ReFNo = item.FlightVM.FNo, PeopleNum = totalPassenger }, new { @class = "btn btn-ars-light btn-ars-list", @id = "hey it's me" })*@
                         }
                     }
@@ -168,8 +167,7 @@ else
                         }
                         else
                         {
-                            @Html.ActionLink("Select", "PaymentDetail", new { FNo = item.FlightVM.FNo }, new { @class = "btn btn-ars-dark btn-ars-list" })
-                            <input type="button" value="SelectT" data-toggle="modal" data-target="#modal" class="btn btn-ars-dark btn-ars-list" onclick="getPaymentDetail('@item.FlightVM.FNo')" />
+                            <input type="button" value="Select" data-toggle="modal" data-target="#modal" class="btn btn-ars-dark btn-ars-list" onclick="getPaymentDetail('@item.FlightVM.FNo')" />
                             @*@Html.ActionLink("Select", "Payment", new { FNo = item.FlightVM.FNo }, new { @class = "btn btn-ars-dark btn-ars-list" })*@
                         }
 
@@ -317,6 +315,9 @@ else
 
 <script>
     function getPaymentDetail(FNo, ReFNo) {
+        if (ReFNo == null) {
+            ReFNo = "";
+        }
         $('#modalBody').html("");
         $.post("/ars/paymentdetail?FNo=" + FNo + "&ReFNo=" + ReFNo, function (result) {
             $('#modalBody').html(result);
@@ -325,5 +326,5 @@ else
             $("#btnConfirm").attr("href", "/ars/payment?FNo=" + FNo + "&ReFNo=" + ReFNo);
         });
     }
-    
+
 </script>

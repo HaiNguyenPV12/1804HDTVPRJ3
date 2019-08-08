@@ -354,7 +354,7 @@ namespace AirlinesReservationSystem.Controllers
                     ViewBag.FNo = FNo;
                     ViewBag.FNos = FNos;
 
-                    if (!string.IsNullOrEmpty(ReFNo))
+                    if (!string.IsNullOrEmpty(ReFNo) || !string.IsNullOrWhiteSpace(ReFNo))
                     {
                         ViewBag.ReFNo = ReFNo;
                     }
