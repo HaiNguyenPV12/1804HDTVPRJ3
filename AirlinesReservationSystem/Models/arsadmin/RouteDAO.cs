@@ -9,7 +9,11 @@ namespace AirlinesReservationSystem.Models.arsadmin
     {
         static AirlineDBEntities db = new AirlineDBEntities();
 
-        public static Route GetRoute(int RNo) => db.Route.FirstOrDefault(r => r.RNo == RNo);
+        public static Route GetRoute(int RNo)
+        {
+            db = new AirlineDBEntities();
+            return db.Route.FirstOrDefault(r => r.RNo == RNo);
+        }
 
         public static IEnumerable<Route> GetRouteList()
         {
@@ -21,6 +25,13 @@ namespace AirlinesReservationSystem.Models.arsadmin
         {
             return db.Airline.FirstOrDefault(a => a.AirlineID == AirlineID);
         }
+
+        public static Airline GetAirlineByRoute(int RNo)
+        {
+            var route = GetRoute(RNo);
+            return db.Airline.FirstOrDefault(a => a.AirlineID == route.RAirline);
+        }
+
         public static Aircraft GetAircraft(string AircraftID)
         {
             return db.Aircraft.FirstOrDefault(a => a.AircraftID == AircraftID);

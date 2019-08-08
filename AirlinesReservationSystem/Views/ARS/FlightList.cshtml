@@ -155,7 +155,9 @@ else
                         }
                         else
                         {
-                            @Html.ActionLink("Select", "Payment", new { FNo = firstTrip.FlightVM.FNo, ReFNo = item.FlightVM.FNo, PeopleNum = totalPassenger }, new { @class = "btn btn-ars-light btn-ars-list", @id = "hey it's me" })
+                            @Html.ActionLink("Select", "PaymentDetail", new { FNo = firstTrip.FlightVM.FNo, ReFNo = item.FlightVM.FNo, PeopleNum = totalPassenger }, new { @class = "btn btn-ars-light btn-ars-list", @id = "hey it's me" })
+                            <input type="button" value="SelectT" data-toggle="modal" data-target="#modal" class="btn btn-ars-dark btn-ars-list" onclick="getPaymentDetail('@firstTrip.FlightVM.FNo', '@item.FlightVM.FNo')" />
+                            @*@Html.ActionLink("Select", "Payment", new { FNo = firstTrip.FlightVM.FNo, ReFNo = item.FlightVM.FNo, PeopleNum = totalPassenger }, new { @class = "btn btn-ars-light btn-ars-list", @id = "hey it's me" })*@
                         }
                     }
                     else
@@ -166,7 +168,9 @@ else
                         }
                         else
                         {
-                            @Html.ActionLink("Select", "Payment", new { FNo = item.FlightVM.FNo }, new { @class = "btn btn-ars-dark btn-ars-list" })
+                            @Html.ActionLink("Select", "PaymentDetail", new { FNo = item.FlightVM.FNo }, new { @class = "btn btn-ars-dark btn-ars-list" })
+                            <input type="button" value="SelectT" data-toggle="modal" data-target="#modal" class="btn btn-ars-dark btn-ars-list" onclick="getPaymentDetail('@item.FlightVM.FNo')" />
+                            @*@Html.ActionLink("Select", "Payment", new { FNo = item.FlightVM.FNo }, new { @class = "btn btn-ars-dark btn-ars-list" })*@
                         }
 
                     }
@@ -283,3 +287,43 @@ else
         </p>
     }
 }
+
+
+<div class="modal fade" id="modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header bg-ars">
+                <h4 class="modal-title" id="modalTitle">Flight Detail</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" id="modalBody">
+
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <b>Total:</b> <span id="TotalDetail"></span>
+                <a href="" class="btn btn-success" id="btnConfirm">Confirm</a>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function getPaymentDetail(FNo, ReFNo) {
+        $('#modalBody').html("");
+        $.post("/ars/paymentdetail?FNo=" + FNo + "&ReFNo=" + ReFNo, function (result) {
+            $('#modalBody').html(result);
+            var total = $("#Total").val();
+            $("#TotalDetail").html(total);
+            $("#btnConfirm").attr("href", "/ars/payment?FNo=" + FNo + "&ReFNo=" + ReFNo);
+        });
+    }
+    
+</script>

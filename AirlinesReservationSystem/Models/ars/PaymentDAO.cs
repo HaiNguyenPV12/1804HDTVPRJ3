@@ -18,7 +18,12 @@ namespace AirlinesReservationSystem.Models.ars
 
         public static IEnumerable<Ticket> GetTicketList(Int64 id) => db.Ticket.Where(t => t.OrderID == id);
 
-        public static double GetFlightServiceFee(int RNo) => db.Route.FirstOrDefault(r => r.RNo == RNo).Aircraft.ServiceFee;
+        public static double GetFlightServiceFee(int RNo)
+        {
+            db = new AirlineDBEntities();
+            var aircraftid = db.Route.FirstOrDefault(r => r.RNo == RNo).RAircraft;
+            return db.Aircraft.FirstOrDefault(a => a.AircraftID == aircraftid).ServiceFee;
+        }
 
         public static Airport GetFlightDeparture(int RNo)
         {

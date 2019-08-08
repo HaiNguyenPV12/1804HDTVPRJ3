@@ -1,0 +1,243 @@
+﻿
+@{
+    ViewBag.Title = "PaymentDetail";
+    Layout = null;
+
+    // Initialize
+    List<string> FNos = ViewBag.FNos;
+    int AdultNum = ViewBag.AdultNum;
+    int ChildNum = ViewBag.ChildNum;
+    int PeopleNum = AdultNum + ChildNum;
+    double F1Fee = 0;
+    double F2Fee = 0;
+    double ReFFee = 0;
+    string SeatClass = ViewBag.Class;
+    string SeatName = "";
+    double SeatFee = 0;
+    double Total = 0;
+
+    if (SeatClass == "F")
+    {
+        SeatName = "First Class";
+    }
+    else if (SeatClass == "B")
+    {
+        SeatName = "Bussiness Class";
+    }
+    else
+    {
+        SeatName = "Economy Class";
+    }
+
+    AirlinesReservationSystem.Models.Flight FInfo1 = AirlinesReservationSystem.Models.arsadmin.FlightDAO.GetFlight(FNos[0]);
+    //F1Fee = AirlinesReservationSystem.Models.ars.PaymentDAO.GetFlightServiceFee(FInfo1.RNo);
+    AirlinesReservationSystem.Models.Flight FInfo2 = null;
+    if (FNos.Count() > 1)
+    {
+        FInfo2 = AirlinesReservationSystem.Models.arsadmin.FlightDAO.GetFlight(FNos[1]);
+        //F2Fee = AirlinesReservationSystem.Models.ars.PaymentDAO.GetFlightServiceFee(FInfo2.RNo);
+    }
+
+    AirlinesReservationSystem.Models.Flight ReFInfo = null;
+    if (!string.IsNullOrEmpty(ViewBag.ReFNo))
+    {
+        ReFInfo = AirlinesReservationSystem.Models.arsadmin.FlightDAO.GetFlight(ViewBag.ReFNo);
+        //ReFFee = AirlinesReservationSystem.Models.ars.PaymentDAO.GetFlightServiceFee(ReFInfo.RNo);
+    }
+
+    // Initilize variables for oneway / first trip / first stop
+    double daysToDeparture1 = (FInfo1.DepartureTime - System.DateTime.Now).TotalDays;
+    double adultTotalPrice1 = FInfo1.BasePrice * AdultNum;
+    double childTotalPrice1 = FInfo1.BasePrice * ChildNum * 70 / 100;
+    double serviceTotalPrice1 = F1Fee * PeopleNum;
+    // Add price as order date close to departure day (within 14 days)
+    if (daysToDeparture1 <= 14)
+    {
+        adultTotalPrice1 += adultTotalPrice1 * 0.02 * (14 - daysToDeparture1);
+        childTotalPrice1 += childTotalPrice1 * 0.02 * (14 - daysToDeparture1);
+    }
+
+    // Initilize variables for second stop
+    double daysToDeparture2 = 0;
+    double adultTotalPrice2 = 0;
+    double childTotalPrice2 = 0;
+    double serviceTotalPrice2 = 0;
+    if (FInfo2 != null)
+    {
+        daysToDeparture2 = (FInfo2.DepartureTime - System.DateTime.Now).TotalDays;
+        adultTotalPrice2 = FInfo2.BasePrice * AdultNum;
+        childTotalPrice2 = FInfo2.BasePrice * ChildNum * 70 / 100;
+        serviceTotalPrice2 = F2Fee * PeopleNum;
+        if (daysToDeparture2 <= 14)
+        {
+            adultTotalPrice2 += adultTotalPrice2 * 0.02 * (14 - daysToDeparture2);
+            childTotalPrice2 += childTotalPrice2 * 0.02 * (14 - daysToDeparture2);
+        }
+    }
+
+    // Initilize variables for return trip
+    double daysToReDeparture = 0;
+    double reAdultTotalPrice = 0;
+    double reChildTotalPrice = 0;
+    double reServiceTotalPrice = 0;
+    if (ReFInfo != null)
+    {
+        daysToReDeparture = (ReFInfo.DepartureTime - System.DateTime.Now).TotalDays;
+        reAdultTotalPrice = Math.Round(ReFInfo.BasePrice, 2) * AdultNum;
+        reChildTotalPrice = ReFInfo.BasePrice * ChildNum * 70 / 100;
+        reServiceTotalPrice = ReFFee * PeopleNum;
+        if (daysToReDeparture <= 14)
+        {
+            reAdultTotalPrice += reAdultTotalPrice * 0.02 * (14 - daysToReDeparture);
+            reChildTotalPrice += reChildTotalPrice * 0.02 * (14 - daysToReDeparture);
+        }
+    }
+
+    // Initialize Seat fee
+    double ClassTotalFee = 0;
+
+    if (SeatClass == "F")
+    {
+        SeatFee = 20;
+    }
+    else if (SeatClass == "B")
+    {
+        SeatFee = 10;
+    }
+
+    if (FInfo2 != null)
+    {
+        ClassTotalFee += (SeatFee * PeopleNum * 2);
+    }
+    else if (ReFInfo != null)
+    {
+        ClassTotalFee += (SeatFee * PeopleNum * 2);
+    }
+    else
+    {
+        ClassTotalFee += (SeatFee * PeopleNum);
+    }
+
+    Total = adultTotalPrice1 + childTotalPrice1 + adultTotalPrice2 + childTotalPrice2 + reAdultTotalPrice + reChildTotalPrice + ClassTotalFee;
+}
+
+@*Start calculate and generate payment detail*@
+<table class="table table-bordered table-hover">
+    <tr class="table-ars">
+        <th></th>
+        <th>Airline</th>
+        <th>Departure</th>
+        <th>Arrival</th>
+        <th>Flight Time</th>
+    </tr>
+    <tr>
+        <td>
+            @if (FInfo2 != null)
+            {
+                <label>First stop</label>
+            }
+            else if (ReFInfo != null)
+            {
+                <label>First trip</label>
+            }
+            else
+            {
+                <label>Departure</label>
+            }
+            <br />
+            @FInfo1.DepartureTime.ToLongDateString()
+        </td>
+        <td>
+            @AirlinesReservationSystem.Models.arsadmin.RouteDAO.GetAirlineByRoute(FInfo1.RNo).AirlineName<br />
+            (@SeatName)
+        </td>
+        <td>
+            @FInfo1.DepartureTime.ToShortTimeString()
+            <p class="text-muted">@AirlinesReservationSystem.Models.ars.PaymentDAO.GetFlightDeparture(FInfo1.RNo).CityName</p>
+        </td>
+        <td>
+            @FInfo1.ArrivalTime.ToShortTimeString()
+            <p class="text-muted">@AirlinesReservationSystem.Models.ars.PaymentDAO.GetFlightDestination(FInfo1.RNo).CityName</p>
+        </td>
+        <td>
+            @TimeSpan.FromHours(FInfo1.FlightTime).ToString(@"hh") h
+            @if (@TimeSpan.FromHours(FInfo1.FlightTime).ToString(@"mm") != "")
+            {
+                @TimeSpan.FromHours(FInfo1.FlightTime).ToString(@"mm") @:m
+            }
+            else
+            {
+                @:00 m
+            }
+        </td>
+    </tr>
+
+    @if (FInfo2 != null)
+    {
+        <tr>
+            <td>
+                Second Stop
+                <br />
+                @FInfo2.DepartureTime.ToLongDateString()
+            </td>
+            <td>
+                @AirlinesReservationSystem.Models.arsadmin.RouteDAO.GetAirlineByRoute(FInfo2.RNo).AirlineName<br />
+                (@SeatName)
+            </td>
+            <td>
+                @FInfo2.DepartureTime.ToShortTimeString()
+                <p class="text-muted">@AirlinesReservationSystem.Models.ars.PaymentDAO.GetFlightDeparture(FInfo2.RNo).CityName</p>
+            </td>
+            <td>
+                @FInfo1.ArrivalTime.ToShortTimeString()
+                <p class="text-muted">@AirlinesReservationSystem.Models.ars.PaymentDAO.GetFlightDestination(FInfo2.RNo).CityName</p>
+            </td>
+            <td>
+                @TimeSpan.FromHours(FInfo2.FlightTime).ToString(@"hh") h
+                @if (@TimeSpan.FromHours(FInfo2.FlightTime).ToString(@"mm") != "")
+                {
+                    @TimeSpan.FromHours(FInfo2.FlightTime).ToString(@"mm") @:m
+                }
+                else
+                {
+                    @:00 m
+                }
+            </td>
+        </tr>
+    }
+    @if (ReFInfo != null)
+    {
+        <tr>
+            <td>
+                Return Trip
+                <br />
+                @ReFInfo.DepartureTime.ToLongDateString()
+            </td>
+            <td>
+                @AirlinesReservationSystem.Models.arsadmin.RouteDAO.GetAirlineByRoute(ReFInfo.RNo).AirlineName<br />
+                (@SeatName)
+            </td>
+            <td>
+                @ReFInfo.DepartureTime.ToShortTimeString()
+                <p class="text-muted">@AirlinesReservationSystem.Models.ars.PaymentDAO.GetFlightDeparture(ReFInfo.RNo).CityName</p>
+            </td>
+            <td>
+                @FInfo1.ArrivalTime.ToShortTimeString()
+                <p class="text-muted">@AirlinesReservationSystem.Models.ars.PaymentDAO.GetFlightDestination(ReFInfo.RNo).CityName</p>
+            </td>
+            <td>
+                @TimeSpan.FromHours(ReFInfo.FlightTime).ToString(@"hh") h
+                @if (@TimeSpan.FromHours(ReFInfo.FlightTime).ToString(@"mm") != "")
+                {
+                    @TimeSpan.FromHours(ReFInfo.FlightTime).ToString(@"mm") @:m
+                }
+                else
+                {
+                    @:00 m
+                }
+            </td>
+        </tr>
+    }
+</table>
+
+<input type="hidden" id="Total" name="Total" value="@Total" />

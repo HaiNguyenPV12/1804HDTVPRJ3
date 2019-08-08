@@ -376,12 +376,12 @@
     <Content Include="Views\Bank\AddCard.cshtml" />
     <Content Include="Views\Bank\EditCard.cshtml" />
     <Content Include="Views\ARSAdmin\RouteAddTemplate.cshtml" />
-    <Content Include="Views\ARS\FlightCalendar.cshtml" />
     <Content Include="Views\ARSAdmin\FlightAddTemplate.cshtml" />
     <Content Include="Views\Error\Error404.cshtml" />
     <Content Include="Views\ARS\ReSchedule.cshtml" />
     <Content Include="Views\ARS\PaymentReSchedule.cshtml" />
     <Content Include="Views\ARS\UserOrder.cshtml" />
+    <Content Include="Views\ARS\PaymentDetail.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
