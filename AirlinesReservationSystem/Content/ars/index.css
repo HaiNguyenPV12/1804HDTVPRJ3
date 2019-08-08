@@ -22,3 +22,17 @@
 .text-danger {
     color: #f74f5f !important; /*lighter red color for form*/
 }
+
+.airline-icon-index {
+    max-height: 150px;
+    max-width: 150px;
+}
+
+.footer-link {
+    color: black;
+    text-decoration: none;
+}
+
+    .footer-link:hover, .footer-link:focus {
+        text-decoration: underline;
+    }
