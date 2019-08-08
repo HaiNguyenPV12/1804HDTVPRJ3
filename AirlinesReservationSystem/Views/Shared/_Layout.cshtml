@@ -7,6 +7,7 @@
     <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/ars/layout.css" type="text/css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="~/Scripts/modernizr-2.8.3.js"></script>
     <script src="~/Scripts/jquery-3.4.1.min.js"></script>
     @*<script src="~/Scripts/jquery.validate.min.js"></script>*@
@@ -39,13 +40,13 @@
                         <a href="/ars/paymentsearch" class="nav-link">Payment Search</a>
                     </li>
                     @*<li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle waves-effect waves-light" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-                        <div class="dropdown-menu dropdown-info" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item waves-effect waves-light" href="#">Action</a>
-                            <a class="dropdown-item waves-effect waves-light" href="#">Another action</a>
-                            <a class="dropdown-item waves-effect waves-light" href="#">Something else here</a>
-                        </div>
-                    </li>*@
+                            <a class="nav-link dropdown-toggle waves-effect waves-light" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+                            <div class="dropdown-menu dropdown-info" aria-labelledby="navbarDropdownMenuLink">
+                                <a class="dropdown-item waves-effect waves-light" href="#">Action</a>
+                                <a class="dropdown-item waves-effect waves-light" href="#">Another action</a>
+                                <a class="dropdown-item waves-effect waves-light" href="#">Something else here</a>
+                            </div>
+                        </li>*@
                 </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
@@ -74,8 +75,80 @@
         @RenderBody()
     </div>
     <footer class="bg-ars-light">
-        <div class="container">
-            <div class="text-md-center">
+        <div class="container-fluid">
+            <div class="col-md-12 my-md-3">&nbsp;</div>
+            <div class="col-md-12 my-md-3 row">
+                <div class="col-md-4 text-md-center">
+                    <img src="~/img/ars/Logo.png" alt="ARS" class="d-inline-block align-top img-fluid" /> <br />
+                    <p class="my-md-5">
+                        Contact Us: <br />
+                        0555-5555
+                    </p>
+                    <p class="my-md-5">
+                        <ul class="list-unstyled">
+                            <li><h5>Payment partners</h5></li>
+                            <li><a href="/bank" class="footer-link">ARS Bank</a></li>
+                        </ul>
+                    </p>
+                </div>
+                <div class="col-md-2">
+                    <ul class="list-unstyled">
+                        <li><h5>About Airlines Reservation System</h5></li>
+                        <li><a href="#" class="footer-link">How To Book</a></li>
+                        <li><a href="#" class="footer-link">Contact Us</a></li>
+                        <li><a href="#" class="footer-link">Help Center</a></li>
+                        <li><a href="#" class="footer-link">Careers</a></li>
+                        <li><a href="#" class="footer-link">About Us</a></li>
+                    </ul>
+                    <ul class="list-unstyled py-md-3">
+                        <li><h5>Follow us on</h5></li>
+                        <li>
+                            <a href="#" class="footer-link">
+                                <span class="fa fa-twitter"></span>
+                                <span>Twitter</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="footer-link">
+                                <span class="fa fa-instagram"></span>
+                                <span>Instagram</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="footer-link">
+                                <span class="fa fa-youtube"></span>
+                                <span>Youtube</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="footer-link">
+                                <span class="fa fa-facebook"></span>
+                                <span>Facebook</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-2">
+                    <ul class="list-unstyled">
+                        <li><h5>Products</h5></li>
+                        <li><a href="#" class="footer-link">Flights</a></li>
+                        <li><a href="#" class="footer-link">Hotels</a></li>
+                        <li><a href="#" class="footer-link">Flights + Hotels</a></li>
+                        <li><a href="#" class="footer-link">ARS Flight Algorithm</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2">
+                    <ul class="list-unstyled">
+                        <li><h5>Other</h5></li>
+                        <li><a href="#" class="footer-link">Blog</a></li>
+                        <li><a href="#" class="footer-link">RSS Feed</a></li>
+                        <li><a href="#" class="footer-link">Subscribe to our newsletter</a></li>
+                        <li><a href="#" class="footer-link">Business Inquiries</a></li>
+                        <li><a href="#" class="footer-link">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-md-center col-md-12">
                 <p>
                     &copy; @DateTime.Now.Year Airline Reservation System Inc.<br />
                     All rights reserved.
@@ -83,7 +156,8 @@
             </div>
         </div>
     </footer>
-
+    <button onclick="topFunction()" id="scrollBtn" title="Go to top">&uarr;</button>
     <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/ars/layout.js"></script>
 </body>
 </html>

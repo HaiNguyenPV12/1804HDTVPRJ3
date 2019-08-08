@@ -3,6 +3,8 @@
     ViewBag.Title = "Index";
     var mostTravelRoute = AirlinesReservationSystem.Models.ars.StatisticDAO.TravelRoutes();
     var mostTravelAirline = AirlinesReservationSystem.Models.ars.StatisticDAO.TravelAirlines();
+    var airlines = AirlinesReservationSystem.Models.ars.AirlineDAO.GetAirlines();
+    var shownIcon = 0;
 }
 
 <link href="~/Content/ars/index.css" rel="stylesheet" />
@@ -100,28 +102,56 @@
         }
     </div>
 </div>
-@*<div class="row mt-5">
+
+<hr class="my-md-5" />
+
+<div class="row col-md-12">
     <div class="col-md-4">
-        Top 3 Travel Place:
-        <ul>
-
-            @foreach (var item in mostTravelRoute.Take(3))
-            {
-                <li>@AirlinesReservationSystem.Models.arsadmin.RouteDAO.GetRoute(item.RNo).DestinationAirport.CityName (@item.Count)</li>
-            }
-        </ul>
+        <h3 class="col-md-12">Airline Partners</h3>
+        <h5 class="col-md-12 text-black-50 my-md-3">Domestic & Regional Airline Partners</h5>
+        <p class="col-md-12 text-md-left">
+            We are partnering with various airlines across the region to get you to wherever you need to be.
+        </p>
     </div>
-    <div class="col-md-4">
-        Top 3 Airline:
-        <ul>
-
-            @foreach (var item in mostTravelAirline.Take(3))
+    <div class="col-md-8">
+        @foreach (var item in airlines)
+        {
+            if (!string.IsNullOrWhiteSpace(item.AirlineIcon))
             {
-                <li>@AirlinesReservationSystem.Models.arsadmin.AirlineDAO.GetAirline(item.AirlineID).AirlineName (@item.Count)</li>
+                <img src="~/img/ars/@item.AirlineIcon" class="airline-icon-index py-md-3 px-md-3" />
+                shownIcon++;
             }
-        </ul>
+            if (shownIcon == 4)
+            {
+                <br />
+                shownIcon = 0;
+            }
+        }
     </div>
+</div>
 
-</div>*@
+<div class="row mt-5">
+        <div class="col-md-4">
+            Top 3 Travel Place:
+            <ul class="list-unstyled">
+
+                @foreach (var item in mostTravelRoute.Take(3))
+                {
+                    <li>@AirlinesReservationSystem.Models.arsadmin.RouteDAO.GetRoute(item.RNo).DestinationAirport.CityName (@item.Count)</li>
+                }
+            </ul>
+        </div>
+        <div class="col-md-4">
+            Top 3 Airline:
+            <ul class="list-unstyled">
+
+                @foreach (var item in mostTravelAirline.Take(3))
+                {
+                    <li>@AirlinesReservationSystem.Models.arsadmin.AirlineDAO.GetAirline(item.AirlineID).AirlineName (@item.Count)</li>
+                }
+            </ul>
+        </div>
+
+    </div>
 
 <script src="~/Scripts/ars/index.js"></script>

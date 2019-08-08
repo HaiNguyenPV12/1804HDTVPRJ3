@@ -86,10 +86,49 @@ namespace AirlinesReservationSystem.Models.arsadmin
             }
         }
 
+        public static void InsertFlightsIntoRoute(int RNo, int month)
+        {
+            db = new AirlineDBEntities();
+            Route route = db.Route.Where(item => item.RNo == RNo).FirstOrDefault();
+            int totalDate = DateTime.DaysInMonth(2019, month);
+            var aircraft = aircraftDB.Where(a => a.AircraftID == route.RAircraft).FirstOrDefault();
+            int seatE = aircraft.EconomySeats;
+            int seatB = 0;
+            int seatF = 0;
+            if (aircraft.BussinessSeats != null)
+            { seatB = int.Parse(aircraft.BussinessSeats.ToString()); }
+            if (aircraft.FirstClassSeats != null)
+            { seatF = int.Parse(aircraft.FirstClassSeats.ToString()); }
+            var distance = FlightDistanceDAO.GetFlightDistance(route.Departure.Trim(), route.Destination.Trim());
+            var dist = int.Parse(distance.Distance.ToString());
+
+            for (int i = 1; i <= totalDate; i++)
+            {
+                for (int j = 0; j < 7; j++)
+                {
+                    var departureTime = RandomDepartureTime(i, month);
+                    var arrivalTime = DateTime.Parse(departureTime.ToString()).AddMinutes(MinutesToAdd(dist));
+                    Flight f = new Flight
+                    {
+                        FNo = RandomFNo(route.RAirline),
+                        RNo = route.RNo,
+                        AvailSeatsE = seatE,
+                        AvailSeatsB = seatB,
+                        AvailSeatsF = seatF,
+                        BasePrice = RandomBasePrice(dist),
+                        DepartureTime = departureTime,
+                        ArrivalTime = arrivalTime
+                    };
+                    f.FlightTime = (f.ArrivalTime - f.DepartureTime).TotalHours;
+                    FlightDAO.AddFlight(f);
+                }
+            }
+        }
+
         static double MinutesToAdd(int distance)
         {
-            double m,d=distance;
-            
+            double m, d = distance;
+
             m = d / 578 * 60;
             return m;
         }
@@ -98,7 +137,7 @@ namespace AirlinesReservationSystem.Models.arsadmin
         {
             var randgen = new Random();
             double basePrice = distance * 0.07 + randgen.Next(-5, 5);
-            return Math.Round(basePrice,2);
+            return Math.Round(basePrice, 2);
         }
 
         static string RandomFNo(string AirlineID)
@@ -133,9 +172,28 @@ namespace AirlinesReservationSystem.Models.arsadmin
         {
             var randgen = new Random();
             int year = 2019;
-            int month = randgen.Next(8, 10);
+            int month = randgen.Next(8, 11);
             string monthStr = month < 10 ? "0" + month : month.ToString();
             var date = randgen.Next(1, DateTime.DaysInMonth(year, month) + 1);
+            string dateStr = date < 10 ? "0" + date : date.ToString();
+            int hour = randgen.Next(0, 24);
+            string hourStr = hour < 10 ? "0" + hour : hour.ToString();
+            int min;
+            do
+            {
+                min = randgen.Next(0, 60);
+            } while (min % 5 > 0);
+            string minStr = min < 10 ? "0" + min : min.ToString();
+
+            DateTime datetime = DateTime.Parse(string.Format("{0}/{1}/{2} {3}:{4}:00", monthStr, dateStr, year, hourStr, minStr));
+            return datetime;
+        }
+
+        static DateTime RandomDepartureTime(int date, int month)
+        {
+            var randgen = new Random();
+            int year = 2019;
+            string monthStr = month < 10 ? "0" + month : month.ToString();
             string dateStr = date < 10 ? "0" + date : date.ToString();
             int hour = randgen.Next(0, 24);
             string hourStr = hour < 10 ? "0" + hour : hour.ToString();
