@@ -70,7 +70,7 @@ namespace AirlinesReservationSystem.Controllers
             return RedirectToAction("Index");
         }
 
-        
+
 
         // ================ EMPLOYEE ==================
         // EMPLOYEE's VIEW
@@ -291,7 +291,7 @@ namespace AirlinesReservationSystem.Controllers
             return View(updateS);
         }
 
-        
+
         // ================ ORDER ==================
         //ORDER VIEW
         public ActionResult Order() => IsLoggedIn() ? View(OrderDAO.GetOrderList()) : (ActionResult)RedirectToAction("Index");
@@ -357,11 +357,21 @@ namespace AirlinesReservationSystem.Controllers
             return false;
         }
 
-        public ActionResult AddDB()
+        public ActionResult AddDBRoute()
         {
-            //InsertDAO.InsertRoutes();
-            InsertDAO.InsertFlight();
+            InsertDAO.InsertRoutes();
+            return RedirectToAction("Index");
+        }
 
+        public ActionResult AddDBFlight()
+        {
+            InsertDAO.InsertFlight();
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult AddDBFlightToRoute(int RNo, int month)
+        {
+            InsertDAO.InsertFlightsIntoRoute(RNo, month);
             return RedirectToAction("Index");
         }
     }
