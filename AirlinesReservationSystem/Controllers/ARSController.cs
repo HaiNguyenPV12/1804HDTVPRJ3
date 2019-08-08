@@ -11,7 +11,7 @@ namespace AirlinesReservationSystem.Controllers
 {
     public partial class ARSController : Controller
     {
-        // GET: Home
+        // HOME PAGE
         public ActionResult Index()
         {
             Session["reschedule"] = null;
@@ -244,6 +244,8 @@ namespace AirlinesReservationSystem.Controllers
         //public ActionResult TypeAheadDemo() => View();
         //public ActionResult JqueryUIDemo() => View();
 
+
+        //---------------- USER ------------------
         //REGISTER VIEW
         public ActionResult Register() => View();
 
@@ -264,7 +266,7 @@ namespace AirlinesReservationSystem.Controllers
             return View();
         }
 
-
+        
         //PROFILE USER VIEW
         public ActionResult ProfileUser()
         {
@@ -352,7 +354,7 @@ namespace AirlinesReservationSystem.Controllers
                     ViewBag.FNo = FNo;
                     ViewBag.FNos = FNos;
 
-                    if (!string.IsNullOrEmpty(ReFNo))
+                    if (!string.IsNullOrEmpty(ReFNo) || !string.IsNullOrWhiteSpace(ReFNo))
                     {
                         ViewBag.ReFNo = ReFNo;
                     }
@@ -421,7 +423,6 @@ namespace AirlinesReservationSystem.Controllers
             return Content(s);
         }
 
-        //---------------- PAYMENT RESULT ------------------
         // PAYMENT RESULT's VIEW
         public ActionResult PaymentResult(long? id)
         {
@@ -444,7 +445,7 @@ namespace AirlinesReservationSystem.Controllers
             return RedirectToAction("PaymentSearch");
         }
 
-        // BOOKING DETAIL's VIEW
+        // PAYMENT SEARCH'S VIEW
         public ActionResult PaymentSearch()
         {
             if (Session["user"] != null)
@@ -453,6 +454,22 @@ namespace AirlinesReservationSystem.Controllers
             }
             Session["GotoPayment"] = "/ars/paymentsearch";
             return RedirectToAction("Login");
+        }
+
+
+        public ActionResult PaymentDetail(string FNo, string ReFNo)
+        {
+
+            var searchParam = (FlightSearch)Session["searchParams"];
+            List<string> FNos = new List<string>();
+            FNos.AddRange(FNo.Split(','));
+
+            ViewBag.FNos = FNos;
+            ViewBag.ReFNo = ReFNo;
+            ViewBag.AdultNum = searchParam.Adult + searchParam.Senior;
+            ViewBag.ChildNum = searchParam.Children;
+
+            return View();
         }
 
         //---------------- ORDER PROCESS ------------------
@@ -481,28 +498,5 @@ namespace AirlinesReservationSystem.Controllers
             return Json(airports.ToArray(), JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult FlightCalendar(string Departure, string Destination, int? month, int? year)
-        {
-            var objD1 = FlightCalendarDAO.GetAirport(Departure);
-            var objD2 = FlightCalendarDAO.GetAirport(Destination);
-            ViewBag.ErrorM = "";
-            if (objD1 == null)
-            {
-                ViewBag.ErrorM += "Departure missing ";
-            }
-            if (objD2 == null)
-            {
-                ViewBag.ErrorM += "Destination missing ";
-            }
-            ViewBag.Month = month;
-            ViewBag.Year = year;
-            if (objD1 != null && objD2 != null)
-            {
-                var FlightList = FlightCalendarDAO.GetFlight(Departure, Destination);
-                ViewBag.FlightList = FlightList;
-            }
-
-            return View();
-        }
     }
 }

@@ -46,6 +46,27 @@ footer {
         background-color: #ff9933 !important;
     }
 
+.table-ars,
+.table-ars > th,
+.table-ars > td {
+    background-color: #ffca64;
+}
+
+    .table-ars th,
+    .table-ars td,
+    .table-ars thead th,
+    .table-ars tbody + tbody {
+        border-color: #ff9933;
+    }
+
+.table-hover .table-ars:hover {
+    background-color: #fcb269;
+}
+
+    .table-hover .table-ars:hover > td,
+    .table-hover .table-ars:hover > th {
+        background-color: #fcb269;
+    }
 
 #scrollBtn {
     display: none; /* Hidden by default */
